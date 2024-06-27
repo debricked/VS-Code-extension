@@ -1,53 +1,40 @@
-# VS-Code-extension README
+# Debricked VS Code Extension
 
-This is the README for your extension "VS-Code-extension". After writing up a brief description, we recommend including the following sections.
+A Visual Studio Code extension that integrates the Debricked CLI to provide security vulnerability scanning and license compliance directly within the editor.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Run Debricked CLI commands directly from VS Code
+- Display results in a user-friendly way within the editor
+- Status bar updates for command execution progress
+- Store and reuse user inputs like email and commit ID
+- Detailed logging of command execution and errors
 
-For example if there is an image subfolder under your extension project workspace:
+## Installation
 
-\!\[feature X\]\(images/feature-x.png\)
+1. Clone this repository.
+2. Open the project in Visual Studio Code.
+3. Run `npm install` to install the required dependencies.
+4. Press `F5` to open a new VS Code window with the extension loaded.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Usage
 
-## Requirements
+### Running Commands
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+1. Search for Debricked commands from VS code commands.
+2. Select the command you want to execute from the list of available commands.
+3. Follow the prompts to provide any necessary inputs.
 
-## Extension Settings
+## Development
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+### Running the Extension
 
-For example:
+1. Open the project in Visual Studio Code.
+2. Press `F5` to open a new VS Code window with the extension loaded.
 
-This extension contributes the following settings:
+### Packaging the Extension
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
+Run `vsce package` to create a `.vsix` file for the extension.
 
 ## Following extension guidelines
 
@@ -55,17 +42,6 @@ Ensure that you've read through the extensions guidelines and follow the best pr
 
 * [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
 
-## Working with Markdown
+## Credits
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Developed by [debricked](https://github.com/debricked).
