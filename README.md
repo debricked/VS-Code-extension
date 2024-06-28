@@ -59,7 +59,7 @@ After installing the extension, you can start using it by:
 ### Prerequisites
 Ensure you have the following tools installed:
 
-- Node.js (version 14 or later)
+- Node.js (version 20 or later)
 - npm
 - Visual Studio Code
 
@@ -101,14 +101,36 @@ We welcome contributions from the community! To contribute, please follow these 
 6. For detailed guidelines, refer to our Contributing Guide.
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/debricked/VS-Code-extension/blob/main/LICENSE) file for details.
 
 ## Acknowledgments
 - Special thanks to the Debricked team for their support and contributions.
 - Inspired by the Visual Studio Code Extension Guide.
 
 ## Contributors
-We appreciate all the Contributors who have helped make this project better.
+We appreciate all the [Contributors](https://github.com/debricked/VS-Code-extension/wiki/Contributors) who have helped make this project better.
 
 ## Milestones
 Check out our Milestones to see our project roadmap and upcoming features.
+---
+Thank you for visiting the debricked VS Code extension Wiki. We strive to make this project a valuable tool for developers and appreciate your interest and contributions. Here are a few final notes:
+
+### Stay Connected
+- **GitHub Repository:** [debricked/VS-Code-extension](https://github.com/debricked/VS-Code-extension)
+- **Issues & Feedback:** Have a question or found a bug? [Submit an issue](https://github.com/debricked/VS-Code-extension/issues).
+- **Contribute:** Interested in contributing? Check out our [Contributing Guide](./Contributing).
+
+### Support
+If you need help or have any questions, feel free to reach out:
+- **Email:** [support@debricked.com](mailto:support@debricked.com)
+- **Community:** Join the discussion on our [community forum](https://portal.debricked.com/community).
+
+### Acknowledgments
+We would like to thank all the contributors who have helped make this project possible. Your dedication and hard work are greatly appreciated.
+
+### License
+This project is licensed under the [MIT License](https://github.com/debricked/VS-Code-extension/blob/main/LICENSE).
+
+---
+
+*© 2024 debricked. All rights reserved.*
