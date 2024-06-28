@@ -112,6 +112,7 @@ We appreciate all the [Contributors](https://github.com/debricked/VS-Code-extens
 
 ## Milestones
 Check out our Milestones to see our project roadmap and upcoming features.
+
 ---
 Thank you for visiting the debricked VS Code extension Wiki. We strive to make this project a valuable tool for developers and appreciate your interest and contributions. Here are a few final notes:
 
