@@ -1,71 +1,110 @@
-# VS-Code-extension README
+# Debricked: VS Code Extension
 
-This is the README for your extension "VS-Code-extension". After writing up a brief description, we recommend including the following sections.
+[![Build Status](https://github.com/debricked/VS-Code-extension/workflows/CI/badge.svg)](https://github.com/debricked/VS-Code-extension/actions)
+[![Coverage Status](https://github.com/debricked/VS-Code-extension/badges/main/coverage.svg)](https://github.com/debricked/VS-Code-extension/coverage)
+
+Welcome to the **Debricked: VS Code Extension** project! This extension integrates Debricked's capabilities directly into your Visual Studio Code environment, enhancing your development workflow with advanced features for security and dependency management.
+
+## Table of Contents
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Development](#development)
+  - [Prerequisites](#prerequisites)
+  - [Setup](#setup)
+  - [Building](#building)
+  - [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+- [Footer](#footer)
+- [Sidebar](#sidebar)
+- [Contributors](#contributors)
+- [Milestones](#milestones)
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **Dependency Analysis:** Automatically scans and analyzes your project's dependencies.
+- **Security Alerts:** Provides real-time security alerts for known vulnerabilities.
+- **License Compliance:** Ensures your project complies with open source licenses.
+- **Integration with Debricked:** Seamlessly integrates with Debricked's services.
 
-For example if there is an image subfolder under your extension project workspace:
+## Installation
 
-\!\[feature X\]\(images/feature-x.png\)
+To install the Debricked VS Code Extension, follow these steps:
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+1. Open Visual Studio Code.
+2. Go to the Extensions view by clicking the Extensions icon in the Activity Bar on the side of the window.
+3. Search for `Debricked`.
+4. Click `Install` on the Debricked extension.
 
-## Requirements
+Alternatively, you can install it via the command line:
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+```sh
+code --install-extension debricked.vscode-extension
+```
 
-## Extension Settings
+## Usage
+After installing the extension, you can start using it by:
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+1. Opening any project in VS Code.
+2. The extension will automatically scan your project and provide dependency and security analysis in the VS Code interface.
+3. Access detailed reports and recommendations from the Debricked panel in the Activity Bar.
 
-For example:
+## Development
+### Prerequisites
+Ensure you have the following tools installed:
 
-This extension contributes the following settings:
+- Node.js (version 14 or later)
+- npm
+- Visual Studio Code
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+### Setup
+Clone the repository and install dependencies:
 
-## Known Issues
+```sh
+git clone https://github.com/debricked/VS-Code-extension.git
+cd VS-Code-extension
+npm install
+```
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+### Building
+To compile the extension, run:
 
-## Release Notes
+```sh
+npm run compile
+```
 
-Users appreciate release notes as you update your extension.
+The compiled files will be located in the dist folder.
 
-### 1.0.0
+### Testing
+Run the tests using:
 
-Initial release of ...
+```sh
+npm run test
+```
 
-### 1.0.1
+Test coverage reports will be generated in the coverage folder.
 
-Fixed issue #.
+## Contributing
+We welcome contributions from the community! To contribute, please follow these steps:
 
-### 1.1.0
+1. Fork the repository.
+2. Create a new branch (git checkout -b feature/YourFeature).
+3. Make your changes and commit them (git commit -m 'Add some feature').
+4. Push to the branch (git push origin feature/YourFeature).
+5. Open a pull request.
+6. For detailed guidelines, refer to our Contributing Guide.
 
-Added features X, Y, and Z.
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
 
----
+## Acknowledgments
+- Special thanks to the Debricked team for their support and contributions.
+- Inspired by the Visual Studio Code Extension Guide.
 
-## Following extension guidelines
+## Contributors
+We appreciate all the Contributors who have helped make this project better.
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+## Milestones
+Check out our Milestones to see our project roadmap and upcoming features.
