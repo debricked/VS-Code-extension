@@ -1,7 +1,7 @@
 // test/commands.test.ts
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { resgisterCommands } from '../commands';
+import { registerCommands } from '../commands';
 import { COMMANDS } from '../constants';
 suite('Extension : Commands Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
@@ -11,7 +11,7 @@ suite('Extension : Commands Test Suite', () => {
 			subscriptions: [],
 		} as any;
 
-		resgisterCommands(context);
+		registerCommands(context);
 
 		for (const key in COMMANDS) {
 			if (Object.prototype.hasOwnProperty.call(COMMANDS, key)) {

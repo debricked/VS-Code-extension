@@ -17,11 +17,11 @@ suite('Index : Commands Test Suite', () => {
         const commands = [helloWorldCommandSpy];
 
         // Mock the module to use the commands array with the spy
-        const mockResgisterCommands = (context: vscode.ExtensionContext) => {
+        const mockregisterCommands = (context: vscode.ExtensionContext) => {
             commands.forEach(command => command.call(this, context));
         };
 
-        mockResgisterCommands(context);
+        mockregisterCommands(context);
 
         // Verify that the command was called
         assert.strictEqual(helloWorldCommandSpy.calledOnce, true);
