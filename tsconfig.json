@@ -16,7 +16,37 @@
 		"moduleResolution": "NodeNext", /* Specify module resolution strategy. */
 		"forceConsistentCasingInFileNames": true, /* Require consistent case for file names. */
 		"skipLibCheck": true, /* Skip type checking for built-in libraries. */
-		"esModuleInterop": true /* Enable interop with ES Modules. */
+		"esModuleInterop": true, /* Enable interop with ES Modules. */
+		"paths": {
+			"@commands": [
+				"./src/commands"
+			],
+			"@constants": [
+				"./src/constants"
+			],
+			"@helpers": [
+				"./src/helpers"
+			],
+			"@providers": [
+				"./src/providers"
+			],
+			"@services": [
+				"./src/services"
+			],
+			"@test": [
+				"./src/test"
+			]
+		},
+		"allowJs": false,
+		"alwaysStrict": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitAny": true,
+		"noImplicitOverride": true,
+		"noImplicitThis": true,
+		"strictBindCallApply": true,
+		"strictFunctionTypes": true,
+		"strictNullChecks": true,
+		"baseUrl": "./"
 	},
 	"include": [
 		"src/**/*.ts",
