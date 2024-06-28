@@ -1,47 +1,114 @@
-# Debricked VS Code Extension
+# Debricked: VS Code Extension
 
-A Visual Studio Code extension that integrates the Debricked CLI to provide security vulnerability scanning and license compliance directly within the editor.
+[![CI/CD Pipeline](https://github.com/debricked/VS-Code-extension/actions/workflows/build.yml/badge.svg)](https://github.com/debricked/VS-Code-extension/actions/workflows/build.yml)
+[![License](https://img.shields.io/github/license/debricked/VS-Code-extension)](https://github.com/debricked/VS-Code-extension/blob/main/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/debricked/VS-Code-extension.svg)](https://GitHub.com/debricked/VS-Code-extension/releases/)
+[![GitHub issues](https://img.shields.io/github/issues/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/pulls)
+[![GitHub contributors](https://img.shields.io/github/contributors/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/graphs/contributors)
+[![GitHub last commit](https://img.shields.io/github/last-commit/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/commits/main)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/pulse)
+
+Welcome to the **Debricked: VS Code Extension** project! This extension integrates Debricked's capabilities directly into your Visual Studio Code environment, enhancing your development workflow with advanced features for security and dependency management.
+
+## Table of Contents
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Development](#development)
+  - [Prerequisites](#prerequisites)
+  - [Setup](#setup)
+  - [Building](#building)
+  - [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+- [Contributors](#contributors)
+- [Milestones](#milestones)
 
 ## Features
 
-- Run Debricked CLI commands directly from VS Code
-- Display results in a user-friendly way within the editor
-- Status bar updates for command execution progress
-- Store and reuse user inputs like email and commit ID
-- Detailed logging of command execution and errors
+- **Dependency Analysis:** Automatically scans and analyzes your project's dependencies.
+- **Security Alerts:** Provides real-time security alerts for known vulnerabilities.
+- **License Compliance:** Ensures your project complies with open source licenses.
+- **Integration with Debricked:** Seamlessly integrates with Debricked's services.
 
 ## Installation
 
-1. Clone this repository.
-2. Open the project in Visual Studio Code.
-3. Run `npm install` to install the required dependencies.
-4. Press `F5` to open a new VS Code window with the extension loaded.
+To install the Debricked VS Code Extension, follow these steps:
+
+1. Open Visual Studio Code.
+2. Go to the Extensions view by clicking the Extensions icon in the Activity Bar on the side of the window.
+3. Search for `Debricked`.
+4. Click `Install` on the Debricked extension.
+
+Alternatively, you can install it via the command line:
+
+```sh
+code --install-extension debricked.vscode-extension
+```
 
 ## Usage
+After installing the extension, you can start using it by:
 
-### Running Commands
-
-1. Search for Debricked commands from VS code commands.
-2. Select the command you want to execute from the list of available commands.
-3. Follow the prompts to provide any necessary inputs.
+1. Opening any project in VS Code.
+2. The extension will automatically scan your project and provide dependency and security analysis in the VS Code interface.
+3. Access detailed reports and recommendations from the Debricked panel in the Activity Bar.
 
 ## Development
+### Prerequisites
+Ensure you have the following tools installed:
 
-### Running the Extension
+- Node.js (version 14 or later)
+- npm
+- Visual Studio Code
 
-1. Open the project in Visual Studio Code.
-2. Press `F5` to open a new VS Code window with the extension loaded.
+### Setup
+Clone the repository and install dependencies:
 
-### Packaging the Extension
+```sh
+git clone https://github.com/debricked/VS-Code-extension.git
+cd VS-Code-extension
+npm install
+```
 
-Run `vsce package` to create a `.vsix` file for the extension.
+### Building
+To compile the extension, run:
 
-## Following extension guidelines
+```sh
+npm run compile
+```
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+The compiled files will be located in the dist folder.
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+### Testing
+Run the tests using:
 
-## Credits
+```sh
+npm run test
+```
 
-Developed by [debricked](https://github.com/debricked).
+Test coverage reports will be generated in the coverage folder.
+
+## Contributing
+We welcome contributions from the community! To contribute, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch (git checkout -b feature/YourFeature).
+3. Make your changes and commit them (git commit -m 'Add some feature').
+4. Push to the branch (git push origin feature/YourFeature).
+5. Open a pull request.
+6. For detailed guidelines, refer to our Contributing Guide.
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+## Acknowledgments
+- Special thanks to the Debricked team for their support and contributions.
+- Inspired by the Visual Studio Code Extension Guide.
+
+## Contributors
+We appreciate all the Contributors who have helped make this project better.
+
+## Milestones
+Check out our Milestones to see our project roadmap and upcoming features.
