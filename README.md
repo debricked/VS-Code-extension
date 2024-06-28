@@ -1,7 +1,6 @@
 # Debricked: VS Code Extension
 
-[![Build Status](https://github.com/debricked/VS-Code-extension/workflows/CI/badge.svg)](https://github.com/debricked/VS-Code-extension/actions)
-[![Coverage Status](https://github.com/debricked/VS-Code-extension/badges/main/coverage.svg)](https://github.com/debricked/VS-Code-extension/coverage)
+[![CI/CD Pipeline](https://github.com/debricked/VS-Code-extension/actions/workflows/build.yml/badge.svg)](https://github.com/debricked/VS-Code-extension/actions/workflows/build.yml)
 
 Welcome to the **Debricked: VS Code Extension** project! This extension integrates Debricked's capabilities directly into your Visual Studio Code environment, enhancing your development workflow with advanced features for security and dependency management.
 
