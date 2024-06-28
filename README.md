@@ -1,6 +1,13 @@
 # Debricked: VS Code Extension
 
 [![CI/CD Pipeline](https://github.com/debricked/VS-Code-extension/actions/workflows/build.yml/badge.svg)](https://github.com/debricked/VS-Code-extension/actions/workflows/build.yml)
+[![License](https://img.shields.io/github/license/debricked/VS-Code-extension)](https://github.com/debricked/VS-Code-extension/blob/main/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/debricked/VS-Code-extension.svg)](https://GitHub.com/debricked/VS-Code-extension/releases/)
+[![GitHub issues](https://img.shields.io/github/issues/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/pulls)
+[![GitHub contributors](https://img.shields.io/github/contributors/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/graphs/contributors)
+[![GitHub last commit](https://img.shields.io/github/last-commit/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/commits/main)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/pulse)
 
 Welcome to the **Debricked: VS Code Extension** project! This extension integrates Debricked's capabilities directly into your Visual Studio Code environment, enhancing your development workflow with advanced features for security and dependency management.
 
