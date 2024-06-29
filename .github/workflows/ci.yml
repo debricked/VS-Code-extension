@@ -7,8 +7,10 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
+    outputs:
+      node-modules-cache-key: ${{ steps.cache.outputs.cache-hit }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Node.js
@@ -16,8 +18,34 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
+      - name: Cache node_modules and dist
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            dist
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
+
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            dist
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Compile
         run: npm run compile
       - name: Upload dist to artifact
@@ -26,16 +54,9 @@ jobs:
           name: dist
           path: dist/
           retention-days: 1
-      - name: Cache node_modules and dist
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            dist
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
 
   test:
-    needs: build
+    needs: [setup, build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -60,13 +81,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage
-          path: out/
+          path: coverage/
           retention-days: 1
 
   cleanup:
-    needs: [build, test]
-    if: always()
+    needs: [setup, build, test]
     runs-on: ubuntu-latest
+    if: always()
     steps:
       - name: Cleanup
         run: |
