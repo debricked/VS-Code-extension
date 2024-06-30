@@ -21,7 +21,7 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-modules-
+            ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
       - name: Cache repository
@@ -30,7 +30,7 @@ jobs:
           path: .
           key: ${{ runner.os }}-repo-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-repo-
+            ${{ runner.os }}-repo-${{ hashFiles('**/package-lock.json') }}
 
   build:
     runs-on: ubuntu-latest
