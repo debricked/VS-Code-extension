@@ -1,4 +1,5 @@
 <a id="readme-top"></a>
+<img src="https://debricked.com/images/svg/debricked-by-opentext-logo.45934b2a88767a13cace55ad4ff77bb200093e9938c0cb9af97a3f5828b87f11.svg" alt="Debricked Logo">
 <h1 align="center">Debricked: VS Code Extension</h1>
 
 [![CI](https://github.com/debricked/VS-Code-extension/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/debricked/VS-Code-extension/actions/workflows/ci.yml)
@@ -26,39 +27,38 @@ Welcome to the <a href="https://github.com/debricked/VS-Code-extension">Debricke
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#installation">Installation</a></li>
-    <li><a href="#usage">Usage</a></li>
+    <li><a href="#features">✨ Features</a></li>
+    <li><a href="#installation">🚀 Installation</a></li>
+    <li><a href="#usage">💡 Usage</a></li>
     <li>
-      <a href="#development">Development</a>
+      <a href="#development">🛠️Development</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#setup">Setup</a></li>
-        <li><a href="#building">Building</a></li>
-        <li><a href="#testing">Testing</a></li>
+        <li><a href="#prerequisites">📚 Prerequisites</a></li>
+        <li><a href="#setup">🔧 Setup</a></li>
+        <li><a href="#building">🔨 Building</a></li>
+        <li><a href="#testing">🧪 Testing</a></li>
       </ul>
     </li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-    <li><a href="#contributors">Contributors</a></li>
-    <li><a href="#milestones">Milestones</a></li>
-    <li><a href="#stay-connected">Stay Connected</a></li>
-    <li><a href="#support">Support</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-    <li><a href="#license">License</a></li>
+    <li><a href="#contributing">🤝 Contributing</a></li>
+    <li><a href="#license">📝 License</a></li>
+    <li><a href="#acknowledgments">📢 Acknowledgments</a></li>
+    <li><a href="#contributors">👥 Contributors</a></li>
+    <li><a href="#milestones">📅 Milestones</a></li>
+    <li><a href="#stay-connected">🌐 Stay Connected</a></li>
+    <li><a href="#support">💬 Support</a></li>
+    <li><a href="#acknowledgments">📢 Acknowledgments</a></li>
+    <li><a href="#license">📝 License</a></li>
   </ol>
-
 </details>
 
-## Features
+## ✨Features
 
 - **Dependency Analysis:** Automatically scans and analyzes your project's dependencies.
 - **Security Alerts:** Provides real-time security alerts for known vulnerabilities.
 - **License Compliance:** Ensures your project complies with open source licenses.
 - **Integration with Debricked:** Seamlessly integrates with Debricked's services.
 
-## Installation
+## 🚀Installation
 
 To install the Debricked VS Code Extension, follow these steps:
 
@@ -73,22 +73,22 @@ Alternatively, you can install it via the command line:
 code --install-extension debricked.vscode-extension
 ```
 
-## Usage
+## 💡Usage
 After installing the extension, you can start using it by:
 
 1. Opening any project in VS Code.
 2. The extension will automatically scan your project and provide dependency and security analysis in the VS Code interface.
 3. Access detailed reports and recommendations from the Debricked panel in the Activity Bar.
 
-## Development
-### Prerequisites
+## 🛠Development
+### 📚Prerequisites
 Ensure you have the following tools installed:
 
 - Node.js (version 20 or later)
 - npm
 - Visual Studio Code
 
-### Setup
+### 🔧Setup
 Clone the repository and install dependencies:
 
 ```sh
@@ -97,7 +97,7 @@ cd VS-Code-extension
 npm install
 ```
 
-### Building
+### 🔨Building
 To compile the extension, run:
 
 ```sh
@@ -106,7 +106,7 @@ npm run compile
 
 The compiled files will be located in the dist folder.
 
-### Testing
+### 🧪Testing
 Run the tests using:
 
 ```sh
@@ -115,7 +115,7 @@ npm run test
 
 Test coverage reports will be generated in the coverage folder.
 
-## Contributing
+## 🤝Contributing
 We welcome contributions from the community! To contribute, please follow these steps:
 
 1. Fork the repository.
@@ -125,37 +125,35 @@ We welcome contributions from the community! To contribute, please follow these 
 5. Open a pull request.
 6. For detailed guidelines, refer to our Contributing Guide.
 
-## License
+## 📝License
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/debricked/VS-Code-extension/blob/main/LICENSE) file for details.
 
-## Acknowledgments
-- Special thanks to the Debricked team for their support and contributions.
-- Inspired by the Visual Studio Code Extension Guide.
-
-## Contributors
+## 👥Contributors
 We appreciate all the [Contributors](https://github.com/debricked/VS-Code-extension/wiki/Contributors) who have helped make this project better.
 
-## Milestones
+## 📅Milestones
 Check out our Milestones to see our project roadmap and upcoming features.
 
-## Stay Connected
+## 🌐Stay Connected
 - **GitHub Repository:** [debricked/VS-Code-extension](https://github.com/debricked/VS-Code-extension)
 - **Issues & Feedback:** Have a question or found a bug? [Submit an issue](https://github.com/debricked/VS-Code-extension/issues).
 - **Contribute:** Interested in contributing? Check out our [Contributing Guide](./Contributing).
 
-## Support
+## 💬Support
 If you need help or have any questions, feel free to reach out:
 - **Email:** [support@debricked.com](mailto:support@debricked.com)
 - **Community:** Join the discussion on our [community forum](https://portal.debricked.com/community).
+- Please ⭐️ this repository if this project helped you!
 
-## Acknowledgments
-We would like to thank all the contributors who have helped make this project possible. Your dedication and hard work are greatly appreciated.
-
-## License
+## 📢Acknowledgments
+- Special thanks to the Debricked team for their support and contributions.
+- Inspired by the Visual Studio Code Extension Guide.
+  
+## 📝License
 This project is licensed under the [MIT License](https://github.com/debricked/VS-Code-extension/blob/main/LICENSE).
 
 ---
 Thank you for visiting the [debricked VS Code extension](https://github.com/debricked/VS-Code-extension). We strive to make this project a valuable tool for developers and appreciate your interest and contributions. Here are a few final notes:
 
-*© 2024 [debricked](https://debricked.com/). All rights reserved.*
+> *© 2024 [debricked](https://debricked.com/). All rights reserved.*
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
