@@ -2,6 +2,7 @@
 <h1 align="center">Debricked: VS Code Extension</h1>
 
 [![CI](https://github.com/debricked/VS-Code-extension/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/debricked/VS-Code-extension/actions/workflows/ci.yml)
+[![pages-build-deployment](https://github.com/debricked/VS-Code-extension/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://github.com/debricked/VS-Code-extension/actions/workflows/pages/pages-build-deployment)
 [![License](https://img.shields.io/github/license/debricked/VS-Code-extension)](https://github.com/debricked/VS-Code-extension/blob/main/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/debricked/VS-Code-extension.svg)](https://GitHub.com/debricked/VS-Code-extension/releases/)
 [![GitHub issues](https://img.shields.io/github/issues/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/issues)
