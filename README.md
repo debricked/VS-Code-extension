@@ -1,6 +1,7 @@
-# Debricked: VS Code Extension
+<a id="readme-top"></a>
+<h1 align="center">Debricked: VS Code Extension</h1>
 
-[![CI/CD Pipeline](https://github.com/debricked/VS-Code-extension/actions/workflows/build.yml/badge.svg)](https://github.com/debricked/VS-Code-extension/actions/workflows/build.yml)
+[![CI](https://github.com/debricked/VS-Code-extension/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/debricked/VS-Code-extension/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/debricked/VS-Code-extension)](https://github.com/debricked/VS-Code-extension/blob/main/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/debricked/VS-Code-extension.svg)](https://GitHub.com/debricked/VS-Code-extension/releases/)
 [![GitHub issues](https://img.shields.io/github/issues/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/issues)
@@ -9,22 +10,45 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/commits/main)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/debricked/VS-Code-extension.svg)](https://github.com/debricked/VS-Code-extension/pulse)
 
-Welcome to the **Debricked: VS Code Extension** project! This extension integrates Debricked's capabilities directly into your Visual Studio Code environment, enhancing your development workflow with advanced features for security and dependency management.
+<p align="center">
+Welcome to the <a href="https://github.com/debricked/VS-Code-extension">Debricked: VS Code Extension</a> project! This extension integrates Debricked's capabilities directly into your Visual Studio Code environment, enhancing your development workflow with advanced features for security and dependency management.
+  <br />
+  <a href="https://github.com/debricked/VS-Code-extension/wiki"><strong>Explore the docs »</strong></a>
+  <br />
+  <br />
+  <a href="https://github.com/debricked/VS-Code-extension/issues/new?assignees=&labels=bug&projects=&template=bug-report---.md">Report Bug</a>
+  ·
+  <a href="https://github.com/debricked/VS-Code-extension/issues/new?assignees=&labels=enhancement&projects=&template=feature-request---.md">Request Feature</a>
+</p>
 
-## Table of Contents
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Development](#development)
-  - [Prerequisites](#prerequisites)
-  - [Setup](#setup)
-  - [Building](#building)
-  - [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
-- [Contributors](#contributors)
-- [Milestones](#milestones)
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#installation">Installation</a></li>
+    <li><a href="#usage">Usage</a></li>
+    <li>
+      <a href="#development">Development</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#setup">Setup</a></li>
+        <li><a href="#building">Building</a></li>
+        <li><a href="#testing">Testing</a></li>
+      </ul>
+    </li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li><a href="#contributors">Contributors</a></li>
+    <li><a href="#milestones">Milestones</a></li>
+    <li><a href="#stay-connected">Stay Connected</a></li>
+    <li><a href="#support">Support</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li><a href="#license">License</a></li>
+  </ol>
+
+</details>
 
 ## Features
 
@@ -113,25 +137,24 @@ We appreciate all the [Contributors](https://github.com/debricked/VS-Code-extens
 ## Milestones
 Check out our Milestones to see our project roadmap and upcoming features.
 
----
-Thank you for visiting the debricked VS Code extension Wiki. We strive to make this project a valuable tool for developers and appreciate your interest and contributions. Here are a few final notes:
-
-### Stay Connected
+## Stay Connected
 - **GitHub Repository:** [debricked/VS-Code-extension](https://github.com/debricked/VS-Code-extension)
 - **Issues & Feedback:** Have a question or found a bug? [Submit an issue](https://github.com/debricked/VS-Code-extension/issues).
 - **Contribute:** Interested in contributing? Check out our [Contributing Guide](./Contributing).
 
-### Support
+## Support
 If you need help or have any questions, feel free to reach out:
 - **Email:** [support@debricked.com](mailto:support@debricked.com)
 - **Community:** Join the discussion on our [community forum](https://portal.debricked.com/community).
 
-### Acknowledgments
+## Acknowledgments
 We would like to thank all the contributors who have helped make this project possible. Your dedication and hard work are greatly appreciated.
 
-### License
+## License
 This project is licensed under the [MIT License](https://github.com/debricked/VS-Code-extension/blob/main/LICENSE).
 
 ---
+Thank you for visiting the [debricked VS Code extension](https://github.com/debricked/VS-Code-extension). We strive to make this project a valuable tool for developers and appreciate your interest and contributions. Here are a few final notes:
 
-*© 2024 debricked. All rights reserved.*
+*© 2024 [debricked](https://debricked.com/). All rights reserved.*
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
