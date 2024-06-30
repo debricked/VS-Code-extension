@@ -17,9 +17,9 @@ Welcome to the <a href="https://github.com/debricked/VS-Code-extension">Debricke
   <a href="https://github.com/debricked/VS-Code-extension/wiki"><strong>Explore the docs »</strong></a>
   <br />
   <br />
-  <a href="https://github.com/debricked/VS-Code-extension/issues/new?assignees=&labels=bug&projects=&template=bug-report---.md">Report Bug</a>
+  <a href="https://github.com/debricked/VS-Code-extension/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml">Report Bug</a>
   ·
-  <a href="https://github.com/debricked/VS-Code-extension/issues/new?assignees=&labels=enhancement&projects=&template=feature-request---.md">Request Feature</a>
+  <a href="https://github.com/debricked/VS-Code-extension/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.yml">Request Feature</a>
 </p>
 
 <!-- TABLE OF CONTENTS -->
