@@ -9,6 +9,8 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    outputs:
+      package-lock-hash: ${{ steps.hash.outputs.hash }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Node.js
@@ -17,24 +19,23 @@ jobs:
           node-version: '22'
       - name: Install dependencies
         run: npm ci
+      - name: Calculate package-lock.json hash
+        id: hash
+        run: echo "::set-output name=hash::$(sha256sum package-lock.json | awk '{ print $1 }')"
       - name: Cache repository
         uses: actions/cache@v4
         with:
           path: .
-          key: ${{ runner.os }}-repo-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-repo-${{ hashFiles('**/package-lock.json') }}
-
+          key: ${{ runner.os }}-repo-${{ steps.hash.outputs.hash }}
   build:
     runs-on: ubuntu-latest
     needs: setup
     steps:
-      - uses: actions/checkout@v4
       - name: Restore repository cache
         uses: actions/cache@v4
         with:
           path: .
-          key: ${{ runner.os }}-repo-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-repo-${{ needs.setup.outputs.package-lock-hash }}
           fail-on-cache-miss: true
       - name: Compile
         run: npm run compile
@@ -47,7 +48,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .
-          key: ${{ runner.os }}-repo-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-repo-${{ needs.setup.outputs.package-lock-hash }}
           fail-on-cache-miss: true
       - name: Install system dependencies
         run: |
