@@ -3,7 +3,7 @@
 * [ ] I as the code author have self-reviewed code and functionality
 * [ ] I have added new tests/extended existing ones
 * [ ] If this contains frontend changes, a design review has been requested and completed
-* [ ] A security review is initialized according to [Security Chapter Policy](https://www.notion.so/Secure-code-review-75585ae5c1ea43dab08f3a390714afb5)
+* [ ] A security review is initialized according to Security Chapter Policy
 
 ## Prerequisites for merge, reviewer responsibilities
 * [ ] I as the reviewer have ensured that acceptance criteria is met
