@@ -75,10 +75,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Use the package-lock-hash from the setup job
           CACHE_KEY="${{ needs.setup.outputs.package-lock-hash }}"
 
-          echo "$CACHE_KEY"
           if [ -n "$CACHE_KEY" ]; then
             curl -L \
             -X DELETE \
@@ -87,7 +85,6 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/actions/caches?key=$CACHE_KEY"
 
             echo "Cache deleted successfully"
-            echo "https://api.github.com/repos/${{ github.repository }}/actions/caches?key=$CACHE_KEY"
           else
             echo "No matching cache found"
           fi
