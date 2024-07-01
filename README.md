@@ -1,9 +1,7 @@
-<h1 align="center">
+<h1 id="readme-top" align="center">
   <img align="left" src="https://debricked.com/images/svg/debricked-by-opentext-logo.45934b2a88767a13cace55ad4ff77bb200093e9938c0cb9af97a3f5828b87f11.svg" alt="Debricked Logo">
   Debricked: VS Code Extension
 </h1>
-
-<a id="readme-top"></a>
 <br>
 <div align="center">
   <a style="text-decoration: none;" href="https://github.com/debricked/VS-Code-extension/actions/workflows/ci.yml">
