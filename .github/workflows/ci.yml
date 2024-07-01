@@ -34,6 +34,7 @@ jobs:
         with:
           path: .
           key: ${{ runner.os }}-repo-${{ hashFiles('**/package-lock.json') }}
+          fail-on-cache-miss: true
       - name: Compile
         run: npm run compile
 
@@ -46,6 +47,7 @@ jobs:
         with:
           path: .
           key: ${{ runner.os }}-repo-${{ hashFiles('**/package-lock.json') }}
+          fail-on-cache-miss: true
       - name: Install system dependencies
         run: |
           sudo apt-get update
