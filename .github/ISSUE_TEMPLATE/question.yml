@@ -1,0 +1,27 @@
+name: 🤔 Question or Discussion
+description: Ask a question or start a discussion about the Debricked VS Code Extension
+title: "[QUESTION] "
+labels: [question]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reaching out! Please provide as much detail as possible to help us address your question or discussion topic.
+
+  - type: input
+    id: title
+    attributes:
+      label: Title
+      description: Provide a title for your question or discussion.
+      placeholder: "Title of your question or discussion"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of your question or discussion topic.
+      placeholder: "A clear and concise description of your question or discussion topic."
+    validations:
+      required: true

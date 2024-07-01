@@ -1,0 +1,45 @@
+name: 🚀 Feature Request
+description: Suggest a new feature for the Debricked VS Code Extension
+title: "[FEATURE] "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please provide as much detail as possible to help us understand your request.
+
+  - type: input
+    id: title
+    attributes:
+      label: Feature Title
+      description: Provide a title for your feature request.
+      placeholder: "Feature title"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of what you want to happen.
+      placeholder: "A clear and concise description of what you want to happen."
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Explain why this feature is important and how it would benefit users.
+      placeholder: "Why is this feature important? How would it benefit users?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Describe any alternative solutions or features you've considered.
+      placeholder: "Describe any alternative solutions or features you've considered."
+    validations:
+      required: false
