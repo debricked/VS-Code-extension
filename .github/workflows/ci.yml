@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      package-lock-hash: ${{ runner.os }}-repo-${{ steps.hash.outputs.hash }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm ci
+      - name: Calculate package-lock.json hash
+        id: hash
+        run: echo "hash=$(sha256sum package-lock.json | awk '{ print $1 }')" >> "$GITHUB_OUTPUT"
+      - name: Cache repository
+        uses: actions/cache@v4
+        with:
+          path: .
+          key: ${{ runner.os }}-repo-${{ steps.hash.outputs.hash }}
+          
+  build:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Restore repository cache
+        uses: actions/cache@v4
+        with:
+          path: .
+          key: ${{ needs.setup.outputs.package-lock-hash }}
+          fail-on-cache-miss: true
+      - name: Compile
+        run: npm run compile
+
+  test:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Restore repository cache
+        uses: actions/cache@v4
+        with:
+          path: .
+          key: ${{ needs.setup.outputs.package-lock-hash }}
+          fail-on-cache-miss: true
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2 libgbm1 libgtk-3-0 libnss3 xvfb
+      - name: Run tests
+        run: xvfb-run -a npm run test
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 1
+
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: [setup, build, test]
+    if: always()
+    steps:
+      - name: Cleanup
+        run: npm cache clean --force
+      - name: Delete GitHub Actions cache
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CACHE_KEY="${{ needs.setup.outputs.package-lock-hash }}"
+
+          if [ -n "$CACHE_KEY" ]; then
+            curl -L \
+            -X DELETE \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/caches?key=$CACHE_KEY"
+
+            echo "Cache deleted successfully"
+          else
+            echo "No matching cache found"
+          fi

@@ -1,0 +1,36 @@
+name: 📃 Documentation Improvement
+description: Suggest improvements to the documentation for the Debricked VS Code Extension
+title: "[DOCS] "
+labels: [documentation]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping us improve our documentation! Please provide as much detail as possible to help us understand your suggestion.
+
+  - type: input
+    id: title
+    attributes:
+      label: Title
+      description: Provide a title for your documentation improvement suggestion.
+      placeholder: "Title of your documentation improvement suggestion"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the documentation improvement.
+      placeholder: "A clear and concise description of the documentation improvement."
+    validations:
+      required: true
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Documentation Location
+      description: Provide the location (file, section, etc.) of the documentation you suggest improving.
+      placeholder: "Location of the documentation (file, section, etc.)"
+    validations:
+      required: true
