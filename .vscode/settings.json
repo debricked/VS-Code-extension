@@ -10,8 +10,7 @@
         ".vscodeignore": true,
         "package-lock.json": true,
         "tsconfig.json": true,
-        "LICENSE": true,
-        "*.md": true
+        "LICENSE": true
     },
     "search.exclude": {
         "out": true,
