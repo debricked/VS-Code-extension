@@ -71,21 +71,23 @@ jobs:
     steps:
       - name: Cleanup
         run: npm cache clean --force
-      - name: Delete specific cache
+      - name: Delete GitHub Actions cache
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          CACHE_KEY: ${{ needs.setup.outputs.package-lock-hash }}
         run: |
-          cache_id=$(curl -s -H "Authorization: token $GH_TOKEN" \
-          -H "Accept: application/vnd.github.v3+json" \
-          "https://api.github.com/repos/$REPO/actions/caches" | \
-          jq -r --arg CACHE_KEY "$CACHE_KEY" '.actions_caches[] | select(.key == $CACHE_KEY) | .id')
- 
-          if [ -n "$cache_id" ]; then
-            curl -X DELETE -s -H "Authorization: token $GH_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/$REPO/actions/caches/$cache_id"
+          # Use the package-lock-hash from the setup job
+          CACHE_KEY="${{ needs.setup.outputs.package-lock-hash }}"
+
+          echo "$CACHE_KEY"
+          if [ -n "$CACHE_KEY" ]; then
+            curl -L \
+            -X DELETE \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/caches?key=$CACHE_KEY"
+
+            echo "Cache deleted successfully"
+            echo "https://api.github.com/repos/${{ github.repository }}/actions/caches?key=$CACHE_KEY"
           else
-            echo "No cache found with key $CACHE_KEY"
+            echo "No matching cache found"
           fi
