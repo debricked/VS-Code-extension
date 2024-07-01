@@ -68,7 +68,6 @@
     <li><a href="#license">📝 License</a></li>
     <li><a href="#acknowledgments">📢 Acknowledgments</a></li>
     <li><a href="#contributors">👥 Contributors</a></li>
-    <li><a href="#milestones">📅 Milestones</a></li>
     <li><a href="#stay-connected">🌐 Stay Connected</a></li>
     <li><a href="#support">💬 Support</a></li>
     <li><a href="#acknowledgments">📢 Acknowledgments</a></li>
@@ -154,9 +153,6 @@
 
 <h2 id="contributors">👥 Contributors</h2>
 <p>We appreciate all the <a href="https://github.com/debricked/VS-Code-extension/wiki/Contributors">Contributors</a> who have helped make this project better.</p>
-
-<h2 id="milestones">📅 Milestones</h2>
-<p>Check out our <a href="https://github.com/debricked/VS-Code-extension/milestones">Milestones</a> to see our project roadmap and upcoming features.</p>
 
 <h2 id="stay-connected">🌐 Stay Connected</h2>
 <p>
