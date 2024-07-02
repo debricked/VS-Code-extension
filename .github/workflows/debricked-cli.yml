@@ -22,7 +22,7 @@ jobs:
         id: get_latest_release
         run: |
           latest_release=$(curl -s https://api.github.com/repos/debricked/cli/releases/tags/v2.0.3)
-          download_url=$(echo "$latest_release" | jq -r '.assets[] | select(.name | endswith("cli_windows_x86_64.tar.gz")).browser_download_url')
+          download_url=$(echo "$latest_release" | jq -r '.assets[] | select(.name | endswith("tar.gz")).browser_download_url')
           echo "Download URL: $download_url"
           echo "download_url=$download_url" >> $GITHUB_OUTPUT
 
