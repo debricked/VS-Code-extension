@@ -5,6 +5,8 @@ on:
     branches: ['**']
   pull_request:
     branches: [main]
+  pull_request_target:
+    types: [closed]
 
 jobs:
   setup:
@@ -87,4 +89,23 @@ jobs:
             echo "Cache deleted successfully"
           else
             echo "No matching cache found"
+          fi
+
+  delete-branch:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH_REF=${{ github.event.pull_request.head.ref }}
+          REPO=${{ github.repository }}
+          
+          if [ "$BRANCH_REF" != "main" ]; then
+            curl -X DELETE -H "Authorization: token $GH_TOKEN" \
+              "https://api.github.com/repos/$REPO/git/refs/heads/$BRANCH_REF"
+            echo "Branch '$BRANCH_REF' deleted successfully"
+          else
+            echo "Main branch not deleted"
           fi
