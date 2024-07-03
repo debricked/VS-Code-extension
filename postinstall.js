@@ -5,6 +5,8 @@ const os = require('os');
 const platform = os.platform();
 let uninstallScriptPath, installScriptPath, uninstallCommand, installCommand;
 
+console.info("Debricked running in - ", platform);
+
 switch (platform) {
     case 'win32':
         uninstallScriptPath = path.join(__dirname, './resources/debricked-cli/uninstall-debricked.ps1');
