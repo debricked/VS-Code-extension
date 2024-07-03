@@ -18,8 +18,8 @@ switch (platform) {
     case 'darwin':
         uninstallScriptPath = path.join(__dirname, './resources/debricked-cli/uninstall-debricked.sh');
         installScriptPath = path.join(__dirname, './resources/debricked-cli/install-debricked.sh');
-        uninstallCommand = `sh "${uninstallScriptPath}"`;
-        installCommand = `sh "${installScriptPath}"`;
+        uninstallCommand = `bash "${uninstallScriptPath}"`;
+        installCommand = `bash "${installScriptPath}"`;
         break;
     default:
         console.error('Unsupported OS');
