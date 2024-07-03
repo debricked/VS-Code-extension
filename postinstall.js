@@ -10,9 +10,9 @@ function getScriptPaths() {
     switch (platform) {
         case 'win32':
             return {
-                uninstall: path.join(scriptDir, 'uninstall-debricked.ps1'),
-                install: path.join(scriptDir, 'install-debricked.ps1'),
-                command: 'powershell -ExecutionPolicy Bypass -File'
+                uninstall: path.join(scriptDir, 'uninstall-debricked.bat'),
+                install: path.join(scriptDir, 'install-debricked.bat'),
+                command: ''  // No command prefix needed for .bat files
             };
         case 'linux':
         case 'darwin':
@@ -43,11 +43,13 @@ async function runScripts() {
         const { uninstall, install, command } = getScriptPaths();
 
         console.log('Starting un-installation...');
-        const uninstallOutput = await executeCommand(`${command} "${uninstall}"`);
+        const uninstallCommand = platform === 'win32' ? `"${uninstall}"` : `${command} "${uninstall}"`;
+        const uninstallOutput = await executeCommand(uninstallCommand);
         console.log('Uninstall output:', uninstallOutput);
 
         console.log('Starting installation...');
-        const installOutput = await executeCommand(`${command} "${install}"`);
+        const installCommand = platform === 'win32' ? `"${install}"` : `${command} "${install}"`;
+        const installOutput = await executeCommand(installCommand);
         console.log('Install output:', installOutput);
 
         console.log('Scripts executed successfully');
