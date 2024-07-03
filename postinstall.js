@@ -3,41 +3,58 @@ const path = require('path');
 const os = require('os');
 
 const platform = os.platform();
-let uninstallScriptPath, installScriptPath, uninstallCommand, installCommand;
+console.info("Debricked running on:", platform);
 
-console.info("Debricked running in - ", platform);
-
-switch (platform) {
-    case 'win32':
-        uninstallScriptPath = path.join(__dirname, './resources/debricked-cli/uninstall-debricked.ps1');
-        installScriptPath = path.join(__dirname, './resources/debricked-cli/install-debricked.ps1');
-        uninstallCommand = `powershell -ExecutionPolicy Bypass -File "${uninstallScriptPath}"`;
-        installCommand = `powershell -ExecutionPolicy Bypass -File "${installScriptPath}"`;
-        break;
-    case 'linux':
-    case 'darwin':
-        uninstallScriptPath = path.join(__dirname, './resources/debricked-cli/uninstall-debricked.sh');
-        installScriptPath = path.join(__dirname, './resources/debricked-cli/install-debricked.sh');
-        uninstallCommand = `bash "${uninstallScriptPath}"`;
-        installCommand = `bash "${installScriptPath}"`;
-        break;
-    default:
-        console.error('Unsupported OS');
-        process.exit(1);
+function getScriptPaths() {
+    const scriptDir = path.join(__dirname, './resources/debricked-cli');
+    switch (platform) {
+        case 'win32':
+            return {
+                uninstall: path.join(scriptDir, 'uninstall-debricked.ps1'),
+                install: path.join(scriptDir, 'install-debricked.ps1'),
+                command: 'powershell -ExecutionPolicy Bypass -File'
+            };
+        case 'linux':
+        case 'darwin':
+            return {
+                uninstall: path.join(scriptDir, 'uninstall-debricked.sh'),
+                install: path.join(scriptDir, 'install-debricked.sh'),
+                command: 'bash'
+            };
+        default:
+            throw new Error('Unsupported operating system');
+    }
 }
 
-exec(uninstallCommand, (error, stdout, stderr) => {
-    if (error) {
-        console.error(`Error during uninstall: ${stderr}`);
+function executeCommand(command) {
+    return new Promise((resolve, reject) => {
+        exec(command, (error, stdout, stderr) => {
+            if (error) {
+                reject(new Error(`Execution error: ${stderr}`));
+            } else {
+                resolve(stdout.trim());
+            }
+        });
+    });
+}
+
+async function runScripts() {
+    try {
+        const { uninstall, install, command } = getScriptPaths();
+
+        console.log('Starting uninstallation...');
+        const uninstallOutput = await executeCommand(`${command} "${uninstall}"`);
+        console.log('Uninstall output:', uninstallOutput);
+
+        console.log('Starting installation...');
+        const installOutput = await executeCommand(`${command} "${install}"`);
+        console.log('Install output:', installOutput);
+
+        console.log('Scripts executed successfully');
+    } catch (error) {
+        console.error('Script execution failed:', error.message);
         process.exit(1);
     }
-    console.log(`Uninstall output: ${stdout}`);
+}
 
-    exec(installCommand, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error during installation: ${stderr}`);
-            process.exit(1);
-        }
-        console.log(`Installation output: ${stdout}`);
-    });
-});
+runScripts();
