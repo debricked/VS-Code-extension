@@ -42,7 +42,7 @@ async function runScripts() {
     try {
         const { uninstall, install, command } = getScriptPaths();
 
-        console.log('Starting uninstallation...');
+        console.log('Starting un-installation...');
         const uninstallOutput = await executeCommand(`${command} "${uninstall}"`);
         console.log('Uninstall output:', uninstallOutput);
 
