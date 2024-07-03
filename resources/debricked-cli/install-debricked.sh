@@ -35,33 +35,15 @@ case $arch in
 esac
 
 downloadUrl="https://github.com/debricked/cli/releases/download/$releaseVersion/cli_${os}_${arch}.tar.gz"
-destinationPath="debricked-cli.tar.gz"
-extractPath="cli"
 installPath="/usr/local/bin/debricked"
 
-# Download the file
-echo "Downloading Debricked CLI from $downloadUrl"
-curl -L $downloadUrl -o $destinationPath
+# Download and extract the file directly
+echo "Downloading and extracting Debricked CLI from $downloadUrl"
+curl -L $downloadUrl | tar -xz debricked
 
-# Create the extract path if it doesn't exist
-mkdir -p $extractPath
-
-# Extract the tar.gz file
-echo "Extracting Debricked CLI to $extractPath ..."
-tar -xzf $destinationPath -C $extractPath
-
-# Remove the tar.gz file
-rm $destinationPath
-
-# Create the install path if it doesn't exist
-sudo mkdir -p $(dirname $installPath)
-
-# Copy the extracted debricked executable to the install path
+# Move the extracted debricked executable to the install path
 echo "Installing Debricked CLI to $installPath ..."
-sudo cp $extractPath/debricked /usr/local/bin/debricked
-sudo chmod +x /usr/local/bin/debricked
-
-# Clean up the extraction path
-rm -r $extractPath
+sudo mv debricked $installPath
+sudo chmod +x $installPath
 
 echo "Debricked($releaseVersion) CLI installation completed successfully."
