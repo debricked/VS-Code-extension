@@ -1,63 +1,28 @@
+# Function to check if running as admin
 function Test-Admin {
     $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
     $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
     return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
+# Restart script as admin if not already
 if (-not (Test-Admin)) {
     Write-Warning "This script needs to be run as an administrator."
     Start-Process powershell -Verb runAs -ArgumentList ('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $MyInvocation.MyCommand.Path)
     exit
 }
 
-
 # Define release version
 $releaseVersion = "v2.0.3"
 
-# Determine the OS and architecture
-$os = $null
-$arch = $null
-
-if ([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) {
-    $os = "windows"
-
-    Write-Host $PSVersionTable.PSVersion
-    Write-Host ([System.Environment]::OSVersion)
-
-    if ([System.Environment]::Is64BitProcess) {
-        $arch = "x86_64"
-    }
-    else {
-        $arch = "i386"
-    }
-}
-elseif ($IsLinux) {
-    $os = "linux"
-    if ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -eq "Arm64") {
-        $arch = "arm64"
-    }
-    elseif ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -eq "X64") {
-        $arch = "x86_64"
-    }
-    else {
-        $arch = "i386"
-    }
-}
-elseif ($IsMacOS) {
-    $os = "macOS"
-    if ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -eq "Arm64") {
-        $arch = "arm64"
-    }
-    else {
-        $arch = "x86_64"
-    }
-}
-else {
-    Write-Error "Unsupported OS"
-    exit 1
+# Determine the architecture
+if ([System.Environment]::Is64BitProcess) {
+    $arch = "x86_64"
+} else {
+    $arch = "i386"
 }
 
-$downloadUrl = "https://github.com/debricked/cli/releases/download/$releaseVersion/cli_${os}_${arch}.tar.gz"
+$downloadUrl = "https://github.com/debricked/cli/releases/download/$releaseVersion/cli_windows_${arch}.tar.gz"
 $destinationPath = "debricked-cli.tar.gz"
 $extractPath = "cli"
 $installPath = "C:\Program Files\debricked"
@@ -83,8 +48,8 @@ if (-Not (Test-Path -Path $installPath)) {
     New-Item -ItemType Directory -Path $installPath -Force
 }
 
-# Move the extracted debricked.exe to the install path
-Write-Host "Installing Debricked CLI $installPath ..."
+# Copy the extracted debricked.exe to the install path
+Write-Host "Installing Debricked CLI to $installPath ..."
 Copy-Item "$extractPath/debricked.exe" "$installPath/debricked.exe" -Force
 
 # Optionally, add the install path to the system PATH if not already present
@@ -96,4 +61,4 @@ if (-not [System.Environment]::GetEnvironmentVariable("Path", [System.Environmen
 # Clean up the extraction path
 # Remove-Item -Recurse -Force $extractPath
 
-Write-Host "Debricked($releaseVersion) CLI of cli_${os}_${arch} installation completed successfully."
+Write-Host "Debricked($releaseVersion) CLI installation completed successfully."
