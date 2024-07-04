@@ -15,8 +15,13 @@
   "contributes": {
     "commands": [
       {
-        "command": "debricked.helloWorld",
-        "title": "Hello World",
+        "command": "debricked.debricked",
+        "title": "Debricked : A fast and flexible software composition analysis CLI tool, given to you by Debricked.",
+        "category": "debricked"
+      },
+      {
+        "command": "debricked.help",
+        "title": "Help about any command",
         "category": "debricked"
       }
     ]
@@ -33,6 +38,7 @@
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "check-types": "tsc --noEmit",
     "lint": "eslint src --ext ts",
+    "lint:fix": "eslint --fix src --ext ts",
     "test": "vscode-test --coverage",
     "clean": "rimraf out && rimraf dist && rimraf coverage",
     "clean-all": "rimraf out && rimraf dist && rimraf coverage && rimraf .vscode-test",
@@ -51,6 +57,7 @@
     "chai": "^5.1.1",
     "esbuild": "^0.21.5",
     "eslint": "^8.57.0",
+    "eslint-plugin-prettier": "^5.1.3",
     "mocha": "^10.4.0",
     "npm-run-all": "^4.1.5",
     "sinon": "^18.0.0",

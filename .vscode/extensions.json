@@ -7,5 +7,6 @@
     "ms-vscode.extension-test-runner",
     "streetsidesoftware.code-spell-checker",
     "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
   ]
 }

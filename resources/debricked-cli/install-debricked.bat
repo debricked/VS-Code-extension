@@ -54,7 +54,7 @@ if errorlevel 1 (
 )
 
 :: Clean up the extraction path
-:: rmdir /s /q "%extractPath%"
+rmdir /s /q "%extractPath%"
 
 echo Debricked(%releaseVersion%) CLI installation completed successfully.
 

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
-import { helloWorldCommand } from './helloWorldCommand';
-const commands = [helloWorldCommand];
+import { debrickedCommand } from './debrickedCommand';
+
+const commands = [debrickedCommand];
 
 export const registerCommands = (context: vscode.ExtensionContext) => {
     commands.forEach(command => command.call(this, context));

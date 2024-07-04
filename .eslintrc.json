@@ -13,14 +13,33 @@
             "warn",
             {
                 "selector": "import",
-                "format": [ "camelCase", "PascalCase" ]
+                "format": [
+                    "camelCase",
+                    "PascalCase"
+                ]
             }
         ],
         "@typescript-eslint/semi": "warn",
         "curly": "warn",
         "eqeqeq": "warn",
         "no-throw-literal": "warn",
-        "semi": "off"
+        "semi": "off",
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "no-multiple-empty-lines": [
+            "error",
+            {
+                "max": 1
+            }
+        ],
+        "max-len": [
+            "error",
+            {
+                "code": 900
+            }
+        ]
     },
     "ignorePatterns": [
         "out",
