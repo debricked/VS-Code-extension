@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 let statusBarMessage: vscode.Disposable | undefined;
 

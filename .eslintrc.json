@@ -20,7 +20,6 @@
         "eqeqeq": "warn",
         "no-throw-literal": "warn",
         "semi": "off",
-        "quotes": ["error", "single"],
         "no-multiple-empty-lines": [
             "error",
             {

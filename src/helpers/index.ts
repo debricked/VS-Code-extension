@@ -1,3 +1,3 @@
-import AuthHelper from './AuthHelper';
+import AuthHelper from "./AuthHelper";
 
-export { AuthHelper }; 
+export { AuthHelper };

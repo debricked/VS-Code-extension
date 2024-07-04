@@ -1,5 +1,5 @@
-import { ORGANIZATION } from '../constants';
-import { MESSAGE_STATUS } from '../constants/messages';
+import { ORGANIZATION } from "../constants";
+import { MESSAGE_STATUS } from "../constants/messages";
 
 export function getStatusMessage(type: string, command: string): string {
     switch (type) {
