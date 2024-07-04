@@ -48,7 +48,7 @@ export function generateHashCode(input: string): string {
 
 export async function checkUserId() {
     const user_id = await getFromDebrickedData("user_id");
-    if (!user_id) {
+    if (user_id && user_id === "unknown-user") {
         const userHashCode = generateHashCode(new Date().toDateString());
         saveToDebrickedData("user_id", userHashCode);
     }
