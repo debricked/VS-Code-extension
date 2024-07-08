@@ -7,7 +7,7 @@
   <a style="text-decoration: none;" href="https://github.com/debricked/VS-Code-extension/actions/workflows/ci.yml">
     <img src="https://github.com/debricked/VS-Code-extension/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI">
   </a>
-  <a href="https://github.com/debricked/VS-Code-extension/actions/workflows/pages/pages-build-deployment">
+  <a style="text-decoration: none;" href="https://github.com/debricked/VS-Code-extension/actions/workflows/pages/pages-build-deployment">
     <img src="https://github.com/debricked/VS-Code-extension/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main" alt="pages-build-deployment">
   </a>
   <a href="https://github.com/debricked/VS-Code-extension/blob/main/LICENSE">
