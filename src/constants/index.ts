@@ -1,16 +1,11 @@
-import {
-    DEBRICKED_CLI_COMMANDS,
-    ORGANIZATION,
-    API_ENDPOINTS,
-    DEBRICKED_COMMAND_TREE,
-} from "./debricked_cli";
-import { MESSAGE, MESSAGE_STATUS } from "./messages";
+import { ApiEndpoints, DebrickedCommands, Organization } from "./debricked_cli";
+import { Messages } from "./messages";
+import { MessageStatus } from "./messageStatus";
 
 export {
-    DEBRICKED_CLI_COMMANDS,
-    ORGANIZATION,
-    API_ENDPOINTS,
-    DEBRICKED_COMMAND_TREE,
-    MESSAGE,
-    MESSAGE_STATUS,
+    ApiEndpoints,
+    DebrickedCommands,
+    Organization,
+    Messages,
+    MessageStatus,
 };

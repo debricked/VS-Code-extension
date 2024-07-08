@@ -1,55 +1,39 @@
 {
-	"compilerOptions": {
-		"module": "Node16",
-		"target": "ES2022",
-		"lib": [
-			"ES2022"
-		],
-		"sourceMap": true,
-		"rootDir": "src",
-		"strict": true, /* enable all strict type-checking options */
-		/* Additional Checks */
-		"noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
-		"noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
-		"noUnusedParameters": true, /* Report errors on unused parameters. */
-		"noUnusedLocals": true, /* Report errors on unused local variables. */
-		"moduleResolution": "NodeNext", /* Specify module resolution strategy. */
-		"forceConsistentCasingInFileNames": true, /* Require consistent case for file names. */
-		"skipLibCheck": true, /* Skip type checking for built-in libraries. */
-		"esModuleInterop": true, /* Enable interop with ES Modules. */
-		"paths": {
-			"@commands": [
-				"./src/commands"
-			],
-			"@constants": [
-				"./src/constants"
-			],
-			"@helpers": [
-				"./src/helpers"
-			],
-			"@providers": [
-				"./src/providers"
-			],
-			"@services": [
-				"./src/services"
-			],
-			"@test": [
-				"./src/test"
-			]
-		},
-		"allowJs": false,
-		"alwaysStrict": true,
-		"exactOptionalPropertyTypes": true,
-		"noImplicitAny": true,
-		"noImplicitOverride": true,
-		"noImplicitThis": true,
-		"strictBindCallApply": true,
-		"strictFunctionTypes": true,
-		"strictNullChecks": true,
-		"baseUrl": "./"
-	},
-	"include": [
-		"src/**/*.ts",
-		"test/**/*.ts"
-	]
+    "compilerOptions": {
+        "module": "Node16",
+        "target": "ES2022",
+        "lib": ["ES2022"],
+        "sourceMap": true,
+        "rootDir": "src",
+        "strict": true /* enable all strict type-checking options */,
+        /* Additional Checks */
+        "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
+        "noFallthroughCasesInSwitch": true /* Report errors for fallthrough cases in switch statement. */,
+        "noUnusedParameters": true /* Report errors on unused parameters. */,
+        "noUnusedLocals": true /* Report errors on unused local variables. */,
+        "moduleResolution": "NodeNext" /* Specify module resolution strategy. */,
+        "forceConsistentCasingInFileNames": true /* Require consistent case for file names. */,
+        "skipLibCheck": true /* Skip type checking for built-in libraries. */,
+        "esModuleInterop": true /* Enable interop with ES Modules. */,
+        "paths": {
+            "@commands": ["./src/commands"],
+            "@constants": ["./src/constants"],
+            "@helpers": ["./src/helpers"],
+            "@providers": ["./src/providers"],
+            "@services": ["./src/services"],
+            "@test": ["./src/test"],
+            "@types": ["./src/types"]
+        },
+        "allowJs": false,
+        "alwaysStrict": true,
+        "exactOptionalPropertyTypes": true,
+        "noImplicitAny": true,
+        "noImplicitOverride": true,
+        "noImplicitThis": true,
+        "strictBindCallApply": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "baseUrl": "./"
+    },
+    "include": ["src/**/*.ts", "test/**/*.ts"]
 }

@@ -1,14 +1,14 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import { ORGANIZATION } from "../constants";
+import { Organization } from "@constants";
 import * as crypto from "crypto";
 
 export default class Common {
     private static debrickedDataPath = path.join(
-        ORGANIZATION.workspace,
-        ORGANIZATION.name,
-        ORGANIZATION.debricked_data_file,
+        Organization.workspace,
+        Organization.name,
+        Organization.debricked_data_file,
     );
 
     private static ensureDirectoryExists(filePath: string): void {

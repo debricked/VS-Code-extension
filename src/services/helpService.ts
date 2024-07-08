@@ -1,6 +1,5 @@
-import { ORGANIZATION } from "../constants";
-import { MESSAGE_STATUS } from "../constants/messages";
-import { DEBRICKED_CLI_COMMANDS } from "../constants/debricked_cli";
+import { Organization, MessageStatus } from "@constants";
+import { DebrickedCommands } from "@constants";
 import {
     StatusBarMessageHelper,
     Terminal,
@@ -14,7 +13,7 @@ export default class HelpService {
     static async help(goCliPath: string, seqToken: string) {
         try {
             const cmdParams = [];
-            const subCommand: any = DEBRICKED_CLI_COMMANDS.BASE_COMMAND;
+            const subCommand: any = DebrickedCommands.BASE_COMMAND;
 
             let selectedFlags: any;
             if (subCommand.command) {
@@ -28,12 +27,10 @@ export default class HelpService {
                 cmdParams.push(selectedFlags.flag);
             }
 
+            let flags =
+                DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
             let accessToken: string | undefined;
-            if (
-                selectedFlags &&
-                selectedFlags.flag ===
-                    DEBRICKED_CLI_COMMANDS.BASE_COMMAND.flags[0].flag
-            ) {
+            if (selectedFlags && selectedFlags.flag === flags[0].flag) {
                 accessToken = await AuthHelper.getAccessToken();
                 if (accessToken) {
                     cmdParams.push(accessToken);
@@ -42,37 +39,37 @@ export default class HelpService {
 
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(
-                    MESSAGE_STATUS.START,
-                    DEBRICKED_CLI_COMMANDS.HELP.cli_command,
+                    MessageStatus.START,
+                    DebrickedCommands.HELP.cli_command,
                 ),
             );
             Terminal.createAndUseTerminal(
-                DEBRICKED_CLI_COMMANDS.BASE_COMMAND.description,
+                DebrickedCommands.BASE_COMMAND.description,
                 `${goCliPath} ${cmdParams.join(" ")}`,
                 seqToken,
             );
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(
-                    MESSAGE_STATUS.COMPLETE,
-                    DEBRICKED_CLI_COMMANDS.HELP.cli_command,
+                    MessageStatus.COMPLETE,
+                    DebrickedCommands.HELP.cli_command,
                 ),
             );
         } catch (error: any) {
             StatusBarMessageHelper.showErrorMessage(
-                `${ORGANIZATION.name} - ${DEBRICKED_CLI_COMMANDS.HELP.cli_command} ${MESSAGE_STATUS.ERROR}: ${error.message}`,
+                `${Organization.name} - ${DebrickedCommands.HELP.cli_command} ${MessageStatus.ERROR}: ${error.message}`,
             );
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(
-                    MESSAGE_STATUS.ERROR,
-                    DEBRICKED_CLI_COMMANDS.HELP.cli_command,
+                    MessageStatus.ERROR,
+                    DebrickedCommands.HELP.cli_command,
                 ),
             );
-            Logger.logMessageByStatus(MESSAGE_STATUS.ERROR, error, seqToken);
+            Logger.logMessageByStatus(MessageStatus.ERROR, error, seqToken);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(
-                    MESSAGE_STATUS.FINISHED,
-                    DEBRICKED_CLI_COMMANDS.HELP.cli_command,
+                    MessageStatus.FINISHED,
+                    DebrickedCommands.HELP.cli_command,
                 ),
             );
         }

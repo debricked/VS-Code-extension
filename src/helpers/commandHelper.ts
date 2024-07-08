@@ -1,5 +1,5 @@
+import { Logger } from "@helpers";
 import { execFile } from "child_process";
-import Logger from "./loggerHelper";
 
 export default class Command {
     public static async executeCommand(

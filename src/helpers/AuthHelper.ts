@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import { MESSAGE, ORGANIZATION } from "@constants";
+import { Messages, Organization } from "@constants";
 
 export default class AuthHelper {
     /**
@@ -10,17 +10,17 @@ export default class AuthHelper {
      * @returns Promise<string | undefined>
      */
     static async getAccessToken(): Promise<string | undefined> {
-        if (!ORGANIZATION.workspace) {
-            throw new Error(MESSAGE.WS_NOT_FOND);
+        if (!Organization.workspace) {
+            throw new Error(Messages.WS_NOT_FOUND);
         }
 
         const debrickedFolder = path.join(
-            ORGANIZATION.workspace,
-            ORGANIZATION.name,
+            Organization.workspace,
+            Organization.name,
         );
         const tokenFilePath = path.join(
             debrickedFolder,
-            ORGANIZATION.access_token_file,
+            Organization.access_token_file,
         );
 
         // Ensure the debricked folder exists
@@ -39,7 +39,7 @@ export default class AuthHelper {
         if (!accessToken) {
             // Prompt the user to enter the access token
             accessToken = await vscode.window.showInputBox({
-                prompt: MESSAGE.ENTER_ACCESS_TOKEN,
+                prompt: Messages.ENTER_ACCESS_TOKEN,
                 ignoreFocusOut: true,
                 password: true, // To hide the input characters
             });
@@ -51,7 +51,7 @@ export default class AuthHelper {
                     JSON.stringify({ accessToken }, null, 2),
                 );
             } else {
-                throw new Error(MESSAGE.ACCESS_TOKEN_RQD);
+                throw new Error(Messages.ACCESS_TOKEN_RQD);
             }
         }
 

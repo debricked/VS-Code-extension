@@ -1,19 +1,18 @@
-import { ORGANIZATION } from "../constants";
-import { MESSAGE_STATUS } from "../constants/messages";
+import { MessageStatus, Organization } from "@constants";
 
 export default class StatusMessage {
     public static getStatusMessage(type: string, command: string): string {
         switch (type) {
-            case MESSAGE_STATUS.START:
-                return `${ORGANIZATION.name} - ${command} started.`;
-            case MESSAGE_STATUS.COMPLETE:
-                return `${ORGANIZATION.name} - ${command} completed.`;
-            case MESSAGE_STATUS.ERROR:
-                return `${ORGANIZATION.name} - ${command} encountered an error.`;
-            case MESSAGE_STATUS.FINISHED:
-                return `${ORGANIZATION.name} - ${command} finished.`;
+            case MessageStatus.START:
+                return `${Organization.name} - ${command} started.`;
+            case MessageStatus.COMPLETE:
+                return `${Organization.name} - ${command} completed.`;
+            case MessageStatus.ERROR:
+                return `${Organization.name} - ${command} encountered an error.`;
+            case MessageStatus.FINISHED:
+                return `${Organization.name} - ${command} finished.`;
             default:
-                return `${ORGANIZATION.name} - ${command} unknown status.`;
+                return `${Organization.name} - ${command} unknown status.`;
         }
     }
 }

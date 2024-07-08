@@ -1,5 +1,5 @@
+import { Logger } from "@helpers";
 import * as vscode from "vscode";
-import Logger from "./loggerHelper";
 
 export default class Terminal {
     public static createAndUseTerminal(

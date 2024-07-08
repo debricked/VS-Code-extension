@@ -1,9 +1,11 @@
+import { DebrickedCommandNode, DebrickedSubCommandNode, Flag } from "@types";
 import * as vscode from "vscode";
 
-export const DEBRICKED_CLI_COMMANDS: any = {
-    BASE_COMMAND: {
+export class DebrickedCommands {
+    static readonly BASE_COMMAND: DebrickedCommandNode = {
         label: "Debricked",
         command: "debricked.debricked",
+        cli_command: "",
         description: "debricked-cli",
         flags: [
             {
@@ -23,15 +25,17 @@ export const DEBRICKED_CLI_COMMANDS: any = {
                 description: "version for debricked",
             },
         ],
-    },
-    CALLGRAPH: {
+    };
+
+    static readonly CALLGRAPH: DebrickedCommandNode = {
         label: "Callgraph",
         command: "debricked.callgraph",
         cli_command: "callgraph",
         description:
             "Generate a static call graph for the given directory and subdirectories",
-    },
-    FILES: {
+    };
+
+    static readonly FILES: DebrickedCommandNode = {
         label: "Files",
         command: "debricked.files",
         cli_command: "files",
@@ -58,7 +62,7 @@ export const DEBRICKED_CLI_COMMANDS: any = {
                         label: "JSON",
                         flag: "-j",
                         description:
-                            'Print files in JSON format\nFormat:\n[\n{\n"manifestFile": "package.json",\n"lockFiles": [\n"yarn.lock"\n]\n}\n]',
+                            'Print files in JSON format\nFormat:\n[\n{\n"manifestFile": "package.json",\n"lockFiles": [\n"yarn.lock"\n]\n}]',
                     },
                     {
                         label: "Lockfile",
@@ -89,21 +93,24 @@ export const DEBRICKED_CLI_COMMANDS: any = {
                     "Debricked access token.\nRead more: https://portal.debricked.com/administration-47/how-do-i-generate-an-access-token-130",
             },
         ],
-    },
-    FINGERPRINT: {
+    };
+
+    static readonly FINGERPRINT: DebrickedCommandNode = {
         label: "Fingerprint",
         command: "debricked.fingerprint",
         cli_command: "fingerprint",
         description:
             "Fingerprints files to match against the Debricked knowledge base.",
-    },
-    HELP: {
+    };
+
+    static readonly HELP: DebrickedCommandNode = {
         label: "Help",
         command: "debricked.help",
         cli_command: "help",
         description: "Help about any command",
-    },
-    REPORT: {
+    };
+
+    static readonly REPORT: DebrickedCommandNode = {
         label: "Report",
         command: "debricked.report",
         cli_command: "report",
@@ -156,15 +163,17 @@ export const DEBRICKED_CLI_COMMANDS: any = {
                     "Debricked access token. Read more: https://portal.debricked.com/administration-47/how-do-i-generate-an-access-token-130",
             },
         ],
-    },
-    RESOLVE: {
+    };
+
+    static readonly RESOLVE: DebrickedCommandNode = {
         label: "Resolve",
         command: "debricked.resolve",
         cli_command: "resolve",
         description: "Resolve manifest files",
         report: "resolve",
-    },
-    SCAN: {
+    };
+
+    static readonly SCAN: DebrickedCommandNode = {
         label: "Scan",
         command: "debricked.scan",
         cli_command: "scan",
@@ -275,41 +284,83 @@ export const DEBRICKED_CLI_COMMANDS: any = {
                     "Debricked access token.\nRead more: https://portal.debricked.com/administration-47/how-do-i-generate-an-access-token-130",
             },
         ],
-    },
-};
+    };
 
-export interface DebrickedCommandNode {
-    label: string;
-    cli_command?: string;
-    command?: string;
-    description?: string;
-    sub_commands?: DebrickedCommandNode[];
+    static getAllCommands(): DebrickedCommandNode[] {
+        return [
+            DebrickedCommands.BASE_COMMAND,
+            DebrickedCommands.CALLGRAPH,
+            DebrickedCommands.FILES,
+            DebrickedCommands.FINGERPRINT,
+            DebrickedCommands.HELP,
+            DebrickedCommands.REPORT,
+            DebrickedCommands.RESOLVE,
+            DebrickedCommands.SCAN,
+        ];
+    }
+
+    static getCommand(commandName: string): DebrickedCommandNode | undefined {
+        const allCommands = this.getAllCommands();
+        for (const command of allCommands) {
+            if (command.label.toLowerCase() === commandName.toLowerCase()) {
+                return command;
+            }
+        }
+        return undefined;
+    }
+
+    static getSubCommand(
+        commandName: string,
+    ): DebrickedSubCommandNode | undefined {
+        const allCommands = this.getAllCommands();
+        for (const command of allCommands) {
+            if (command.sub_commands) {
+                for (const subCommand of command.sub_commands) {
+                    if (
+                        subCommand.label.toLowerCase() ===
+                        commandName.toLowerCase()
+                    ) {
+                        return subCommand;
+                    }
+                }
+            }
+        }
+        return undefined;
+    }
+
+    static getCommandSpecificFlags(commandName: string): Flag[] | undefined {
+        const command = this.getCommand(commandName);
+        return command?.flags || undefined;
+    }
 }
 
-export const ORGANIZATION: any = {
-    name: "debricked",
-    report: "debricked/reports",
-    log_file: "debricked.log",
-    workspace: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || "",
-    debricked_cli: "debricked",
-    access_token_file: "token.json",
-    debricked_data_file: "debricked_data.json",
-};
+export class Organization {
+    static readonly name = "debricked";
+    static readonly report = "debricked/reports";
+    static readonly log_file = "debricked.log";
+    static readonly workspace =
+        vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || "";
+    static readonly debricked_cli = "debricked";
+    static readonly access_token_file = "token.json";
+    static readonly debricked_data_file = "debricked_data.json";
 
-export const API_ENDPOINTS = {
-    BASE_URL: "https://staging.debricked.com",
-};
+    static getOrganizationInfo() {
+        return {
+            name: this.name,
+            report: this.report,
+            log_file: this.log_file,
+            workspace: this.workspace,
+            debricked_cli: this.debricked_cli,
+            access_token_file: this.access_token_file,
+            debricked_data_file: this.debricked_data_file,
+        };
+    }
+}
 
-export const DEBRICKED_COMMAND_TREE: DebrickedCommandNode = {
-    label: ORGANIZATION.name,
-    sub_commands: [],
-};
+export class ApiEndpoints {
+    static readonly BASE_URL = "https://staging.debricked.com";
 
-DEBRICKED_COMMAND_TREE.sub_commands?.push(DEBRICKED_CLI_COMMANDS.BASE_COMMAND);
-DEBRICKED_COMMAND_TREE.sub_commands?.push(DEBRICKED_CLI_COMMANDS.CALLGRAPH);
-DEBRICKED_COMMAND_TREE.sub_commands?.push(DEBRICKED_CLI_COMMANDS.FILES);
-DEBRICKED_COMMAND_TREE.sub_commands?.push(DEBRICKED_CLI_COMMANDS.FINGERPRINT);
-DEBRICKED_COMMAND_TREE.sub_commands?.push(DEBRICKED_CLI_COMMANDS.HELP);
-DEBRICKED_COMMAND_TREE.sub_commands?.push(DEBRICKED_CLI_COMMANDS.REPORT);
-DEBRICKED_COMMAND_TREE.sub_commands?.push(DEBRICKED_CLI_COMMANDS.RESOLVE);
-DEBRICKED_COMMAND_TREE.sub_commands?.push(DEBRICKED_CLI_COMMANDS.SCAN);
+    static getBaseUrl() {
+        return this.BASE_URL;
+    }
+}

@@ -1,16 +1,16 @@
 import * as fs from "fs";
 import * as path from "path";
-import { ORGANIZATION } from "../constants";
-import Common from "./commonHelper";
+import { Organization } from "@constants";
+import { Common } from "@helpers";
 
 export default class Logger {
     private static logDirPath = path.join(
-        ORGANIZATION.workspace,
-        ORGANIZATION.report,
+        Organization.workspace,
+        Organization.report,
     );
     private static logFilePath = path.join(
         Logger.logDirPath,
-        ORGANIZATION.log_file,
+        Organization.log_file,
     );
 
     public static async logMessage(message: string, seqToken?: string) {
