@@ -67,6 +67,7 @@
     <li><a href="#support">💬 Support</a></li>
     <li><a href="#acknowledgments">📢 Acknowledgments</a></li>
     <li><a href="#license">📝 License</a></li>
+    <li><a href="#social-media">📱 Social Media</a></li>
   </ol>
 </details>
 
@@ -172,6 +173,17 @@
 
 <h2 id="license">📝 License</h2>
 <p>This project is licensed under the <a href="https://github.com/debricked/VS-Code-extension/blob/main/LICENSE">MIT License</a>.</p>
+
+<h2 id="social-media">📱 Social Media</h2>
+<p>Follow us on:</p>
+<p>
+  <a href="https://twitter.com/debrickedab">
+    <img src="https://img.shields.io/badge/Twitter-00acee?logo=twitter&logoColor=white" />
+  </a>
+  <a href="https://www.linkedin.com/company/debricked">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white" />
+  </a>
+</p>
 
 <p>Thank you for visiting the <a href="https://github.com/debricked/VS-Code-extension">debricked VS Code extension</a>. We strive to make this project a valuable tool for developers and appreciate your interest and contributions. Here are a few final notes:</p>
 
