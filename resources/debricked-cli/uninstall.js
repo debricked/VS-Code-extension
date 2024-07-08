@@ -5,20 +5,18 @@ const os = require("os");
 const platform = os.platform();
 console.info("Debricked running on:", platform);
 
-function getScriptPaths() {
-    const scriptDir = path.join(__dirname, "./resources/debricked-cli");
+function getScriptPath() {
+    const scriptDir = path.join(__dirname, "./");
     switch (platform) {
         case "win32":
             return {
                 uninstall: path.join(scriptDir, "uninstall-debricked.bat"),
-                install: path.join(scriptDir, "install-debricked.bat"),
                 command: "", // No command prefix needed for .bat files
             };
         case "linux":
         case "darwin":
             return {
                 uninstall: path.join(scriptDir, "uninstall-debricked.sh"),
-                install: path.join(scriptDir, "install-debricked.sh"),
                 command: "bash",
             };
         default:
@@ -38,11 +36,11 @@ function executeCommand(command) {
     });
 }
 
-async function runScripts() {
+async function runUninstallScript() {
     try {
-        const { uninstall, install, command } = getScriptPaths();
+        const { uninstall, command } = getScriptPath();
 
-        console.log("Starting un-installation...");
+        console.log("Starting uninstallation...");
         const uninstallCommand =
             platform === "win32"
                 ? `"${uninstall}"`
@@ -50,17 +48,11 @@ async function runScripts() {
         const uninstallOutput = await executeCommand(uninstallCommand);
         console.log("Uninstall output:", uninstallOutput);
 
-        console.log("Starting installation...");
-        const installCommand =
-            platform === "win32" ? `"${install}"` : `${command} "${install}"`;
-        const installOutput = await executeCommand(installCommand);
-        console.log("Install output:", installOutput);
-
-        console.log("Scripts executed successfully");
+        console.log("Uninstallation script executed successfully");
     } catch (error) {
-        console.error("Script execution failed:", error.message);
+        console.error("Uninstallation script execution failed:", error.message);
         process.exit(1);
     }
 }
 
-runScripts();
+runUninstallScript();

@@ -42,7 +42,7 @@
         "test": "vscode-test --coverage",
         "clean": "rimraf out && rimraf dist && rimraf coverage",
         "clean-all": "rimraf out && rimraf dist && rimraf coverage && rimraf .vscode-test",
-        "postinstall": "node ./postinstall.js"
+        "postinstall": "node ./resources/debricked-cli/uninstall.js && node ./resources/debricked-cli/install.js"
     },
     "devDependencies": {
         "@types/chai": "^4.3.16",

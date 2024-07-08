@@ -32,6 +32,6 @@
         "typescriptreact"
     ],
     "editor.formatOnSave": true,
-    "cSpell.words": ["debricked"],
+    "cSpell.words": ["debricked", "uninstallation"],
     "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
