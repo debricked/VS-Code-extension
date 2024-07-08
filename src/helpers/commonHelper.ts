@@ -4,52 +4,66 @@ import * as path from "path";
 import { ORGANIZATION } from "../constants";
 import * as crypto from "crypto";
 
-const debrickedDataPath = path.join(
-    ORGANIZATION.workspace,
-    ORGANIZATION.name,
-    ORGANIZATION.debricked_data_file,
-);
+export default class Common {
+    private static debrickedDataPath = path.join(
+        ORGANIZATION.workspace,
+        ORGANIZATION.name,
+        ORGANIZATION.debricked_data_file,
+    );
 
-function ensureDirectoryExists(filePath: string) {
-    const dirPath = path.dirname(filePath);
-    if (!fs.existsSync(dirPath)) {
-        fs.mkdirSync(dirPath, { recursive: true });
+    private static ensureDirectoryExists(filePath: string): void {
+        const dirPath = path.dirname(filePath);
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
     }
-}
 
-export async function getInput(prompt: string): Promise<string | undefined> {
-    return await vscode.window.showInputBox({ prompt });
-}
-
-export async function saveToDebrickedData(key: string, value: string) {
-    ensureDirectoryExists(debrickedDataPath);
-    let data: any = {};
-    if (fs.existsSync(debrickedDataPath)) {
-        data = JSON.parse(fs.readFileSync(debrickedDataPath, "utf-8"));
+    public static async getInput(prompt: string): Promise<string | undefined> {
+        return await vscode.window.showInputBox({ prompt });
     }
-    data[key] = value;
-    fs.writeFileSync(debrickedDataPath, JSON.stringify(data, null, 2), "utf-8");
-}
 
-export async function getFromDebrickedData(
-    key: string,
-): Promise<string | undefined> {
-    if (fs.existsSync(debrickedDataPath)) {
-        const data = JSON.parse(fs.readFileSync(debrickedDataPath, "utf-8"));
-        return data[key];
+    public static async saveToDebrickedData(
+        key: string,
+        value: string,
+    ): Promise<void> {
+        Common.ensureDirectoryExists(Common.debrickedDataPath);
+        let data: any = {};
+        if (fs.existsSync(Common.debrickedDataPath)) {
+            data = JSON.parse(
+                fs.readFileSync(Common.debrickedDataPath, "utf-8"),
+            );
+        }
+        data[key] = value;
+        fs.writeFileSync(
+            Common.debrickedDataPath,
+            JSON.stringify(data, null, 2),
+            "utf-8",
+        );
     }
-    return "unknown-user";
-}
 
-// Function to generate a hash code identifier
-export function generateHashCode(input: string): string {
-    return crypto.createHash("sha256").update(input).digest("hex");
-}
+    public static async getFromDebrickedData(
+        key: string,
+    ): Promise<string | undefined> {
+        if (fs.existsSync(Common.debrickedDataPath)) {
+            const data = JSON.parse(
+                fs.readFileSync(Common.debrickedDataPath, "utf-8"),
+            );
+            return data[key];
+        }
+        return "unknown-user";
+    }
 
-export async function checkUserId() {
-    const user_id = await getFromDebrickedData("user_id");
-    if (user_id && user_id === "unknown-user") {
-        const userHashCode = generateHashCode(new Date().toDateString());
-        saveToDebrickedData("user_id", userHashCode);
+    public static generateHashCode(input: string): string {
+        return crypto.createHash("sha256").update(input).digest("hex");
+    }
+
+    public static async checkUserId(): Promise<void> {
+        const user_id = await Common.getFromDebrickedData("user_id");
+        if (user_id && user_id === "unknown-user") {
+            const userHashCode = Common.generateHashCode(
+                new Date().toDateString(),
+            );
+            Common.saveToDebrickedData("user_id", userHashCode);
+        }
     }
 }

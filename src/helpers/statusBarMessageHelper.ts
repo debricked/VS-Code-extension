@@ -1,14 +1,20 @@
 import * as vscode from "vscode";
 
-let statusBarMessage: vscode.Disposable | undefined;
+export default class StatusBarMessageHelper {
+    private static statusBarMessage: vscode.Disposable | undefined;
 
-export function setStatusBarMessage(message: string, timeout: number = 3000) {
-    if (statusBarMessage) {
-        statusBarMessage.dispose();
+    public static setStatusBarMessage(
+        message: string,
+        timeout: number = 3000,
+    ): void {
+        if (StatusBarMessageHelper.statusBarMessage) {
+            StatusBarMessageHelper.statusBarMessage.dispose();
+        }
+        StatusBarMessageHelper.statusBarMessage =
+            vscode.window.setStatusBarMessage(message, timeout);
     }
-    statusBarMessage = vscode.window.setStatusBarMessage(message, timeout);
-}
 
-export function showErrorMessage(message: string) {
-    vscode.window.showErrorMessage(message);
+    public static showErrorMessage(message: string): void {
+        vscode.window.showErrorMessage(message);
+    }
 }

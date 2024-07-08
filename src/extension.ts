@@ -1,10 +1,9 @@
 import * as vscode from "vscode";
 import { registerCommands } from "./commands";
-import { checkUserId } from "./helpers/commonHelper";
+import { Common } from "@helpers";
 
 export async function activate(context: vscode.ExtensionContext) {
-    checkUserId();
-
+    Common.checkUserId();
     registerCommands(context);
 }
 
