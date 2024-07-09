@@ -16,7 +16,7 @@ export default class AuthHelper {
 
         const debrickedFolder = path.join(
             Organization.workspace,
-            Organization.name,
+            Organization.debrickedFolder,
         );
         const tokenFilePath = path.join(
             debrickedFolder,

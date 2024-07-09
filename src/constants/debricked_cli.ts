@@ -336,11 +336,12 @@ export class DebrickedCommands {
 
 export class Organization {
     static readonly name = "debricked";
-    static readonly report = "debricked/reports";
+    static readonly debrickedFolder = `.${Organization.name}`;
+    static readonly report = `${Organization.debrickedFolder}/reports`;
     static readonly log_file = "debricked.log";
     static readonly workspace =
         vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || "";
-    static readonly debricked_cli = "debricked";
+    static readonly debricked_cli = Organization.name;
     static readonly access_token_file = "token.json";
     static readonly debricked_data_file = "debricked_data.json";
 

@@ -7,7 +7,7 @@ import * as crypto from "crypto";
 export default class Common {
     private static debrickedDataPath = path.join(
         Organization.workspace,
-        Organization.name,
+        Organization.debrickedFolder,
         Organization.debricked_data_file,
     );
 
