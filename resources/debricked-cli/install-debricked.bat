@@ -1,91 +1,121 @@
 @echo off
 setlocal enabledelayedexpansion
 
+:: Set log file path
+set "logFile=%TEMP%\debricked_install.log"
+
+:: Start logging
+echo Debricked CLI Installation started at %date% %time% > "%logFile%"
+
 :: Check for admin rights
-net session >nul 2>&1
-if %errorLevel% neq 0 (
-    echo This script needs to be run as an administrator.
-    powershell -Command "Start-Process cmd -Verb RunAs -ArgumentList '/c %~dpnx0'"
-    exit /b
-)
+call :check_admin || exit /b
 
-:: Define release version
+:: Define variables
 set "releaseVersion=v2.0.3"
-
-:: Determine the architecture
-if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
-    set "arch=x86_64"
-) else (
-    set "arch=i386"
-)
-
+call :set_architecture
 set "downloadUrl=https://github.com/debricked/cli/releases/download/%releaseVersion%/cli_windows_%arch%.tar.gz"
 set "destinationPath=%~dp0debricked-cli.tar.gz"
 set "extractPath=%~dp0cli"
 set "installPath=C:\Program Files\debricked"
 
-:: Download the file
-echo Downloading Debricked CLI from %downloadUrl%
-powershell -Command "Invoke-WebRequest -Uri '%downloadUrl%' -OutFile '%destinationPath%' -UseBasicParsing; if ($?) { exit 0 } else { exit 1 }"
-if %errorLevel% neq 0 (
-    echo Failed to download Debricked CLI
-    pause
-)
-
-:: Create the extract path if it doesn't exist
-if not exist "%extractPath%" (
-    mkdir "%extractPath%" || (
-        echo Failed to create extract path
-        pause
-    )
-)
-
-:: Extract the tar.gz file
-echo Extracting Debricked CLI to %extractPath% ...
-tar -xzf "%destinationPath%" -C "%extractPath%" || (
-    echo Failed to extract Debricked CLI
-    pause
-)
-
-:: Remove the tar.gz file
-del "%destinationPath%" || (
-    echo Failed to delete tar.gz file
-    pause
-)
-
-:: Create the install path if it doesn't exist
-if not exist "%installPath%" (
-    mkdir "%installPath%" || (
-        echo Failed to create install path
-        pause
-    )
-)
-
-:: Copy the extracted debricked.exe to the install path
-echo Installing Debricked CLI to %installPath% ...
-copy "%extractPath%\debricked.exe" "%installPath%\debricked.exe" /Y || (
-    echo Failed to copy Debricked CLI to install path
-    pause
-)
-
-:: Add the install path to the system PATH if not already present
-echo Adding Debricked CLI to system PATH...
-for /f "tokens=2*" %%A in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path') do set "currentPath=%%B"
-echo %currentPath% | find /i "%installPath%" > nul
-if errorlevel 1 (
-    setx /M PATH "%currentPath%;%installPath%" || (
-        echo Failed to add Debricked CLI to system PATH
-        pause
-    )
-)
-
-:: Clean up the extraction path
-rmdir /s /q "%extractPath%" || (
-    echo Failed to clean up extraction path
-    pause
-)
+:: Main installation process
+call :download_cli || exit /b
+call :extract_cli || exit /b
+call :install_cli || exit /b
+call :update_path || exit /b
+call :cleanup || exit /b
 
 echo Debricked(%releaseVersion%) CLI installation completed successfully.
-
-:: Exit the terminal
+echo See %logFile% for details.
 pause
+exit /b
+
+:: Functions
+:check_admin
+    net session >nul 2>&1
+    if %errorLevel% neq 0 (
+        echo This script needs to be run as an administrator.
+        echo ERROR: Script not run as administrator. >> "%logFile%"
+        powershell -Command "Start-Process cmd -Verb RunAs -ArgumentList '/c %~dpnx0'"
+        exit /b 1
+    )
+    echo Admin rights confirmed. >> "%logFile%"
+    exit /b 0
+
+:set_architecture
+    if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
+        set "arch=x86_64"
+    ) else (
+        set "arch=i386"
+    )
+    echo Architecture set to %arch%. >> "%logFile%"
+    exit /b 0
+
+:download_cli
+    echo Downloading Debricked CLI from %downloadUrl%
+    echo Downloading from %downloadUrl% >> "%logFile%"
+    powershell -Command "Invoke-WebRequest -Uri '%downloadUrl%' -OutFile '%destinationPath%' -UseBasicParsing; if ($?) { exit 0 } else { exit 1 }"
+    if %errorLevel% neq 0 (
+        echo Failed to download Debricked CLI
+        echo ERROR: Download failed. >> "%logFile%"
+        exit /b 1
+    )
+    echo Download successful. >> "%logFile%"
+    exit /b 0
+
+:extract_cli
+    if not exist "%extractPath%" mkdir "%extractPath%" || (
+        echo ERROR: Failed to create extract path. >> "%logFile%"
+        exit /b 1
+    )
+    echo Extracting Debricked CLI to %extractPath% ...
+    echo Extracting to %extractPath% >> "%logFile%"
+    tar -xzf "%destinationPath%" -C "%extractPath%" || (
+        echo ERROR: Extraction failed. >> "%logFile%"
+        exit /b 1
+    )
+    del "%destinationPath%" || (
+        echo ERROR: Failed to delete downloaded file. >> "%logFile%"
+        exit /b 1
+    )
+    echo Extraction successful. >> "%logFile%"
+    exit /b 0
+
+:install_cli
+    if not exist "%installPath%" mkdir "%installPath%" || (
+        echo ERROR: Failed to create install path. >> "%logFile%"
+        exit /b 1
+    )
+    echo Installing Debricked CLI to %installPath% ...
+    echo Installing to %installPath% >> "%logFile%"
+    copy "%extractPath%\debricked.exe" "%installPath%\debricked.exe" /Y || (
+        echo ERROR: Failed to copy executable. >> "%logFile%"
+        exit /b 1
+    )
+    echo Installation successful. >> "%logFile%"
+    exit /b 0
+
+:update_path
+    echo Adding Debricked CLI to system PATH...
+    echo Updating system PATH >> "%logFile%"
+    for /f "tokens=2*" %%A in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path') do set "currentPath=%%B"
+    echo %currentPath% | find /i "%installPath%" > nul
+    if errorlevel 1 (
+        setx /M PATH "%currentPath%;%installPath%" || (
+            echo ERROR: Failed to update PATH. >> "%logFile%"
+            exit /b 1
+        )
+        echo PATH updated successfully. >> "%logFile%"
+    ) else (
+        echo PATH already contains install directory. >> "%logFile%"
+    )
+    exit /b 0
+
+:cleanup
+    rmdir /s /q "%extractPath%" || (
+        echo ERROR: Failed to clean up extract path. >> "%logFile%"
+        exit /b 1
+    )
+    echo Cleanup successful. >> "%logFile%"
+    echo Debricked(%releaseVersion%) CLI installation completed successfully. >> "%logFile%"
+    exit /b 0
