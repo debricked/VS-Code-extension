@@ -1,4 +1,4 @@
-import { Flag } from "@types";
+import { Flag } from "../types";
 
 export interface DebrickedSubCommandNode {
     label: string;

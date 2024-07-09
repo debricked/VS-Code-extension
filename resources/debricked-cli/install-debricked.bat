@@ -11,7 +11,7 @@ echo Debricked CLI Installation started at %date% %time% > "%logFile%"
 call :check_admin || exit /b
 
 :: Define variables
-set "releaseVersion=v2.0.3"
+set "releaseVersion=release-v2"
 call :set_architecture
 set "downloadUrl=https://github.com/debricked/cli/releases/download/%releaseVersion%/cli_windows_%arch%.tar.gz"
 set "destinationPath=%~dp0debricked-cli.tar.gz"

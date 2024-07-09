@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import { Organization } from "@constants";
+import { Organization } from "../constants/index";
 import * as crypto from "crypto";
 
 export default class Common {

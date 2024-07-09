@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
-import { Organization } from "@constants";
-import { Common } from "@helpers";
+import { Organization } from "../constants/index";
+import { Common } from "../helpers";
 
 export default class Logger {
     private static logDirPath = path.join(

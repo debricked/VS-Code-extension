@@ -1,4 +1,4 @@
-import { Logger } from "@helpers";
+import { Logger } from "../helpers";
 import * as vscode from "vscode";
 
 export default class Terminal {

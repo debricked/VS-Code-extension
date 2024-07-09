@@ -1,4 +1,4 @@
-import { MessageStatus, Organization } from "@constants";
+import { MessageStatus, Organization } from "../constants/index";
 
 export default class StatusMessage {
     public static getStatusMessage(type: string, command: string): string {

@@ -1,10 +1,14 @@
-import { DebrickedCommands, MessageStatus, Organization } from "@constants";
+import {
+    DebrickedCommands,
+    MessageStatus,
+    Organization,
+} from "../constants/index";
 import {
     StatusBarMessageHelper,
     Terminal,
     StatusMessage,
     Logger,
-} from "@helpers";
+} from "../helpers";
 
 export default class BaseCommandService {
     static async baseCommand(goCliPath: string, seqToken: string) {

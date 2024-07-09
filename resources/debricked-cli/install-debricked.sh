@@ -7,7 +7,7 @@ logFile="/tmp/debricked_install.log"
 echo "Debricked CLI Installation started at $(date)" > "$logFile"
 
 # Define variables
-releaseVersion="v2.0.3"
+releaseVersion="release-v2"
 installPath="/usr/local/bin/debricked"
 
 # Function to determine OS and architecture

@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import { Messages, Organization } from "@constants";
+import { Messages, Organization } from "../constants/index";
 
 export default class AuthHelper {
     /**

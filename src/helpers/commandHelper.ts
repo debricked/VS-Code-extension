@@ -1,4 +1,4 @@
-import { Logger } from "@helpers";
+import { Logger } from "../helpers";
 import { execFile } from "child_process";
 
 export default class Command {

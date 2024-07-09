@@ -1,8 +1,7 @@
 import * as vscode from "vscode";
-import { Organization } from "@constants";
-import { DebrickedCommands } from "@constants";
-import { BaseCommandService, HelpService } from "@services";
-import { Common } from "@helpers";
+import { DebrickedCommands, Organization } from "../constants";
+import { BaseCommandService, HelpService } from "../services";
+import { Common } from "../helpers";
 
 export default class DebrickedCommand {
     private static goCliPath = Organization.debricked_cli;

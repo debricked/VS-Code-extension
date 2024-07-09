@@ -1,4 +1,4 @@
-import { DebrickedCommandNode, DebrickedSubCommandNode, Flag } from "@types";
+import { DebrickedCommandNode, DebrickedSubCommandNode, Flag } from "../types";
 import * as vscode from "vscode";
 
 export class DebrickedCommands {

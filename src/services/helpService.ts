@@ -1,5 +1,8 @@
-import { Organization, MessageStatus } from "@constants";
-import { DebrickedCommands } from "@constants";
+import {
+    Organization,
+    MessageStatus,
+    DebrickedCommands,
+} from "../constants/index";
 import {
     StatusBarMessageHelper,
     Terminal,
@@ -7,7 +10,7 @@ import {
     StatusMessage,
     AuthHelper,
     Logger,
-} from "@helpers";
+} from "../helpers";
 
 export default class HelpService {
     static async help(goCliPath: string, seqToken: string) {
