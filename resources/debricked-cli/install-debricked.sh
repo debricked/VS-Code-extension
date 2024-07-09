@@ -6,29 +6,19 @@ logFile="/tmp/debricked_install.log"
 # Start logging
 echo "Debricked CLI Installation started at $(date)" > "$logFile"
 
-# Define release version
+# Define variables
 releaseVersion="v2.0.3"
-
-# Function to check for root privileges
-check_root() {
-    if [ "$EUID" -ne 0 ]; then 
-        echo "This script needs to be run as root."
-        echo "ERROR: Script not run as root." >> "$logFile"
-        sudo "$0" "$@"
-        exit $?
-    fi
-    echo "Root privileges confirmed." >> "$logFile"
-}
+installPath="/usr/local/bin/debricked"
 
 # Function to determine OS and architecture
-set_os_and_arch() {
+determine_os_and_arch() {
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         os="linux"
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         os="macOS"
     else
         echo "Unsupported OS"
-        echo "ERROR: Unsupported OS: $OSTYPE" >> "$logFile"
+        echo "ERROR: Unsupported OS" >> "$logFile"
         exit 1
     fi
 
@@ -50,64 +40,44 @@ set_os_and_arch() {
             ;;
     esac
 
-    echo "OS set to $os, architecture set to $arch." >> "$logFile"
+    echo "$os" "$arch"
 }
 
-# Function to download CLI
-download_cli() {
-    downloadUrl="https://github.com/debricked/cli/releases/download/$releaseVersion/cli_${os}_${arch}.tar.gz"
-    echo "Downloading Debricked CLI from $downloadUrl"
-    echo "Downloading from $downloadUrl" >> "$logFile"
-    if ! curl -L $downloadUrl -o /tmp/debricked-cli.tar.gz; then
-        echo "Failed to download Debricked CLI"
-        echo "ERROR: Download failed." >> "$logFile"
+# Function to download and extract CLI
+download_and_extract() {
+    local downloadUrl="$1"
+    echo "Downloading and extracting Debricked CLI from $downloadUrl"
+    echo "Attempting to download from $downloadUrl" >> "$logFile"
+    if curl -L "$downloadUrl" | tar -xz debricked; then
+        echo "Download and extraction successful." >> "$logFile"
+    else
+        echo "Failed to download or extract Debricked CLI."
+        echo "ERROR: Download or extraction failed." >> "$logFile"
         exit 1
     fi
-    echo "Download successful." >> "$logFile"
-}
-
-# Function to extract CLI
-extract_cli() {
-    echo "Extracting Debricked CLI..."
-    echo "Extracting CLI" >> "$logFile"
-    if ! tar -xzf /tmp/debricked-cli.tar.gz -C /tmp; then
-        echo "Failed to extract Debricked CLI"
-        echo "ERROR: Extraction failed." >> "$logFile"
-        exit 1
-    fi
-    echo "Extraction successful." >> "$logFile"
 }
 
 # Function to install CLI
 install_cli() {
-    installPath="/usr/local/bin/debricked"
     echo "Installing Debricked CLI to $installPath ..."
-    echo "Installing to $installPath" >> "$logFile"
-    if ! mv /tmp/debricked $installPath; then
-        echo "Failed to install Debricked CLI"
+    echo "Attempting to install to $installPath" >> "$logFile"
+    if sudo mv debricked "$installPath" && sudo chmod +x "$installPath"; then
+        echo "Debricked CLI installed successfully."
+        echo "Installation successful." >> "$logFile"
+    else
+        echo "Failed to install Debricked CLI."
         echo "ERROR: Installation failed." >> "$logFile"
         exit 1
     fi
-    chmod +x $installPath
-    echo "Installation successful." >> "$logFile"
-}
-
-# Function to clean up
-cleanup() {
-    echo "Cleaning up..."
-    echo "Cleaning up" >> "$logFile"
-    rm /tmp/debricked-cli.tar.gz
-    echo "Cleanup successful." >> "$logFile"
 }
 
 # Main installation process
-check_root
-set_os_and_arch
-download_cli
-extract_cli
-install_cli
-cleanup
+read -r os arch < <(determine_os_and_arch)
+downloadUrl="https://github.com/debricked/cli/releases/download/$releaseVersion/cli_${os}_${arch}.tar.gz"
 
-echo "Debricked($releaseVersion) CLI installation completed successfully."
-echo "Debricked($releaseVersion) CLI installation completed successfully." >> "$logFile"
+download_and_extract "$downloadUrl"
+install_cli
+
+echo "Debricked($releaseVersion) CLI installation process completed."
+echo "Installation process completed at $(date)" >> "$logFile"
 echo "See $logFile for details."

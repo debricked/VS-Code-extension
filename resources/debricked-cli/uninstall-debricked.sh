@@ -9,17 +9,6 @@ echo "Debricked CLI Uninstallation started at $(date)" > "$logFile"
 # Define install path
 installPath="/usr/local/bin/debricked"
 
-# Function to check for root privileges
-check_root() {
-    if [ "$EUID" -ne 0 ]; then 
-        echo "This script needs to be run as root."
-        echo "ERROR: Script not run as root." >> "$logFile"
-        sudo "$0" "$@"
-        exit $?
-    fi
-    echo "Root privileges confirmed." >> "$logFile"
-}
-
 # Function to uninstall CLI
 uninstall_cli() {
     if [ -f "$installPath" ]; then
