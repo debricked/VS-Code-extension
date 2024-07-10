@@ -27,13 +27,31 @@ body:
       required: true
 
   - type: textarea
+    id: task
+    attributes:
+      label: Task
+      description: A clear and concise list of tasks.
+      placeholder: "A clear and concise list of tasks"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: A clear and concise list of Acceptance Criteria.
+      placeholder: "A clear and concise list of Acceptance Criteria"
+    validations:
+      required: true
+
+  - type: textarea
     id: motivation
     attributes:
       label: Motivation
       description: Explain why this feature is important and how it would benefit users.
       placeholder: "Why is this feature important? How would it benefit users?"
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: alternatives
