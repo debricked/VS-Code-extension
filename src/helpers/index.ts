@@ -8,14 +8,4 @@ import { Common } from "./commonHelper";
 import { Command } from "./commandHelper";
 import { FileHelper } from "./fileHelper";
 
-export {
-    AuthHelper,
-    StatusBarMessageHelper,
-    Terminal,
-    QuickPick,
-    StatusMessage,
-    Logger,
-    Common,
-    Command,
-    FileHelper,
-};
+export { AuthHelper, StatusBarMessageHelper, Terminal, QuickPick, StatusMessage, Logger, Common, Command, FileHelper };

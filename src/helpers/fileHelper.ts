@@ -11,14 +11,8 @@ export class FileHelper {
      * @param content The content to write to the file.
      * @returns The path to the stored file.
      */
-    public static async storeResultInFile(
-        fileName: string,
-        content: string,
-    ): Promise<string> {
-        const resultFolderPath = path.join(
-            Organization.workspace,
-            Organization.report,
-        );
+    public static async storeResultInFile(fileName: string, content: string): Promise<string> {
+        const resultFolderPath = path.join(Organization.workspace, Organization.report);
 
         if (!fs.existsSync(resultFolderPath)) {
             fs.mkdirSync(resultFolderPath);

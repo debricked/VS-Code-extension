@@ -14,14 +14,8 @@ export class AuthHelper {
             throw new Error(Messages.WS_NOT_FOUND);
         }
 
-        const debrickedFolder = path.join(
-            Organization.workspace,
-            Organization.debrickedFolder,
-        );
-        const tokenFilePath = path.join(
-            debrickedFolder,
-            Organization.access_token_file,
-        );
+        const debrickedFolder = path.join(Organization.workspace, Organization.debrickedFolder);
+        const tokenFilePath = path.join(debrickedFolder, Organization.access_token_file);
 
         // Ensure the debricked folder exists
         if (!fs.existsSync(debrickedFolder)) {
@@ -46,10 +40,7 @@ export class AuthHelper {
 
             if (accessToken) {
                 // Store the access token in the token.json file
-                fs.writeFileSync(
-                    tokenFilePath,
-                    JSON.stringify({ accessToken }, null, 2),
-                );
+                fs.writeFileSync(tokenFilePath, JSON.stringify({ accessToken }, null, 2));
             } else {
                 throw new Error(Messages.ACCESS_TOKEN_RQD);
             }

@@ -4,14 +4,8 @@ import { Organization } from "../constants/index";
 import { Common } from "../helpers";
 
 export class Logger {
-    private static logDirPath = path.join(
-        Organization.workspace,
-        Organization.report,
-    );
-    private static logFilePath = path.join(
-        Logger.logDirPath,
-        Organization.log_file,
-    );
+    private static logDirPath = path.join(Organization.workspace, Organization.report);
+    private static logFilePath = path.join(Logger.logDirPath, Organization.log_file);
 
     public static async logMessage(message: string, seqToken?: string) {
         if (!fs.existsSync(Logger.logDirPath)) {
@@ -26,11 +20,7 @@ export class Logger {
         fs.appendFileSync(Logger.logFilePath, logEntry, "utf-8");
     }
 
-    public static logMessageByStatus(
-        status: string,
-        message: string,
-        seqToken?: string,
-    ) {
+    public static logMessageByStatus(status: string, message: string, seqToken?: string) {
         Logger.logMessage(`[${status}] ${message}`, seqToken);
     }
 }

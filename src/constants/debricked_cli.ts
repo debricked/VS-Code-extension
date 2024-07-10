@@ -31,8 +31,7 @@ export class DebrickedCommands {
         label: "Callgraph",
         command: "debricked.callgraph",
         cli_command: "callgraph",
-        description:
-            "Generate a static call graph for the given directory and subdirectories",
+        description: "Generate a static call graph for the given directory and subdirectories",
     };
 
     static readonly FILES: DebrickedCommandNode = {
@@ -99,8 +98,7 @@ export class DebrickedCommands {
         label: "Fingerprint",
         command: "debricked.fingerprint",
         cli_command: "fingerprint",
-        description:
-            "Fingerprints files to match against the Debricked knowledge base.",
+        description: "Fingerprints files to match against the Debricked knowledge base.",
     };
 
     static readonly HELP: DebrickedCommandNode = {
@@ -131,8 +129,7 @@ export class DebrickedCommands {
                     {
                         label: "Email",
                         flag: "-e",
-                        description:
-                            "The email address that the report will be sent to",
+                        description: "The email address that the report will be sent to",
                     },
                 ],
             },
@@ -149,8 +146,7 @@ export class DebrickedCommands {
                     {
                         label: "Email",
                         flag: "-e",
-                        description:
-                            "The email address that the report will be sent to",
+                        description: "The email address that the report will be sent to",
                     },
                 ],
             },
@@ -190,14 +186,12 @@ export class DebrickedCommands {
             {
                 label: "Callgraph Generate Timeout",
                 flag: "--callgraph-generate-timeout",
-                description:
-                    "Set a timeout (in seconds) on call graph generation. (default 3600)",
+                description: "Set a timeout (in seconds) on call graph generation. (default 3600)",
             },
             {
                 label: "Callgraph Upload Timeout",
                 flag: "--callgraph-upload-timeout",
-                description:
-                    "Set a timeout (in seconds) on call graph upload. (default 600)",
+                description: "Set a timeout (in seconds) on call graph upload. (default 600)",
             },
             { label: "Commit", flag: "-c", description: "commit hash" },
             {
@@ -216,8 +210,7 @@ export class DebrickedCommands {
             {
                 label: "Integration",
                 flag: "-i",
-                description:
-                    'name of integration used to trigger scan. For example "GitHub Actions" (default "CLI")',
+                description: 'name of integration used to trigger scan. For example "GitHub Actions" (default "CLI")',
             },
             {
                 label: "JSON Path",
@@ -227,8 +220,7 @@ export class DebrickedCommands {
             {
                 label: "Min Fingerprint Content Length",
                 flag: "--min-fingerprint-content-length",
-                description:
-                    "Set minimum content length (in bytes) for files to fingerprint.",
+                description: "Set minimum content length (in bytes) for files to fingerprint.",
             },
             {
                 label: "No Resolve",
@@ -309,17 +301,12 @@ export class DebrickedCommands {
         return undefined;
     }
 
-    static getSubCommand(
-        commandName: string,
-    ): DebrickedSubCommandNode | undefined {
+    static getSubCommand(commandName: string): DebrickedSubCommandNode | undefined {
         const allCommands = this.getAllCommands();
         for (const command of allCommands) {
             if (command.sub_commands) {
                 for (const subCommand of command.sub_commands) {
-                    if (
-                        subCommand.label.toLowerCase() ===
-                        commandName.toLowerCase()
-                    ) {
+                    if (subCommand.label.toLowerCase() === commandName.toLowerCase()) {
                         return subCommand;
                     }
                 }
@@ -339,8 +326,7 @@ export class Organization {
     static readonly debrickedFolder = `.${Organization.name}`;
     static readonly report = `${Organization.debrickedFolder}/reports`;
     static readonly log_file = "debricked.log";
-    static readonly workspace =
-        vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || "";
+    static readonly workspace = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || "";
     static readonly debricked_cli = Organization.name;
     static readonly access_token_file = "token.json";
     static readonly debricked_data_file = "debricked_data.json";

@@ -1,17 +1,7 @@
 import { expect, sinon, goCliPath, seqToken } from "../setup";
 import { HelpService } from "../../services/helpService";
-import {
-    StatusBarMessageHelper,
-    Terminal,
-    QuickPick,
-    AuthHelper,
-    Logger,
-} from "../../helpers";
-import {
-    Organization,
-    MessageStatus,
-    DebrickedCommands,
-} from "../../constants";
+import { StatusBarMessageHelper, Terminal, QuickPick, AuthHelper, Logger } from "../../helpers";
+import { Organization, MessageStatus, DebrickedCommands } from "../../constants";
 import { Flag } from "../../types";
 
 describe("HelpService: Test Suite", () => {
@@ -23,15 +13,9 @@ describe("HelpService: Test Suite", () => {
     let getAccessTokenStub: sinon.SinonStub;
 
     before(() => {
-        setStatusBarMessageStub = sinon.stub(
-            StatusBarMessageHelper,
-            "setStatusBarMessage",
-        );
+        setStatusBarMessageStub = sinon.stub(StatusBarMessageHelper, "setStatusBarMessage");
         createAndUseTerminalStub = sinon.stub(Terminal, "createAndUseTerminal");
-        showErrorMessageStub = sinon.stub(
-            StatusBarMessageHelper,
-            "showErrorMessage",
-        );
+        showErrorMessageStub = sinon.stub(StatusBarMessageHelper, "showErrorMessage");
         logMessageByStatusStub = sinon.stub(Logger, "logMessageByStatus");
         showQuickPickStub = sinon.stub(QuickPick, "showQuickPick");
         getAccessTokenStub = sinon.stub(AuthHelper, "getAccessToken");
@@ -90,13 +74,7 @@ describe("HelpService: Test Suite", () => {
                 `${Organization.name} - ${DebrickedCommands.HELP.cli_command} ${MessageStatus.ERROR}: ${errorMessage}`,
             ),
         ).to.be.true;
-        expect(
-            logMessageByStatusStub.calledOnceWith(
-                MessageStatus.ERROR,
-                sinon.match.any,
-                seqToken,
-            ),
-        ).to.be.true;
+        expect(logMessageByStatusStub.calledOnceWith(MessageStatus.ERROR, sinon.match.any, seqToken)).to.be.true;
     });
 
     it("should not call AuthHelper.getAccessToken when the selected flag is not auth-related", async () => {

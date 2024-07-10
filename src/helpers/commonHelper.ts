@@ -22,32 +22,19 @@ export class Common {
         return await vscode.window.showInputBox({ prompt });
     }
 
-    public static async saveToDebrickedData(
-        key: string,
-        value: string,
-    ): Promise<void> {
+    public static async saveToDebrickedData(key: string, value: string): Promise<void> {
         Common.ensureDirectoryExists(Common.debrickedDataPath);
         let data: any = {};
         if (fs.existsSync(Common.debrickedDataPath)) {
-            data = JSON.parse(
-                fs.readFileSync(Common.debrickedDataPath, "utf-8"),
-            );
+            data = JSON.parse(fs.readFileSync(Common.debrickedDataPath, "utf-8"));
         }
         data[key] = value;
-        fs.writeFileSync(
-            Common.debrickedDataPath,
-            JSON.stringify(data, null, 2),
-            "utf-8",
-        );
+        fs.writeFileSync(Common.debrickedDataPath, JSON.stringify(data, null, 2), "utf-8");
     }
 
-    public static async getFromDebrickedData(
-        key: string,
-    ): Promise<string | undefined> {
+    public static async getFromDebrickedData(key: string): Promise<string | undefined> {
         if (fs.existsSync(Common.debrickedDataPath)) {
-            const data = JSON.parse(
-                fs.readFileSync(Common.debrickedDataPath, "utf-8"),
-            );
+            const data = JSON.parse(fs.readFileSync(Common.debrickedDataPath, "utf-8"));
             return data[key];
         }
         return "unknown-user";
@@ -60,9 +47,7 @@ export class Common {
     public static async checkUserId(): Promise<void> {
         const user_id = await Common.getFromDebrickedData("user_id");
         if (user_id && user_id === "unknown-user") {
-            const userHashCode = Common.generateHashCode(
-                new Date().toDateString(),
-            );
+            const userHashCode = Common.generateHashCode(new Date().toDateString());
             Common.saveToDebrickedData("user_id", userHashCode);
         }
     }
