@@ -1,33 +1,32 @@
 import { activate, deactivate } from "../extension";
 import * as vscode from "vscode";
-import sinon from "sinon";
+import { expect, sinon } from "./setup";
 
-describe("Extension : Test Suite", () => {
-    let expect: any;
+describe("Extension: Test Suite", () => {
     let context: vscode.ExtensionContext;
+    let activateFn: sinon.SinonSpy;
+    let deactivateFn: sinon.SinonSpy;
 
     before(async () => {
-        const chai = await import("chai");
-        chai.should();
-        expect = chai.expect;
-
-        context = {
-            subscriptions: [],
-        } as any;
+        activateFn = sinon.spy(activate);
+        deactivateFn = sinon.spy(deactivate);
     });
 
-    afterEach(() => {});
+    after(() => {
+        activateFn.resetHistory();
+        deactivateFn.resetHistory();
+    });
 
-    vscode.window.showInformationMessage("Start all tests.");
+    vscode.window.showInformationMessage("Debricked: Unit tests started");
 
-    it("activate : should run", () => {
-        let activateFn = sinon.spy(activate);
+    it("should activate the extension without errors", () => {
         activateFn(context);
+        expect(activateFn.calledOnce).to.be.true;
         expect(activateFn).to.be.a("function");
     });
 
-    it("deactivate : should not throw any errors", () => {
+    it("should deactivate the extension without errors", () => {
         expect(deactivate).to.not.throw();
-        expect(deactivate).to.be.a("function");
+        expect(deactivateFn).to.be.a("function");
     });
 });
