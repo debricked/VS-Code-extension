@@ -3,6 +3,8 @@ import sinon from "sinon";
 
 let expect: any;
 let context: vscode.ExtensionContext;
+const goCliPath = "debricked";
+const seqToken = "testToken";
 
 before(async () => {
     const chai = await import("chai");
@@ -14,4 +16,4 @@ before(async () => {
     } as any;
 });
 
-export { expect, context, sinon };
+export { expect, context, sinon, goCliPath, seqToken };
