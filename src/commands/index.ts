@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import DebrickedCommand from "./debrickedCommand";
+import { DebrickedCommand } from "./debrickedCommand";
 
 const commands = [DebrickedCommand.commands];
 

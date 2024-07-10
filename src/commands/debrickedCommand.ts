@@ -3,7 +3,7 @@ import { DebrickedCommands, Organization } from "../constants";
 import { BaseCommandService, HelpService } from "../services";
 import { Common } from "../helpers";
 
-export default class DebrickedCommand {
+export class DebrickedCommand {
     private static goCliPath = Organization.debricked_cli;
 
     public static async commands(context: vscode.ExtensionContext) {
