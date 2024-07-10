@@ -1,9 +1,11 @@
-/* eslint-disable indent */
+import { ApiEndpoints, DebrickedCommands, Organization } from "./debricked_cli";
+import { Messages } from "./messages";
+import { MessageStatus } from "./messageStatus";
 
-export const COMMANDS: any = {
-    HELLO_WORLD: 'debricked.helloWorld'
-};
-
-export const API_ENDPOINTS = {
-    BASE_URL: '/api/user'
+export {
+    ApiEndpoints,
+    DebrickedCommands,
+    Organization,
+    Messages,
+    MessageStatus,
 };

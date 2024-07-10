@@ -10,7 +10,9 @@
         ".vscodeignore": true,
         "package-lock.json": true,
         "tsconfig.json": true,
-        "LICENSE": true
+        "LICENSE": true,
+        "*.md": true,
+        ".github": true
     },
     "search.exclude": {
         "out": true,
@@ -29,5 +31,7 @@
         "typescript",
         "typescriptreact"
     ],
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "cSpell.words": ["CALLGRAPH", "debricked", "uninstallation"],
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

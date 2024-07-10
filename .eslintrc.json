@@ -5,26 +5,33 @@
         "ecmaVersion": 6,
         "sourceType": "module"
     },
-    "plugins": [
-        "@typescript-eslint"
-    ],
+    "plugins": ["@typescript-eslint"],
+    "extends": ["plugin:prettier/recommended"],
     "rules": {
         "@typescript-eslint/naming-convention": [
             "warn",
             {
                 "selector": "import",
-                "format": [ "camelCase", "PascalCase" ]
+                "format": ["camelCase", "PascalCase"]
             }
         ],
         "@typescript-eslint/semi": "warn",
         "curly": "warn",
         "eqeqeq": "warn",
         "no-throw-literal": "warn",
-        "semi": "off"
+        "semi": "off",
+        "no-multiple-empty-lines": [
+            "error",
+            {
+                "max": 1
+            }
+        ],
+        "max-len": [
+            "error",
+            {
+                "code": 900
+            }
+        ]
     },
-    "ignorePatterns": [
-        "out",
-        "dist",
-        "**/*.d.ts"
-    ]
+    "ignorePatterns": ["out", "dist", "**/*.d.ts"]
 }

@@ -1,5 +1,5 @@
 <h1 id="readme-top" align="center">
-  <img align="left" src="https://debricked.com/images/svg/debricked-by-opentext-logo.45934b2a88767a13cace55ad4ff77bb200093e9938c0cb9af97a3f5828b87f11.svg" alt="Debricked Logo">
+  <img align="left" src="./resources/assets/debricked-by-opentext-logo.png" alt="Debricked Logo">
   Debricked: VS Code Extension
 </h1>
 <br>
@@ -7,7 +7,7 @@
   <a style="text-decoration: none;" href="https://github.com/debricked/VS-Code-extension/actions/workflows/ci.yml">
     <img src="https://github.com/debricked/VS-Code-extension/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI">
   </a>
-  <a href="https://github.com/debricked/VS-Code-extension/actions/workflows/pages/pages-build-deployment">
+  <a style="text-decoration: none;" href="https://github.com/debricked/VS-Code-extension/actions/workflows/pages/pages-build-deployment">
     <img src="https://github.com/debricked/VS-Code-extension/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main" alt="pages-build-deployment">
   </a>
   <a href="https://github.com/debricked/VS-Code-extension/blob/main/LICENSE">
@@ -67,6 +67,7 @@
     <li><a href="#support">💬 Support</a></li>
     <li><a href="#acknowledgments">📢 Acknowledgments</a></li>
     <li><a href="#license">📝 License</a></li>
+    <li><a href="#social-media">📱 Social Media</a></li>
   </ol>
 </details>
 
@@ -172,6 +173,17 @@
 
 <h2 id="license">📝 License</h2>
 <p>This project is licensed under the <a href="https://github.com/debricked/VS-Code-extension/blob/main/LICENSE">MIT License</a>.</p>
+
+<h2 id="social-media">📱 Social Media</h2>
+<p>Follow us on:</p>
+<p>
+  <a href="https://twitter.com/debrickedab">
+    <img src="https://img.shields.io/badge/Twitter-00acee?logo=twitter&logoColor=white" />
+  </a>
+  <a href="https://www.linkedin.com/company/debricked">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white" />
+  </a>
+</p>
 
 <p>Thank you for visiting the <a href="https://github.com/debricked/VS-Code-extension">debricked VS Code extension</a>. We strive to make this project a valuable tool for developers and appreciate your interest and contributions. Here are a few final notes:</p>
 

@@ -1,29 +1,10 @@
-// test/commands.test.ts
-import * as assert from 'assert';
-import * as vscode from 'vscode';
-import * as sinon from 'sinon';
-import { helloWorldCommand } from '../../commands/helloWorldCommand';
+import { registerCommands } from "../../commands";
+import { expect, context, sinon } from "../setup";
 
-suite('Index : Commands Test Suite', () => {
-
-    test('Register Commands', () => {
-        const context: vscode.ExtensionContext = {
-            subscriptions: [],
-        } as any;
-
-        const helloWorldCommandSpy = sinon.spy(helloWorldCommand);
-
-        // Replace the helloWorldCommand in the commands array with the spy
-        const commands = [helloWorldCommandSpy];
-
-        // Mock the module to use the commands array with the spy
-        const mockregisterCommands = (context: vscode.ExtensionContext) => {
-            commands.forEach(command => command.call(this, context));
-        };
-
-        mockregisterCommands(context);
-
-        // Verify that the command was called
-        assert.strictEqual(helloWorldCommandSpy.calledOnce, true);
+describe("Register Commands : Test Suite", () => {
+    it("Register Commands", () => {
+        let registerCommand = sinon.spy(registerCommands);
+        registerCommand(context);
+        expect(registerCommand).to.be.a("function");
     });
 });

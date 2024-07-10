@@ -1,24 +1,32 @@
-// test/commands.test.ts
-import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { registerCommands } from '../commands';
-import { COMMANDS } from '../constants';
-suite('Extension : Commands Test Suite', () => {
-	vscode.window.showInformationMessage('Start all tests.');
+import { activate, deactivate } from "../extension";
+import * as vscode from "vscode";
+import { expect, sinon } from "./setup";
 
-	test('Register Commands', () => {
-		const context: vscode.ExtensionContext = {
-			subscriptions: [],
-		} as any;
+describe("Extension: Test Suite", () => {
+    let context: vscode.ExtensionContext;
+    let activateFn: sinon.SinonSpy;
+    let deactivateFn: sinon.SinonSpy;
 
-		registerCommands(context);
+    before(async () => {
+        activateFn = sinon.spy(activate);
+        deactivateFn = sinon.spy(deactivate);
+    });
 
-		for (const key in COMMANDS) {
-			if (Object.prototype.hasOwnProperty.call(COMMANDS, key)) {
-				assert.ok(vscode.commands.getCommands(true).then((list) => list.includes(COMMANDS[key])));
-			}
-		}
+    after(() => {
+        activateFn.resetHistory();
+        deactivateFn.resetHistory();
+    });
 
-	});
+    vscode.window.showInformationMessage("Debricked: Unit tests started");
 
+    it("should activate the extension without errors", () => {
+        activateFn(context);
+        expect(activateFn.calledOnce).to.be.true;
+        expect(activateFn).to.be.a("function");
+    });
+
+    it("should deactivate the extension without errors", () => {
+        expect(deactivate).to.not.throw();
+        expect(deactivateFn).to.be.a("function");
+    });
 });
