@@ -15,15 +15,6 @@
         "forceConsistentCasingInFileNames": true /* Require consistent case for file names. */,
         "skipLibCheck": true /* Skip type checking for built-in libraries. */,
         "esModuleInterop": true /* Enable interop with ES Modules. */,
-        "paths": {
-            "@commands": ["./src/commands"],
-            "@constants": ["./src/constants"],
-            "@helpers": ["./src/helpers"],
-            "@providers": ["./src/providers"],
-            "@services": ["./src/services"],
-            "@test": ["./src/test"],
-            "@types": ["./src/types"]
-        },
         "allowJs": false,
         "alwaysStrict": true,
         "exactOptionalPropertyTypes": true,
