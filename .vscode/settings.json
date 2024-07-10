@@ -12,7 +12,8 @@
         "tsconfig.json": true,
         "LICENSE": true,
         "*.md": true,
-        ".github": true
+        ".github": true,
+        ".prettierrc.json": true
     },
     "search.exclude": {
         "out": true,
@@ -25,12 +26,7 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "always"
     },
-    "eslint.validate": [
-        "javascript",
-        "javascriptreact",
-        "typescript",
-        "typescriptreact"
-    ],
+    "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
     "editor.formatOnSave": true,
     "cSpell.words": ["CALLGRAPH", "debricked", "uninstallation"],
     "editor.defaultFormatter": "esbenp.prettier-vscode"

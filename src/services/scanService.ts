@@ -20,8 +20,8 @@ export class ScanService {
 
             cmdParams.push(Organization.workspace);
 
-            let global_flags: Flag[] | undefined = DebrickedCommands.SCAN.global_flags;
-            let accessToken = await AuthHelper.getAccessToken();
+            const global_flags: Flag[] | undefined = DebrickedCommands.SCAN.global_flags;
+            const accessToken = await AuthHelper.getAccessToken();
 
             if (accessToken) {
                 if (global_flags && global_flags.length > 0) {

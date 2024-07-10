@@ -6,7 +6,7 @@
         "sourceType": "module"
     },
     "plugins": ["@typescript-eslint"],
-    "extends": ["plugin:prettier/recommended"],
+    "extends": ["plugin:@typescript-eslint/recommended"],
     "rules": {
         "@typescript-eslint/naming-convention": [
             "warn",
@@ -26,12 +26,7 @@
                 "max": 1
             }
         ],
-        "max-len": [
-            "error",
-            {
-                "code": 900
-            }
-        ]
+        "linebreak-style": ["error", "auto"]
     },
     "ignorePatterns": ["out", "dist", "**/*.d.ts"]
 }
