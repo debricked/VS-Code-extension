@@ -10,7 +10,7 @@ import {
     Logger,
 } from "../helpers";
 
-export default class BaseCommandService {
+export class BaseCommandService {
     static async baseCommand(goCliPath: string, seqToken: string) {
         try {
             StatusBarMessageHelper.setStatusBarMessage(

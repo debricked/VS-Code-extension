@@ -1,7 +1,7 @@
 import { Logger } from "../helpers";
 import * as vscode from "vscode";
 
-export default class Terminal {
+export class Terminal {
     public static createAndUseTerminal(
         description: string,
         command: string,

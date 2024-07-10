@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-export default class QuickPick {
+export class QuickPick {
     public static async showQuickPick<T extends vscode.QuickPickItem>(
         items: T[],
         placeHolder: string,

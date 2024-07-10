@@ -3,7 +3,7 @@ import * as path from "path";
 import { Organization } from "../constants/index";
 import { Common } from "../helpers";
 
-export default class Logger {
+export class Logger {
     private static logDirPath = path.join(
         Organization.workspace,
         Organization.report,

@@ -2,6 +2,7 @@ import {
     Organization,
     MessageStatus,
     DebrickedCommands,
+    Messages,
 } from "../constants/index";
 import {
     StatusBarMessageHelper,
@@ -12,7 +13,7 @@ import {
     Logger,
 } from "../helpers";
 
-export default class HelpService {
+export class HelpService {
     static async help(goCliPath: string, seqToken: string) {
         try {
             const cmdParams = [];
@@ -22,7 +23,7 @@ export default class HelpService {
             if (subCommand.command) {
                 selectedFlags = await QuickPick.showQuickPick(
                     subCommand.flags,
-                    "Select a flag to use (optional)",
+                    Messages.QUICK_PICK_FLAG,
                 );
             }
 

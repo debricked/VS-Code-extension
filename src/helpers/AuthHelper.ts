@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { Messages, Organization } from "../constants/index";
 
-export default class AuthHelper {
+export class AuthHelper {
     /**
      * Get access token
      * @param void

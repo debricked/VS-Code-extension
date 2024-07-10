@@ -1,5 +1,5 @@
 import { expect, sinon } from "../setup";
-import BaseCommandService from "../../services/baseCommandService";
+import { BaseCommandService } from "../../services/baseCommandService";
 import { StatusBarMessageHelper, Terminal, Logger } from "../../helpers";
 import {
     DebrickedCommands,

@@ -23,6 +23,11 @@
                 "command": "debricked.help",
                 "title": "Help about any command",
                 "category": "debricked"
+            },
+            {
+                "command": "debricked.scan",
+                "title": "Start a Debricked dependency scan",
+                "category": "debricked"
             }
         ]
     },

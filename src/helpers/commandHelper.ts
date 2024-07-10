@@ -1,7 +1,7 @@
 import { Logger } from "../helpers";
 import { execFile } from "child_process";
 
-export default class Command {
+export class Command {
     public static async executeCommand(
         cliPath: string,
         cliCommand: any[],

@@ -1,5 +1,5 @@
 import { expect, sinon, goCliPath, seqToken } from "../setup";
-import HelpService from "../../services/helpService";
+import { HelpService } from "../../services/helpService";
 import {
     StatusBarMessageHelper,
     Terminal,

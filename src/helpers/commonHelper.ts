@@ -4,7 +4,7 @@ import * as path from "path";
 import { Organization } from "../constants/index";
 import * as crypto from "crypto";
 
-export default class Common {
+export class Common {
     private static debrickedDataPath = path.join(
         Organization.workspace,
         Organization.debrickedFolder,

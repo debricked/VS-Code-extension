@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-export default class StatusBarMessageHelper {
+export class StatusBarMessageHelper {
     private static statusBarMessage: vscode.Disposable | undefined;
 
     public static setStatusBarMessage(
