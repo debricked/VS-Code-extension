@@ -23,6 +23,12 @@ export class ScanService {
                 StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.SCAN.cli_command),
             );
 
+            // const result = await Command.executeCommand(seqToken, cmdParams, true);
+            // await FileHelper.storeAndOpenFile(
+            //     DebrickedCommands.SCAN.report ? DebrickedCommands.SCAN.report : "",
+            //     result,
+            // );
+
             Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, seqToken, cmdParams, true);
 
             StatusBarMessageHelper.setStatusBarMessage(
