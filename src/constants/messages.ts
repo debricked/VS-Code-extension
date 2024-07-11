@@ -3,4 +3,6 @@ export class Messages {
     static readonly ACCESS_TOKEN_RQD = "Access token is required";
     static readonly WS_NOT_FOUND = "No workspace folder found";
     static readonly QUICK_PICK_FLAG = "Select a flag to use (optional)";
+    static readonly CMD_EXEC_WITH_ACCESS_TOKEN = "Executing command with access_token";
+    static readonly CMD_EXEC_WITHOUT_ACCESS_TOKEN = "Executing command without access_token";
 }

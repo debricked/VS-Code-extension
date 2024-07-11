@@ -1,4 +1,4 @@
-import { DebrickedCommands, Organization } from "../constants/index";
+import { DebrickedCommands, Messages, Organization } from "../constants/index";
 import { AuthHelper, Logger } from "../helpers";
 import * as vscode from "vscode";
 
@@ -18,11 +18,11 @@ export class Terminal {
                 cmdParams.push(flags[0].flag);
                 cmdParams.push(accessToken);
                 command = `${command} ${cmdParams.join(" ")}`;
-                Logger.logMessage(`Executing command with access_token: ${command}`, seqToken);
+                Logger.logMessage(Messages.CMD_EXEC_WITH_ACCESS_TOKEN, seqToken);
             }
         } else {
             command = `${command} ${cmdParams.join(" ")}`;
-            Logger.logMessage(`Executing command: ${command}`, seqToken);
+            Logger.logMessage(`${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: ${command}`, seqToken);
         }
 
         const terminal = vscode.window.createTerminal(description);

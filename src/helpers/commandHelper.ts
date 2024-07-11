@@ -1,4 +1,4 @@
-import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
+import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import { AuthHelper, Logger } from "../helpers";
 import { execFile } from "child_process";
 
@@ -15,11 +15,11 @@ export class Command {
             if (accessToken) {
                 cmdParams.push(flags[0].flag);
                 cmdParams.push(accessToken);
-                Logger.logMessage(`Executing command with access_token`, seqToken);
+                Logger.logMessage(Messages.CMD_EXEC_WITH_ACCESS_TOKEN, seqToken);
             }
         }
 
-        Logger.logMessage(`Command Execution started : ${cmdParams}`, seqToken);
+        Logger.logMessage(`${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: ${cmdParams.join(" ")}`, seqToken);
 
         return new Promise((resolve, reject) => {
             execFile(
