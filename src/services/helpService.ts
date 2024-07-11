@@ -16,7 +16,7 @@ export class HelpService {
                 cmdParams.push(selectedFlags.flag);
             }
 
-            let flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
+            const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
             let accessToken: string | undefined;
             if (selectedFlags && selectedFlags.flag === flags[0].flag) {
                 accessToken = await AuthHelper.getAccessToken();
