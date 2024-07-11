@@ -13,6 +13,23 @@
     "activationEvents": [],
     "main": "./dist/extension.js",
     "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "debricked",
+                    "title": "Debricked",
+                    "icon": "resources/assets/debricked-icon.svg"
+                }
+            ]
+        },
+        "views": {
+            "debricked": [
+                {
+                    "id": "debrickedCommands",
+                    "name": "Debricked"
+                }
+            ]
+        },
         "commands": [
             {
                 "command": "debricked.debricked",

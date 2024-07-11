@@ -1,4 +1,4 @@
-import { DebrickedCommandNode, DebrickedSubCommandNode, Flag } from "../types";
+import { DebrickedCommandNode, Flag } from "../types";
 import * as vscode from "vscode";
 
 export class DebrickedCommands {
@@ -43,7 +43,8 @@ export class DebrickedCommands {
         sub_commands: [
             {
                 label: "Find",
-                command: "find",
+                command: "debricked.files.find",
+                cli_command: "find",
                 description: "Find all dependency files in inputted path",
                 flags: [
                     {
@@ -117,7 +118,8 @@ export class DebrickedCommands {
         sub_commands: [
             {
                 label: "License",
-                command: "license",
+                command: "debricked.report.license",
+                cli_command: "license",
                 description: "Generate license report",
                 flags: [
                     {
@@ -135,7 +137,8 @@ export class DebrickedCommands {
             },
             {
                 label: "Vulnerability",
-                command: "vulnerability",
+                command: "debricked.report.vulnerability",
+                cli_command: "vulnerability",
                 description: "Generate vulnerability report",
                 flags: [
                     {
@@ -279,16 +282,7 @@ export class DebrickedCommands {
     };
 
     static getAllCommands(): DebrickedCommandNode[] {
-        return [
-            DebrickedCommands.BASE_COMMAND,
-            DebrickedCommands.CALLGRAPH,
-            DebrickedCommands.FILES,
-            DebrickedCommands.FINGERPRINT,
-            DebrickedCommands.HELP,
-            DebrickedCommands.REPORT,
-            DebrickedCommands.RESOLVE,
-            DebrickedCommands.SCAN,
-        ];
+        return [DebrickedCommands.BASE_COMMAND, DebrickedCommands.HELP, DebrickedCommands.SCAN];
     }
 
     static getCommand(commandName: string): DebrickedCommandNode | undefined {
@@ -301,7 +295,7 @@ export class DebrickedCommands {
         return undefined;
     }
 
-    static getSubCommand(commandName: string): DebrickedSubCommandNode | undefined {
+    static getSubCommand(commandName: string): DebrickedCommandNode | undefined {
         const allCommands = this.getAllCommands();
         for (const command of allCommands) {
             if (command.sub_commands) {
