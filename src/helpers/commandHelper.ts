@@ -4,7 +4,6 @@ import { execFile } from "child_process";
 
 export class Command {
     public static async executeCommand(
-        seqToken: string,
         cmdParams: string[] = [],
         accessTokenRequired: boolean = false,
     ): Promise<string> {
@@ -15,11 +14,11 @@ export class Command {
             if (accessToken) {
                 cmdParams.push(flags[0].flag);
                 cmdParams.push(accessToken);
-                Logger.logMessage(Messages.CMD_EXEC_WITH_ACCESS_TOKEN, seqToken);
+                Logger.logMessage(Messages.CMD_EXEC_WITH_ACCESS_TOKEN);
             }
         }
 
-        Logger.logMessage(`${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: ${cmdParams.join(" ")}`, seqToken);
+        Logger.logMessage(`${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: ${cmdParams.join(" ")}`);
 
         return new Promise((resolve, reject) => {
             execFile(
@@ -27,10 +26,10 @@ export class Command {
                 cmdParams,
                 (error: any, stdout: string | PromiseLike<string>, stderr: string | undefined) => {
                     if (error) {
-                        Logger.logMessageByStatus(MessageStatus.ERROR, error, seqToken);
+                        Logger.logMessageByStatus(MessageStatus.ERROR, error);
                         reject(new Error(stderr));
                     } else {
-                        Logger.logMessageByStatus(MessageStatus.FINISHED, error, seqToken);
+                        Logger.logMessageByStatus(MessageStatus.FINISHED, error);
                         resolve(stdout);
                     }
                 },

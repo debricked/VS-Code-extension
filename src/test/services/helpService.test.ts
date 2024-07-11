@@ -1,4 +1,4 @@
-import { expect, sinon, seqToken } from "../setup";
+import { expect, sinon } from "../setup";
 import { HelpService } from "../../services/helpService";
 import { StatusBarMessageHelper, Terminal, QuickPick, Logger, StatusMessage } from "../../helpers";
 import { Organization, MessageStatus, DebrickedCommands } from "../../constants";
@@ -34,17 +34,11 @@ describe("HelpService: Test Suite", () => {
         const selectedFlags = { flag: "-h" };
         showQuickPickStub.resolves(selectedFlags);
 
-        await HelpService.help(seqToken);
+        await HelpService.help();
 
         expect(setStatusBarMessageStub.callCount).to.equal(3);
-        expect(
-            createAndUseTerminalStub.calledOnceWith(
-                DebrickedCommands.BASE_COMMAND.description,
-                seqToken,
-                ["-h"],
-                false,
-            ),
-        ).to.be.true;
+        expect(createAndUseTerminalStub.calledOnceWith(DebrickedCommands.BASE_COMMAND.description, ["-h"], false)).to.be
+            .true;
         expect(showErrorMessageStub.notCalled).to.be.true;
         expect(logMessageByStatusStub.notCalled).to.be.true;
     });
@@ -53,7 +47,7 @@ describe("HelpService: Test Suite", () => {
         const errorMessage = "Test error";
         createAndUseTerminalStub.throws(new Error(errorMessage));
 
-        await HelpService.help(seqToken);
+        await HelpService.help();
 
         expect(setStatusBarMessageStub.callCount).to.equal(3);
         expect(
@@ -61,14 +55,14 @@ describe("HelpService: Test Suite", () => {
                 `${Organization.name} - ${DebrickedCommands.HELP.cli_command} ${MessageStatus.ERROR}: ${errorMessage}`,
             ),
         ).to.be.true;
-        expect(logMessageByStatusStub.calledOnceWith(MessageStatus.ERROR, sinon.match.any, seqToken)).to.be.true;
+        expect(logMessageByStatusStub.calledOnceWith(MessageStatus.ERROR, sinon.match.any)).to.be.true;
     });
 
     it("should call Terminal.createAndUseTerminal with the correct parameters", async () => {
         const selectedFlags = { flag: "-t" };
         showQuickPickStub.resolves(selectedFlags);
 
-        await HelpService.help(seqToken);
+        await HelpService.help();
 
         expect(setStatusBarMessageStub.callCount).to.equal(3);
     });
@@ -76,7 +70,7 @@ describe("HelpService: Test Suite", () => {
     it("should show error message if quick pick fails", async () => {
         showQuickPickStub.rejects(new Error("QuickPick failed"));
 
-        await HelpService.help(seqToken);
+        await HelpService.help();
 
         expect(
             setStatusBarMessageStub.calledWith(

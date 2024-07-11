@@ -7,5 +7,18 @@ import { Logger } from "./loggerHelper";
 import { Common } from "./commonHelper";
 import { Command } from "./commandHelper";
 import { FileHelper } from "./fileHelper";
+import { setSeqToken, getSeqToken } from "./globalStore";
 
-export { AuthHelper, StatusBarMessageHelper, Terminal, QuickPick, StatusMessage, Logger, Common, Command, FileHelper };
+export {
+    AuthHelper,
+    StatusBarMessageHelper,
+    Terminal,
+    QuickPick,
+    StatusMessage,
+    Logger,
+    Common,
+    Command,
+    FileHelper,
+    setSeqToken,
+    getSeqToken,
+};

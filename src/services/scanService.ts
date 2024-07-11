@@ -2,7 +2,7 @@ import { QuickPick, StatusBarMessageHelper, StatusMessage, Logger, Terminal } fr
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 
 export class ScanService {
-    static async scanService(seqToken: string) {
+    static async scanService() {
         try {
             const cmdParams = [];
             const subCommand: any = DebrickedCommands.SCAN;
@@ -29,7 +29,7 @@ export class ScanService {
             //     result,
             // );
 
-            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, seqToken, cmdParams, true);
+            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, true);
 
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
@@ -41,7 +41,7 @@ export class ScanService {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.SCAN.cli_command),
             );
-            Logger.logMessageByStatus(MessageStatus.ERROR, error, seqToken);
+            Logger.logMessageByStatus(MessageStatus.ERROR, error);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),

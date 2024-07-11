@@ -1,25 +1,28 @@
 import * as vscode from "vscode";
 import { DebrickedCommands } from "../constants/index";
 import { BaseCommandService, HelpService, ScanService } from "../services";
-import { Common } from "../helpers";
+import { Common, setSeqToken } from "../helpers";
 
 export class DebrickedCommand {
     public static async commands(context: vscode.ExtensionContext) {
         context.subscriptions.push(
-            vscode.commands.registerCommand(DebrickedCommands.BASE_COMMAND.command, async () =>
-                BaseCommandService.baseCommand(Common.generateHashCode(DebrickedCommands.BASE_COMMAND.command)),
-            ),
+            vscode.commands.registerCommand(DebrickedCommands.BASE_COMMAND.command, async () => {
+                setSeqToken(Common.generateHashCode(DebrickedCommands.BASE_COMMAND.command));
+                BaseCommandService.baseCommand();
+            }),
         );
         context.subscriptions.push(
-            vscode.commands.registerCommand(DebrickedCommands.HELP.command, async () =>
-                HelpService.help(Common.generateHashCode(DebrickedCommands.HELP.command)),
-            ),
+            vscode.commands.registerCommand(DebrickedCommands.HELP.command, async () => {
+                setSeqToken(Common.generateHashCode(DebrickedCommands.HELP.command));
+                HelpService.help();
+            }),
         );
 
         context.subscriptions.push(
-            vscode.commands.registerCommand(DebrickedCommands.SCAN.command, async () =>
-                ScanService.scanService(Common.generateHashCode(DebrickedCommands.SCAN.command)),
-            ),
+            vscode.commands.registerCommand(DebrickedCommands.SCAN.command, async () => {
+                setSeqToken(Common.generateHashCode(DebrickedCommands.SCAN.command));
+                ScanService.scanService();
+            }),
         );
 
         // Add file watcher for package.json
@@ -41,8 +44,8 @@ export class DebrickedCommand {
 
     static async runDebrickedScan(e: vscode.Uri) {
         if (e.path.endsWith("package.json")) {
-            const seqToken = Common.generateHashCode("package.json");
-            await ScanService.scanService(seqToken);
+            setSeqToken(Common.generateHashCode("package.json"));
+            await ScanService.scanService();
         }
     }
 }

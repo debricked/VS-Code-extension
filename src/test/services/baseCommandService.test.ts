@@ -28,23 +28,19 @@ describe("BaseCommandService: Test Suite", () => {
     });
 
     it("should run baseCommand without errors", async () => {
-        const seqToken = "testToken";
-
-        await BaseCommandService.baseCommand(seqToken);
+        await BaseCommandService.baseCommand();
 
         expect(setStatusBarMessageStub.callCount).to.equal(3);
-        expect(createAndUseTerminalStub.calledOnceWith(DebrickedCommands.BASE_COMMAND.description, seqToken)).to.be
-            .true;
+        expect(createAndUseTerminalStub.calledOnceWith(DebrickedCommands.BASE_COMMAND.description)).to.be.true;
         expect(showErrorMessageStub.notCalled).to.be.true;
         expect(logMessageByStatusStub.notCalled).to.be.true;
     });
 
     it("should handle errors in baseCommand", async () => {
-        const seqToken = "testToken";
         const errorMessage = "Test error";
         createAndUseTerminalStub.throws(new Error(errorMessage));
 
-        await BaseCommandService.baseCommand(seqToken);
+        await BaseCommandService.baseCommand();
 
         expect(setStatusBarMessageStub.callCount).to.equal(3);
         expect(
@@ -52,6 +48,6 @@ describe("BaseCommandService: Test Suite", () => {
                 `${Organization.name} - ${DebrickedCommands.HELP.cli_command} ${MessageStatus.ERROR}: ${errorMessage}`,
             ),
         ).to.be.true;
-        expect(logMessageByStatusStub.calledOnceWith(MessageStatus.ERROR, sinon.match.any, seqToken)).to.be.true;
+        expect(logMessageByStatusStub.calledOnceWith(MessageStatus.ERROR, sinon.match.any)).to.be.true;
     });
 });

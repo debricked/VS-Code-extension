@@ -2,12 +2,12 @@ import { DebrickedCommands, MessageStatus, Organization } from "../constants/ind
 import { StatusBarMessageHelper, Terminal, StatusMessage, Logger } from "../helpers";
 
 export class BaseCommandService {
-    static async baseCommand(seqToken: string) {
+    static async baseCommand() {
         try {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.HELP.cli_command),
             );
-            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, seqToken);
+            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description);
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.HELP.cli_command),
             );
@@ -18,7 +18,7 @@ export class BaseCommandService {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.HELP.cli_command),
             );
-            Logger.logMessageByStatus(MessageStatus.ERROR, error, seqToken);
+            Logger.logMessageByStatus(MessageStatus.ERROR, error);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.HELP.cli_command),

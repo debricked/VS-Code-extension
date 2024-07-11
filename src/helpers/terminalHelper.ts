@@ -5,7 +5,6 @@ import * as vscode from "vscode";
 export class Terminal {
     public static async createAndUseTerminal(
         description: string,
-        seqToken: string,
         cmdParams: string[] = [],
         accessTokenRequired: boolean = false,
     ): Promise<vscode.Terminal> {
@@ -18,11 +17,11 @@ export class Terminal {
                 cmdParams.push(flags[0].flag);
                 cmdParams.push(accessToken);
                 command = `${command} ${cmdParams.join(" ")}`;
-                Logger.logMessage(Messages.CMD_EXEC_WITH_ACCESS_TOKEN, seqToken);
+                Logger.logMessage(Messages.CMD_EXEC_WITH_ACCESS_TOKEN);
             }
         } else {
             command = `${command} ${cmdParams.join(" ")}`;
-            Logger.logMessage(`${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: ${command}`, seqToken);
+            Logger.logMessage(`${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: ${command}`);
         }
 
         const terminal = vscode.window.createTerminal(description);
