@@ -1,33 +1,20 @@
-import { ScanService } from "../../services";
-import {
-    QuickPick,
-    AuthHelper,
-    StatusBarMessageHelper,
-    StatusMessage,
-    Command,
-    FileHelper,
-    Logger,
-} from "../../helpers";
-import { DebrickedCommands, MessageStatus } from "../../constants/index";
-import { expect, sinon, goCliPath, seqToken } from "../setup";
+import { ScanService } from "../../services/scanService";
+import { QuickPick, StatusBarMessageHelper, StatusMessage, Terminal, Logger } from "../../helpers";
+import { DebrickedCommands, MessageStatus, Organization } from "../../constants";
+import { expect, sinon, seqToken } from "../setup";
 
 describe("ScanService Test Suite", () => {
     let sandbox: sinon.SinonSandbox;
-    let commandStub: sinon.SinonStub;
-    let accessTokenStub: sinon.SinonStub;
     let quickPickStub: sinon.SinonStub;
     let statusBarMessageHelperStub: sinon.SinonStub;
-    let fileHelperStub: sinon.SinonStub;
+    let terminalStub: sinon.SinonStub;
     let loggerStub: sinon.SinonStub;
 
     beforeEach(() => {
         sandbox = sinon.createSandbox();
-
-        commandStub = sandbox.stub(Command, "executeCommand").resolves("command output");
-        accessTokenStub = sandbox.stub(AuthHelper, "getAccessToken").resolves("testAccessToken");
         quickPickStub = sandbox.stub(QuickPick, "showQuickPick").resolves({ label: "Help" });
         statusBarMessageHelperStub = sandbox.stub(StatusBarMessageHelper, "setStatusBarMessage");
-        fileHelperStub = sandbox.stub(FileHelper, "storeAndOpenFile").resolves();
+        terminalStub = sandbox.stub(Terminal, "createAndUseTerminal");
         loggerStub = sandbox.stub(Logger, "logMessageByStatus");
     });
 
@@ -36,16 +23,13 @@ describe("ScanService Test Suite", () => {
     });
 
     it("should execute scan command successfully", async () => {
-        await ScanService.scanService(goCliPath, seqToken);
+        await ScanService.scanService(seqToken);
 
         expect(
             statusBarMessageHelperStub.calledWith(
                 StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.SCAN.cli_command),
             ),
         ).to.be.true;
-
-        expect(commandStub.calledOnce).to.be.true;
-        expect(fileHelperStub.calledOnce).to.be.true;
 
         expect(
             statusBarMessageHelperStub.calledWith(
@@ -58,46 +42,35 @@ describe("ScanService Test Suite", () => {
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
             ),
         ).to.be.true;
+
+        expect(loggerStub.notCalled).to.be.true;
     });
 
-    it("should handle errors during scan command execution", async () => {
-        const error = new Error("test error");
-        commandStub.rejects(error);
+    it("should include flags in command parameters", async () => {
+        await ScanService.scanService(seqToken);
 
-        await ScanService.scanService(goCliPath, seqToken);
-
-        expect(
-            statusBarMessageHelperStub.calledWith(
-                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.SCAN.cli_command),
-            ),
-        ).to.be.true;
-
-        expect(loggerStub.calledWith(MessageStatus.ERROR, error, seqToken)).to.be.true;
+        expect(terminalStub.calledOnce).to.be.true;
+        const cmdParams = terminalStub.firstCall.args[2];
+        expect(cmdParams).to.include("scan");
+        expect(cmdParams).to.include(Organization.workspace);
     });
 
-    it("should include access token and flags in command parameters", async () => {
-        await ScanService.scanService(goCliPath, seqToken);
+    it("should not include flags if none are selected", async () => {
+        quickPickStub.resolves(undefined);
 
-        expect(commandStub.calledOnce).to.be.true;
-        const cmdParams = commandStub.firstCall.args[1];
-        expect(cmdParams).to.include("-t");
-        expect(cmdParams).to.include("testAccessToken");
-    });
+        await ScanService.scanService(seqToken);
 
-    it("should not include access token if it is not available", async () => {
-        accessTokenStub.resolves(undefined);
-
-        await ScanService.scanService(goCliPath, seqToken);
-
-        expect(commandStub.calledOnce).to.be.true;
-        const cmdParams = commandStub.firstCall.args[1];
-        expect(cmdParams).to.not.include("testAccessToken");
+        expect(terminalStub.calledOnce).to.be.true;
+        const cmdParams = terminalStub.firstCall.args[2];
+        expect(cmdParams).to.include("scan");
+        expect(cmdParams).to.include(Organization.workspace);
+        expect(cmdParams).to.not.include("-h");
     });
 
     it("should show error message if quick pick fails", async () => {
         quickPickStub.rejects(new Error("QuickPick failed"));
 
-        await ScanService.scanService(goCliPath, seqToken);
+        await ScanService.scanService(seqToken);
 
         expect(
             statusBarMessageHelperStub.calledWith(

@@ -28,25 +28,23 @@ describe("BaseCommandService: Test Suite", () => {
     });
 
     it("should run baseCommand without errors", async () => {
-        const goCliPath = "path/to/cli";
         const seqToken = "testToken";
 
-        await BaseCommandService.baseCommand(goCliPath, seqToken);
+        await BaseCommandService.baseCommand(seqToken);
 
         expect(setStatusBarMessageStub.callCount).to.equal(3);
-        expect(createAndUseTerminalStub.calledOnceWith(DebrickedCommands.BASE_COMMAND.description, goCliPath, seqToken))
-            .to.be.true;
+        expect(createAndUseTerminalStub.calledOnceWith(DebrickedCommands.BASE_COMMAND.description, seqToken)).to.be
+            .true;
         expect(showErrorMessageStub.notCalled).to.be.true;
         expect(logMessageByStatusStub.notCalled).to.be.true;
     });
 
     it("should handle errors in baseCommand", async () => {
-        const goCliPath = "path/to/cli";
         const seqToken = "testToken";
         const errorMessage = "Test error";
         createAndUseTerminalStub.throws(new Error(errorMessage));
 
-        await BaseCommandService.baseCommand(goCliPath, seqToken);
+        await BaseCommandService.baseCommand(seqToken);
 
         expect(setStatusBarMessageStub.callCount).to.equal(3);
         expect(

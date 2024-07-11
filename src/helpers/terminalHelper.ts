@@ -1,4 +1,4 @@
-import { DebrickedCommands, Organization } from "constants/index";
+import { DebrickedCommands, Organization } from "../constants/index";
 import { AuthHelper, Logger } from "../helpers";
 import * as vscode from "vscode";
 

@@ -1,6 +1,6 @@
 import { DebrickedCommands } from "../constants/index";
 import * as vscode from "vscode";
-import { DebrickedCommandNode } from "types";
+import { DebrickedCommandNode } from "../types";
 
 export class DebrickedCommandsTreeDataProvider implements vscode.TreeDataProvider<DebrickedCommandNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<DebrickedCommandNode | undefined | null | void> =
