@@ -8,10 +8,14 @@
         ".gitignore": true,
         ".vscodeignore": true,
         "package-lock.json": true,
+        "tsconfig.json": true,
         "LICENSE": true,
         "*.md": true,
         ".github": true,
-        ".prettierrc.json": true
+        ".prettierrc.json": true,
+        ".eslintrc.json": true,
+        ".vscode-test.mjs": true,
+        "esbuild.js": true
     },
     "search.exclude": {
         "out": true,
