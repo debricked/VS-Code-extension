@@ -1,7 +1,8 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import { Organization } from "../constants/index";
+import { MessageStatus, Organization } from "../constants/index";
+import { Logger } from "./loggerHelper";
 
 export class FileHelper {
     /**
@@ -20,7 +21,7 @@ export class FileHelper {
 
         const filePath = path.join(resultFolderPath, fileName);
         fs.writeFileSync(filePath, content, "utf8");
-
+        Logger.logMessageByStatus(MessageStatus.INFO, `report saved in ${filePath}`);
         return filePath;
     }
 
@@ -28,10 +29,12 @@ export class FileHelper {
         // Open the file in a new text document
         const document = await vscode.workspace.openTextDocument(filePath);
         await vscode.window.showTextDocument(document);
+        Logger.logMessageByStatus(MessageStatus.INFO, `open document ${filePath}`);
     }
 
     public static async storeAndOpenFile(fileName: string, content: string) {
         const filePath = await FileHelper.storeResultInFile(fileName, content);
+        Logger.logMessageByStatus(MessageStatus.INFO, `store results in ${filePath}`);
         await FileHelper.openTextDocument(filePath);
     }
 }

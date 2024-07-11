@@ -25,6 +25,7 @@ export class DebrickedCommandsTreeDataProvider implements vscode.TreeDataProvide
         // Set tooltip to description
         if (element.description) {
             treeItem.tooltip = element.description;
+            treeItem.description = element.description;
         }
 
         return treeItem;

@@ -12,7 +12,7 @@ export class DebrickedCommands {
                 label: "Access Token",
                 flag: "-t",
                 description:
-                    "Debricked access token.\nRead more: https://portal.debricked.com/administration-47/how-do-i-generate-an-access-token-130",
+                    "Debricked access token. Read more: https://portal.debricked.com/administration-47/how-do-i-generate-an-access-token-130",
             },
             {
                 label: "Help",

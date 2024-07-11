@@ -1,8 +1,8 @@
 import { Organization, MessageStatus, DebrickedCommands, Messages } from "../constants/index";
-import { StatusBarMessageHelper, Terminal, QuickPick, StatusMessage, AuthHelper, Logger } from "../helpers";
+import { StatusBarMessageHelper, Terminal, QuickPick, StatusMessage, Logger } from "../helpers";
 
 export class HelpService {
-    static async help(goCliPath: string, seqToken: string) {
+    static async help(seqToken: string) {
         try {
             const cmdParams = [];
             const subCommand: any = DebrickedCommands.BASE_COMMAND;
@@ -12,16 +12,11 @@ export class HelpService {
                 selectedFlags = await QuickPick.showQuickPick(subCommand.flags, Messages.QUICK_PICK_FLAG);
             }
 
+            let accessTokenRequired: boolean = false;
             if (selectedFlags && selectedFlags.flag) {
-                cmdParams.push(selectedFlags.flag);
-            }
-
-            const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
-            let accessToken: string | undefined;
-            if (selectedFlags && selectedFlags.flag === flags[0].flag) {
-                accessToken = await AuthHelper.getAccessToken();
-                if (accessToken) {
-                    cmdParams.push(accessToken);
+                accessTokenRequired = selectedFlags.flag === "-t" ? true : false;
+                if (!accessTokenRequired) {
+                    cmdParams.push(selectedFlags.flag);
                 }
             }
 
@@ -30,8 +25,9 @@ export class HelpService {
             );
             Terminal.createAndUseTerminal(
                 DebrickedCommands.BASE_COMMAND.description,
-                `${goCliPath} ${cmdParams.join(" ")}`,
                 seqToken,
+                cmdParams,
+                accessTokenRequired,
             );
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.HELP.cli_command),

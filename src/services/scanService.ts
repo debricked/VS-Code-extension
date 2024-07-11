@@ -1,9 +1,8 @@
-import { QuickPick, AuthHelper, StatusBarMessageHelper, StatusMessage, Command, FileHelper, Logger } from "../helpers";
+import { QuickPick, StatusBarMessageHelper, StatusMessage, Logger, Terminal } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
-import { Flag } from "../types";
 
 export class ScanService {
-    static async scanService(goCliPath: string, seqToken: string) {
+    static async scanService(seqToken: string) {
         try {
             const cmdParams = [];
             const subCommand: any = DebrickedCommands.SCAN;
@@ -20,25 +19,12 @@ export class ScanService {
 
             cmdParams.push(Organization.workspace);
 
-            const global_flags: Flag[] | undefined = DebrickedCommands.SCAN.global_flags;
-            const accessToken = await AuthHelper.getAccessToken();
-
-            if (accessToken) {
-                if (global_flags && global_flags.length > 0) {
-                    cmdParams.push(global_flags[0].flag);
-                }
-
-                cmdParams.push(accessToken);
-            }
-
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.SCAN.cli_command),
             );
-            const result = await Command.executeCommand(goCliPath, cmdParams, seqToken);
-            await FileHelper.storeAndOpenFile(
-                DebrickedCommands.SCAN.report ? DebrickedCommands.SCAN.report : "",
-                result,
-            );
+
+            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, seqToken, cmdParams, true);
+
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
             );
