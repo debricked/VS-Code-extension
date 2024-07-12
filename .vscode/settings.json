@@ -13,7 +13,6 @@
         ".github": true,
         ".prettierrc.json": true,
         ".eslintrc.json": true,
-        ".vscode-test.mjs": true,
         "esbuild.js": true
     },
     "search.exclude": {

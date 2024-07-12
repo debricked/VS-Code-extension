@@ -24,7 +24,13 @@ export class Terminal {
             Logger.logMessage(`${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: ${command}`);
         }
 
-        const terminal = vscode.window.createTerminal(description);
+        let terminal: vscode.Terminal;
+        if (vscode.window.activeTerminal) {
+            terminal = vscode.window.activeTerminal;
+        } else {
+            terminal = vscode.window.createTerminal(description);
+        }
+
         terminal.sendText(command);
         terminal.show();
         return terminal;

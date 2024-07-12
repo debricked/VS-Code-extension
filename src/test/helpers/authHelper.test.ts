@@ -1,5 +1,5 @@
 import { Messages, Organization } from "../../constants/index";
-import { expect, sinon } from "../setup";
+import { expect, sinon, mockWorkspacePath } from "../setup";
 import proxyquire from "proxyquire";
 import path from "path";
 import fs from "fs";
@@ -9,12 +9,9 @@ describe("AuthHelper", () => {
     let fsStub: any;
     let vscodeStub: any;
     let originalWorkspace: string;
-    let mockWorkspacePath: string;
 
     beforeEach(() => {
         // Create a mock workspace in the current directory
-        mockWorkspacePath = path.join(__dirname, "../../", Organization.debrickedFolder);
-        console.log(mockWorkspacePath);
         if (!fs.existsSync(mockWorkspacePath)) {
             fs.mkdirSync(mockWorkspacePath);
         }

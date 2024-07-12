@@ -1,10 +1,13 @@
 import * as vscode from "vscode";
 import sinon from "sinon";
+import { Organization } from "../constants/index";
+import path from "path";
 
 let expect: any;
 let context: vscode.ExtensionContext;
 const goCliPath = "debricked";
 const seqToken = "testToken";
+const mockWorkspacePath = path.join(__dirname, "../../", Organization.debrickedFolder);
 
 before(async () => {
     const chai = await import("chai");
@@ -18,4 +21,4 @@ before(async () => {
     } as any;
 });
 
-export { expect, context, sinon, goCliPath, seqToken };
+export { expect, context, sinon, goCliPath, seqToken, mockWorkspacePath };
