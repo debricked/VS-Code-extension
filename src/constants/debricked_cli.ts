@@ -332,6 +332,12 @@ export class Organization {
     static readonly base_version = "0.0.0";
     static readonly extension_name = "vs-code-extension";
     static readonly debricked_command = "debrickedCommands";
+    static readonly install_bat = "install-debricked.bat";
+    static readonly install_sh = "install-debricked.sh";
+    static readonly bash = "bash";
+    static readonly os_win32 = "win32";
+    static readonly os_linux = "linux";
+    static readonly os_darwin = "darwin";
 
     static getOrganizationInfo() {
         return {

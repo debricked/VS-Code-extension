@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as os from "os";
 import { exec } from "child_process";
-import { MessageStatus, Organization } from "../constants/index";
+import { Messages, MessageStatus, Organization } from "../constants/index";
 import { Logger } from "../helpers";
 
 export class InstallHelper {
@@ -16,20 +16,20 @@ export class InstallHelper {
 
     private getScriptPath(): { install: string; command: string } {
         switch (this.platform) {
-            case "win32":
+            case Organization.os_win32:
                 return {
-                    install: path.join(this.scriptDir, "install-debricked.bat"),
+                    install: path.join(this.scriptDir, Organization.install_bat),
                     command: "", // No command prefix needed for .bat files
                 };
-            case "linux":
-            case "darwin":
+            case Organization.os_linux:
+            case Organization.os_darwin:
                 return {
-                    install: path.join(this.scriptDir, "install-debricked.sh"),
-                    command: "bash",
+                    install: path.join(this.scriptDir, Organization.install_sh),
+                    command: Organization.bash,
                 };
             default:
-                Logger.logMessageByStatus(MessageStatus.ERROR, `Unsupported operating system: ${this.platform}`);
-                throw new Error("Unsupported operating system");
+                Logger.logMessageByStatus(MessageStatus.ERROR, `${Messages.UNSUPPORTED_OS}: ${this.platform}`);
+                throw new Error(Messages.UNSUPPORTED_OS);
         }
     }
 
@@ -50,12 +50,11 @@ export class InstallHelper {
             const { install, command } = this.getScriptPath();
 
             Logger.logMessageByStatus(MessageStatus.INFO, `Starting installation...`);
-            const installCommand = this.platform === "win32" ? `"${install}"` : `${command} "${install}"`;
+            const installCommand = this.platform === Organization.os_win32 ? `"${install}"` : `${command} "${install}"`;
             const installOutput = await this.executeCommand(installCommand);
-            Logger.logMessageByStatus(MessageStatus.INFO, `Install output: ${installOutput}`);
-            Logger.logMessageByStatus(MessageStatus.INFO, "Installation script executed successfully");
+            Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}: ${installOutput}`);
         } catch (error) {
-            Logger.logMessageByStatus(MessageStatus.ERROR, `Installation script execution failed: ${error}`);
+            Logger.logMessageByStatus(MessageStatus.ERROR, `${Messages.INSTALLATION_ERROR}: ${error}`);
             process.exit(1);
         }
     }
