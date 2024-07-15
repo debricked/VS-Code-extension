@@ -326,6 +326,12 @@ export class Organization {
     static readonly debricked_cli = Organization.name;
     static readonly access_token_file = "token.json";
     static readonly debricked_data_file = "debricked_data.json";
+    static readonly debricked_installer = "resources/debricked-cli";
+    static readonly EXTENSION_VERSION_KEY = "extensionVersion";
+    static readonly IS_FIRST_ACTIVATION_KEY = "isFirstActivation";
+    static readonly base_version = "0.0.0";
+    static readonly extension_name = "vs-code-extension";
+    static readonly debricked_command = "debrickedCommands";
 
     static getOrganizationInfo() {
         return {

@@ -25,8 +25,9 @@ call :install_cli || exit /b
 call :cleanup || exit /b
 
 echo Debricked(%releaseVersion%) CLI installation completed successfully.
+debricked
 echo See %logFile% for details.
-pause
+timeout 10
 exit /b
 
 :: Functions
