@@ -22,7 +22,6 @@ set "installPath=C:\Program Files\debricked"
 call :download_cli || exit /b
 call :extract_cli || exit /b
 call :install_cli || exit /b
-call :update_path || exit /b
 call :cleanup || exit /b
 
 echo Debricked(%releaseVersion%) CLI installation completed successfully.
@@ -93,22 +92,6 @@ exit /b
         exit /b 1
     )
     echo Installation successful. >> "%logFile%"
-    exit /b 0
-
-:update_path
-    echo Adding Debricked CLI to system PATH...
-    echo Updating system PATH >> "%logFile%"
-    for /f "tokens=2*" %%A in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path') do set "currentPath=%%B"
-    echo %currentPath% | find /i "%installPath%" > nul
-    if errorlevel 1 (
-        setx /M PATH "%currentPath%;%installPath%" || (
-            echo ERROR: Failed to update PATH. >> "%logFile%"
-            exit /b 1
-        )
-        echo PATH updated successfully. >> "%logFile%"
-    ) else (
-        echo PATH already contains install directory. >> "%logFile%"
-    )
     exit /b 0
 
 :cleanup
