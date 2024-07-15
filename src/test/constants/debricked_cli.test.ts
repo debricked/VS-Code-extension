@@ -1,6 +1,7 @@
 import { sinon, expect } from "../setup";
 import * as vscode from "vscode";
 import { DebrickedCommands, Organization, ApiEndpoints } from "../../constants";
+import path from "path";
 
 describe("Debricked CLI: Test Suite", () => {
     let sandbox: sinon.SinonSandbox;
@@ -69,7 +70,7 @@ describe("Debricked CLI: Test Suite", () => {
                 name: "debricked",
                 report: ".debricked/reports",
                 log_file: "debricked.log",
-                workspace: "",
+                workspace: path.join(__dirname, "../../../"),
                 debricked_cli: "debricked",
                 access_token_file: "token.json",
                 debricked_data_file: "debricked_data.json",

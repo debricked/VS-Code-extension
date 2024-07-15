@@ -1,6 +1,6 @@
 import * as path from "path";
 import proxyquire from "proxyquire";
-import { expect, sinon } from "../setup";
+import { expect, mockWorkspacePath, sinon } from "../setup";
 import { Organization } from "../../constants/index";
 
 describe("FileHelper", () => {
@@ -12,10 +12,10 @@ describe("FileHelper", () => {
     let logMessageByStatusStub: sinon.SinonStub;
     let FileHelper: any;
 
-    const mockPath = `${Organization.debrickedFolder}/reports`;
+    const mockPath = "reports";
     const fileName = "testReport.txt";
     const content = "Test content";
-    const filePath = path.join(mockPath, fileName);
+    const filePath = path.join(mockWorkspacePath, mockPath, fileName);
 
     beforeEach(() => {
         fsExistsSyncStub = sinon.stub();

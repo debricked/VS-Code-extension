@@ -1,3 +1,4 @@
+import path from "path";
 import { DebrickedCommandNode, Flag } from "../types";
 import * as vscode from "vscode";
 
@@ -321,7 +322,7 @@ export class Organization {
     static readonly debrickedFolder = `.${Organization.name}`;
     static readonly report = `${Organization.debrickedFolder}/reports`;
     static readonly log_file = "debricked.log";
-    static readonly workspace = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || "";
+    static readonly workspace = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || path.join(__dirname, "../../");
     static readonly debricked_cli = Organization.name;
     static readonly access_token_file = "token.json";
     static readonly debricked_data_file = "debricked_data.json";

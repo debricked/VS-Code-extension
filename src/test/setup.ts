@@ -7,7 +7,7 @@ let expect: any;
 let context: vscode.ExtensionContext;
 const goCliPath = "debricked";
 const seqToken = "testToken";
-const mockWorkspacePath = path.join(__dirname, "../../", Organization.debrickedFolder);
+const mockWorkspacePath = path.join(Organization.workspace, Organization.debrickedFolder);
 
 before(async () => {
     const chai = await import("chai");

@@ -33,10 +33,11 @@ export class Common {
     }
 
     public static async getFromDebrickedData(key: string): Promise<string | undefined> {
-        if (fs.existsSync(Common.debrickedDataPath)) {
+        if (fs.existsSync(Common.debrickedDataPath) && key !== "") {
             const data = JSON.parse(fs.readFileSync(Common.debrickedDataPath, "utf-8"));
             return data[key];
         }
+
         return "unknown-user";
     }
 
