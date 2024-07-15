@@ -63,6 +63,10 @@ describe("Terminal", () => {
         expect(createTerminalStub.calledOnceWith(description)).to.be.true;
         expect(sendTextStub.calledOnceWith(`${Organization.debricked_cli} ${cmdParams.join(" ")}`)).to.be.true;
         expect(showStub.calledOnce).to.be.true;
-        expect(logMessageStub.calledOnceWith(Messages.CMD_EXEC_WITH_ACCESS_TOKEN)).to.be.true;
+        expect(
+            logMessageStub.calledOnceWith(
+                `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: ${Organization.debricked_cli} ${cmdParams.join(" ")}`,
+            ),
+        ).to.be.true;
     });
 });

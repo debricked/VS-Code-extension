@@ -219,6 +219,7 @@ export class DebrickedCommands {
                 label: "JSON Path",
                 flag: "-j",
                 description: "write upload result as json to provided path",
+                report: "scan-output.json",
             },
             {
                 label: "Min Fingerprint Content Length",

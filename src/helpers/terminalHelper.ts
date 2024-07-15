@@ -17,7 +17,7 @@ export class Terminal {
                 cmdParams.push(flags[0].flag);
                 cmdParams.push(accessToken);
                 command = `${command} ${cmdParams.join(" ")}`;
-                Logger.logMessage(Messages.CMD_EXEC_WITH_ACCESS_TOKEN);
+                Logger.logMessage(`${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: ${command}`);
             }
         } else {
             command = `${command} ${cmdParams.join(" ")}`;

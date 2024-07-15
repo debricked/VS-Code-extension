@@ -14,11 +14,11 @@ export class Command {
             if (accessToken) {
                 cmdParams.push(flags[0].flag);
                 cmdParams.push(accessToken);
-                Logger.logMessage(Messages.CMD_EXEC_WITH_ACCESS_TOKEN);
+                Logger.logMessage(`${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: ${cmdParams.join(" ")}`);
             }
+        } else {
+            Logger.logMessage(`${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: ${cmdParams.join(" ")}`);
         }
-
-        Logger.logMessage(`${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: ${cmdParams.join(" ")}`);
 
         return new Promise((resolve, reject) => {
             execFile(
