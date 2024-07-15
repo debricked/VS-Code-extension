@@ -17,8 +17,13 @@ set "downloadUrl=https://github.com/debricked/cli/releases/download/%releaseVers
 set "destinationPath=%~dp0debricked-cli.tar.gz"
 set "extractPath=%~dp0cli"
 set "installPath=C:\Program Files\debricked"
+set "exePath=%installPath%\debricked.exe"
 
 :: Main installation process
+call :remove_exe
+call :remove_install_dir
+call :remove_cli_folder
+
 call :download_cli || exit /b
 call :extract_cli || exit /b
 call :install_cli || exit /b
@@ -49,6 +54,49 @@ exit /b
         set "arch=i386"
     )
     echo Architecture set to %arch%. >> "%logFile%"
+    exit /b 0
+
+:remove_exe
+    if exist "%exePath%" (
+        echo Removing debricked.exe...
+        del /F /Q "%exePath%" 2>>"%logFile%" && (
+            echo debricked.exe removed successfully. >> "%logFile%"
+        ) || (
+            echo ERROR: Failed to remove debricked.exe. >> "%logFile%"
+        )
+    ) else (
+        echo WARNING: debricked.exe not found at %exePath% >> "%logFile%"
+    )
+    exit /b 0
+
+:remove_install_dir
+    if exist "%installPath%" (
+        dir /b "%installPath%" | findstr "^" >nul && (
+            echo WARNING: Install directory is not empty. Skipping removal. >> "%logFile%"
+        ) || (
+            echo Removing install directory...
+            rmdir "%installPath%" 2>>"%logFile%" && (
+                echo Install directory removed successfully. >> "%logFile%"
+            ) || (
+                echo ERROR: Failed to remove install directory. >> "%logFile%"
+            )
+        )
+    ) else (
+        echo WARNING: Install directory not found at %installPath% >> "%logFile%"
+    )
+    exit /b 0
+
+:remove_cli_folder
+    if exist "%extractPath%" (
+        echo Removing cli folder...
+        rmdir /S /Q "%extractPath%" 2>>"%logFile%" && (
+            echo cli folder removed successfully. >> "%logFile%"
+        ) || (
+            echo ERROR: Failed to remove cli folder. >> "%logFile%"
+        )
+    ) else (
+        echo WARNING: cli folder not found at %extractPath% >> "%logFile%"
+    )
     exit /b 0
 
 :download_cli
@@ -88,7 +136,7 @@ exit /b
     )
     echo Installing Debricked CLI to %installPath% ...
     echo Installing to %installPath% >> "%logFile%"
-    copy "%extractPath%\debricked.exe" "%installPath%\debricked.exe" /Y || (
+    copy "%extractPath%\debricked.exe" "%exePath%" /Y || (
         echo ERROR: Failed to copy executable. >> "%logFile%"
         exit /b 1
     )

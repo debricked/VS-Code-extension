@@ -3,7 +3,7 @@
     "displayName": "debricked",
     "description": "A fast and flexible software composition analysis VS Code Extension and CLI tool, given to you by Debricked.",
     "publisher": "debricked",
-    "version": "0.0.1",
+    "version": "0.0.0",
     "engines": {
         "vscode": "^1.90.0"
     },

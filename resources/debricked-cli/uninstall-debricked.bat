@@ -24,7 +24,7 @@ call :update_system_path
 echo Debricked CLI uninstallation completed successfully.
 echo See %logFile% for details.
 
-pause
+timeout 10
 exit /b
 
 :remove_exe
