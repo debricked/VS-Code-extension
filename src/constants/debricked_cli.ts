@@ -8,6 +8,14 @@ export class DebrickedCommands {
         command: "debricked.debricked",
         cli_command: "",
         description: "debricked-cli",
+        sub_commands: [
+            {
+                label: "Install",
+                command: "debricked.debricked.install",
+                cli_command: "install",
+                description: "Install Debricked-cli",
+            },
+        ],
         flags: [
             {
                 label: "Access Token",

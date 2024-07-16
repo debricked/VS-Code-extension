@@ -3,7 +3,8 @@ import sinon from "sinon";
 import { Organization } from "../constants/index";
 import path from "path";
 
-let expect: any;
+let expect: Chai.ExpectStatic;
+let assert: Chai.AssertStatic;
 let context: vscode.ExtensionContext;
 const goCliPath = "debricked";
 const seqToken = "testToken";
@@ -15,10 +16,10 @@ before(async () => {
     chai.should();
     chai.use(chaiAsPromised.default);
     expect = chai.expect;
-
+    assert = chai.assert;
     context = {
         subscriptions: [],
     } as any;
 });
 
-export { expect, context, sinon, goCliPath, seqToken, mockWorkspacePath };
+export { expect, context, sinon, goCliPath, seqToken, mockWorkspacePath, assert };

@@ -41,6 +41,11 @@
                 "category": "debricked"
             },
             {
+                "command": "debricked.debricked.install",
+                "title": "Install Debricked-cli",
+                "category": "debricked"
+            },
+            {
                 "command": "debricked.help",
                 "title": "Help about any command",
                 "category": "debricked"

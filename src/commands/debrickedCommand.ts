@@ -7,20 +7,36 @@ export class DebrickedCommand {
     public static async commands(context: vscode.ExtensionContext) {
         context.subscriptions.push(
             vscode.commands.registerCommand(DebrickedCommands.BASE_COMMAND.command, async () => {
-                setSeqToken(Common.generateHashCode(DebrickedCommands.BASE_COMMAND.command));
-                BaseCommandService.baseCommand();
+                BaseCommandService.baseCommand(context);
             }),
         );
+
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
+                DebrickedCommands.BASE_COMMAND.sub_commands
+                    ? DebrickedCommands.BASE_COMMAND.sub_commands[0].command
+                    : "",
+                async () => {
+                    setSeqToken(
+                        Common.generateHashCode(
+                            DebrickedCommands.BASE_COMMAND.sub_commands
+                                ? DebrickedCommands.BASE_COMMAND.sub_commands[0].command
+                                : "",
+                        ),
+                    );
+                    BaseCommandService.installCommand(context);
+                },
+            ),
+        );
+
         context.subscriptions.push(
             vscode.commands.registerCommand(DebrickedCommands.HELP.command, async () => {
-                setSeqToken(Common.generateHashCode(DebrickedCommands.HELP.command));
                 HelpService.help();
             }),
         );
 
         context.subscriptions.push(
             vscode.commands.registerCommand(DebrickedCommands.SCAN.command, async () => {
-                setSeqToken(Common.generateHashCode(DebrickedCommands.SCAN.command));
                 ScanService.scanService();
             }),
         );
@@ -28,24 +44,17 @@ export class DebrickedCommand {
         // Add file watcher for package.json
         const watcher = vscode.workspace.createFileSystemWatcher("**/package.json");
         watcher.onDidChange(async (e) => {
-            await DebrickedCommand.runDebrickedScan(e);
+            await ScanService.runDebrickedScan(e);
         });
 
         watcher.onDidCreate(async (e) => {
-            await DebrickedCommand.runDebrickedScan(e);
+            await ScanService.runDebrickedScan(e);
         });
 
         watcher.onDidDelete(async (e) => {
-            await DebrickedCommand.runDebrickedScan(e);
+            await ScanService.runDebrickedScan(e);
         });
 
         context.subscriptions.push(watcher);
-    }
-
-    static async runDebrickedScan(e: vscode.Uri) {
-        if (e.path.endsWith("package.json")) {
-            setSeqToken(Common.generateHashCode("package.json"));
-            await ScanService.scanService();
-        }
     }
 }

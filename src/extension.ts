@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
-import { Common, InstallHelper } from "./helpers";
+import { Common, setSeqToken } from "./helpers";
 import { registerCommands } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
-import { Organization } from "./constants/index";
+import { DebrickedCommands, Organization } from "./constants/index";
+import { BaseCommandService } from "services";
 
 export async function activate(context: vscode.ExtensionContext) {
     Common.checkUserId();
@@ -11,7 +12,7 @@ export async function activate(context: vscode.ExtensionContext) {
     const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
     vscode.window.registerTreeDataProvider(Organization.debricked_command, debCommandsProvider);
 
-    const currentVersion = getCurrentExtensionVersion();
+    const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
     const storedVersion = context.globalState.get<string>(
         Organization.EXTENSION_VERSION_KEY,
         Organization.base_version,
@@ -19,18 +20,16 @@ export async function activate(context: vscode.ExtensionContext) {
     const isFirstActivation = context.globalState.get<boolean>(Organization.IS_FIRST_ACTIVATION_KEY, true);
 
     if (currentVersion !== storedVersion || isFirstActivation) {
-        const installer = new InstallHelper();
-        installer.runInstallScript().then(() => {
-            context.globalState.update(Organization.IS_FIRST_ACTIVATION_KEY, false);
-            context.globalState.update(Organization.EXTENSION_VERSION_KEY, currentVersion);
-        });
+        setSeqToken(
+            Common.generateHashCode(
+                DebrickedCommands.BASE_COMMAND.sub_commands
+                    ? DebrickedCommands.BASE_COMMAND.sub_commands[0].command
+                    : "",
+            ),
+        );
+        BaseCommandService.installCommand(context);
     }
 }
 
 // This method is called when your extension is deactivated
 export function deactivate() {}
-
-function getCurrentExtensionVersion(): string {
-    const extension = vscode.extensions.getExtension(`${Organization.name}.${Organization.extension_name}`);
-    return extension ? extension.packageJSON.version : Organization.base_version;
-}

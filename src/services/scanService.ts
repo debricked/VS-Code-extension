@@ -1,6 +1,8 @@
 import { QuickPick, StatusBarMessageHelper, StatusMessage, Logger, Terminal, Command, FileHelper } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import { Flag } from "../types";
+import * as vscode from "vscode";
+import { Common, setSeqToken } from "../helpers";
 
 export class ScanService {
     static async scanService() {
@@ -47,6 +49,13 @@ export class ScanService {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
             );
+        }
+    }
+
+    static async runDebrickedScan(e: vscode.Uri) {
+        if (e.path.endsWith("package.json")) {
+            setSeqToken(Common.generateHashCode("package.json"));
+            await ScanService.scanService();
         }
     }
 }

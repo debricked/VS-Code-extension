@@ -52,7 +52,8 @@ export class InstallHelper {
             Logger.logMessageByStatus(MessageStatus.INFO, `Starting installation...`);
             const installCommand = this.platform === Organization.os_win32 ? `"${install}"` : `${command} "${install}"`;
             const installOutput = await this.executeCommand(installCommand);
-            Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}: ${installOutput}`);
+            Logger.logMessageByStatus(MessageStatus.INFO, `${installOutput}`);
+            Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}`);
         } catch (error) {
             Logger.logMessageByStatus(MessageStatus.ERROR, `${Messages.INSTALLATION_ERROR}: ${error}`);
             process.exit(1);
