@@ -1,14 +1,41 @@
 #!/bin/bash
 
 # Set log file path
-logFile="/tmp/debricked_install.log"
+logFile="/debricked_install.log"
 
 # Start logging
-echo "Debricked CLI Installation started at $(date)" > "$logFile"
+echo "INFO: Debricked CLI Installation started at $(date)" > "$logFile"
 
 # Define variables
 releaseVersion="release-v2"
 installPath="/usr/local/bin/debricked"
+
+
+# Function to uninstall CLI
+uninstall_cli() {
+    if [ -f "$installPath" ]; then
+        echo "INFO: Uninstalling Debricked CLI from $installPath ..."
+        echo "WARNING: Attempting to uninstall from $installPath" >> "$logFile"
+        if sudo rm "$installPath"; then
+            echo "INFO: Debricked CLI uninstalled successfully."
+            echo "INFO: Uninstallation successful." >> "$logFile"
+        else
+            echo "ERROR: Failed to uninstall Debricked CLI."
+            echo "ERROR: Uninstallation failed." >> "$logFile"
+            exit 1
+        fi
+    else
+        echo "WARNING: Debricked CLI is not installed at $installPath."
+        echo "WARNING: CLI not found at $installPath. No action taken." >> "$logFile"
+    fi
+}
+
+# Main uninstallation process
+check_root
+uninstall_cli
+
+echo "INFO: Debricked CLI uninstallation process completed."
+echo "INFO: Uninstallation process completed at $(date)" >> "$logFile"
 
 # Function to determine OS and architecture
 determine_os_and_arch() {
@@ -17,7 +44,7 @@ determine_os_and_arch() {
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         os="macOS"
     else
-        echo "Unsupported OS"
+        echo "ERROR: Unsupported OS"
         echo "ERROR: Unsupported OS" >> "$logFile"
         exit 1
     fi
@@ -34,7 +61,7 @@ determine_os_and_arch() {
             arch="i386"
             ;;
         *)
-            echo "Unsupported architecture: $arch"
+            echo "ERROR: Unsupported architecture: $arch"
             echo "ERROR: Unsupported architecture: $arch" >> "$logFile"
             exit 1
             ;;
@@ -46,12 +73,12 @@ determine_os_and_arch() {
 # Function to download and extract CLI
 download_and_extract() {
     local downloadUrl="$1"
-    echo "Downloading and extracting Debricked CLI from $downloadUrl"
-    echo "Attempting to download from $downloadUrl" >> "$logFile"
+    echo "INFO: Downloading and extracting Debricked CLI from $downloadUrl"
+    echo "INFO: Attempting to download from $downloadUrl" >> "$logFile"
     if curl -L "$downloadUrl" | tar -xz debricked; then
-        echo "Download and extraction successful." >> "$logFile"
+        echo "INFO: Download and extraction successful." >> "$logFile"
     else
-        echo "Failed to download or extract Debricked CLI."
+        echo "ERROR: Failed to download or extract Debricked CLI."
         echo "ERROR: Download or extraction failed." >> "$logFile"
         exit 1
     fi
@@ -59,13 +86,13 @@ download_and_extract() {
 
 # Function to install CLI
 install_cli() {
-    echo "Installing Debricked CLI to $installPath ..."
-    echo "Attempting to install to $installPath" >> "$logFile"
+    echo "INFO: Installing Debricked CLI to $installPath ..."
+    echo "INFO: Attempting to install to $installPath" >> "$logFile"
     if sudo mv debricked "$installPath" && sudo chmod +x "$installPath"; then
-        echo "Debricked CLI installed successfully."
-        echo "Installation successful." >> "$logFile"
+        echo "INFO: Debricked CLI installed successfully."
+        echo "INFO: Installation successful." >> "$logFile"
     else
-        echo "Failed to install Debricked CLI."
+        echo "ERROR: Failed to install Debricked CLI."
         echo "ERROR: Installation failed." >> "$logFile"
         exit 1
     fi
@@ -78,6 +105,6 @@ downloadUrl="https://github.com/debricked/cli/releases/download/$releaseVersion/
 download_and_extract "$downloadUrl"
 install_cli
 
-echo "Debricked($releaseVersion) CLI installation process completed."
-echo "Installation process completed at $(date)" >> "$logFile"
-echo "See $logFile for details."
+echo "INFO: Debricked($releaseVersion) CLI installation process completed."
+echo "INFO: Installation process completed at $(date)" >> "$logFile"
+echo "INFO: See $logFile for details."
