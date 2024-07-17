@@ -3,4 +3,5 @@ export interface Flag {
     flag: string;
     description: string;
     report?: string;
+    flagValue?: string;
 }

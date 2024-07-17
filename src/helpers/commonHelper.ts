@@ -52,4 +52,9 @@ export class Common {
             Common.saveToDebrickedData("user_id", userHashCode);
         }
     }
+
+    public static replacePlaceholder(originalString: string, placeholderValue: string) {
+        const test = originalString.replace("PLACEHOLDER", placeholderValue);
+        return test;
+    }
 }

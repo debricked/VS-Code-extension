@@ -1,6 +1,6 @@
-import { QuickPick, StatusBarMessageHelper, StatusMessage, Logger, Terminal, Command, FileHelper } from "../helpers";
+import { QuickPick, StatusBarMessageHelper, StatusMessage, Logger, Terminal } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
-import { Flag } from "../types";
+import { Flag, Repository } from "../types";
 import * as vscode from "vscode";
 import { Common, setSeqToken } from "../helpers";
 
@@ -8,31 +8,57 @@ export class ScanService {
     static async scanService() {
         try {
             const cmdParams = [];
-            const subCommand: any = DebrickedCommands.SCAN;
+            const command: any = DebrickedCommands.SCAN;
 
-            let selectedFlags: Flag | undefined;
-            if (subCommand.command) {
-                cmdParams.push(subCommand.cli_command);
-                selectedFlags = await QuickPick.showQuickPick(subCommand.flags, Messages.QUICK_PICK_FLAG);
+            cmdParams.push(command.cli_command);
+
+            if (Organization.workspace !== "") {
+                cmdParams.push(Organization.workspace);
+                Logger.logMessageByStatus(MessageStatus.INFO, `selected repo ${Organization.workspace}`);
+            } else {
+                cmdParams.push("-r");
+                const availableWorkspace: Repository[] = [
+                    {
+                        label: "cli",
+                        repoName: "cli",
+                    },
+                    {
+                        label: "VS-Code-extension",
+                        repoName: "VS-Code-extension",
+                    },
+                ];
+                const selectedRepo: Repository | undefined = await QuickPick.showQuickPick(
+                    availableWorkspace,
+                    Messages.QUICK_PICK_FLAG,
+                );
+                cmdParams.push(selectedRepo?.repoName);
+                Logger.logMessageByStatus(MessageStatus.INFO, `selected repo ${selectedRepo?.repoName}`);
             }
 
-            cmdParams.push(Organization.workspace);
+            let selectedFlags: Flag | undefined;
+            if (command.flags && command.flags.length > 0) {
+                selectedFlags = await QuickPick.showQuickPick(command.flags, Messages.QUICK_PICK_FLAG);
+            }
 
             if (selectedFlags && selectedFlags.flag) {
                 cmdParams.push(selectedFlags.flag);
+
+                if (selectedFlags.flag === "-i" && selectedFlags.flagValue) {
+                    cmdParams.push(selectedFlags.flagValue);
+                } else if (selectedFlags.flag === "-j" && selectedFlags.report) {
+                    cmdParams.push(selectedFlags.report);
+                } else if (selectedFlags.flag === "-b" && selectedFlags.flagValue) {
+                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, "branch"));
+                } else if (selectedFlags.flag === "-c" && selectedFlags.flagValue) {
+                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, "commit"));
+                }
             }
 
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.SCAN.cli_command),
             );
 
-            if (selectedFlags && selectedFlags.report) {
-                cmdParams.push(selectedFlags.report);
-                const result = await Command.executeCommand(cmdParams, true);
-                await FileHelper.storeAndOpenFile(selectedFlags.report, result);
-            } else {
-                Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, true);
-            }
+            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, true);
 
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
