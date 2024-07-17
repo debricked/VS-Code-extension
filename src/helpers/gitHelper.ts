@@ -29,6 +29,10 @@ export class GitHelper {
         return await Command.executeAsyncCommand("git config --get user.email");
     }
 
+    public static async getUpstream(): Promise<string> {
+        return await Command.executeAsyncCommand("git remote get-url origin");
+    }
+
     public static async getRepositoryName(): Promise<string> {
         return await Command.executeAsyncCommand("git rev-parse --show-toplevel").then((repoPath) => {
             return repoPath.split("/").pop() || repoPath.split("\\").pop() || "";
