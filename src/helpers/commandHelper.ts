@@ -61,7 +61,7 @@ export class Command {
             return stdout.trim();
         } catch (error: any) {
             Logger.logMessageByStatus(MessageStatus.ERROR, `Error executing Git command: ${error.stack}`);
-            throw error;
+            return "";
         }
     }
 }
