@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { Common, setSeqToken } from "./helpers";
 import { registerCommands } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
-import { DebrickedCommands, Organization } from "./constants/index";
+import { Organization } from "./constants/index";
 import { BaseCommandService } from "services";
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -20,13 +20,7 @@ export async function activate(context: vscode.ExtensionContext) {
     const isFirstActivation = context.globalState.get<boolean>(Organization.IS_FIRST_ACTIVATION_KEY, true);
 
     if (currentVersion !== storedVersion || isFirstActivation) {
-        setSeqToken(
-            Common.generateHashCode(
-                DebrickedCommands.BASE_COMMAND.sub_commands
-                    ? DebrickedCommands.BASE_COMMAND.sub_commands[0].command
-                    : "",
-            ),
-        );
+        setSeqToken(Common.generateHashCode());
         BaseCommandService.installCommand(context);
     }
 }

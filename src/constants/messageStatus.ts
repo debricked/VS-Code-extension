@@ -4,4 +4,5 @@ export class MessageStatus {
     static readonly ERROR = "error";
     static readonly FINISHED = "finished";
     static readonly INFO = "info";
+    static readonly WARN = "warning";
 }

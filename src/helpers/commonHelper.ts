@@ -41,7 +41,7 @@ export class Common {
         return "unknown-user";
     }
 
-    public static generateHashCode(input: string): string {
+    public static generateHashCode(input: string = new Date().toISOString()): string {
         return crypto.createHash("sha256").update(input).digest("hex");
     }
 

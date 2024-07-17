@@ -54,8 +54,8 @@ export class InstallHelper {
             const installOutput = await this.executeCommand(installCommand);
             Logger.logMessageByStatus(MessageStatus.INFO, `${installOutput}`);
             Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}`);
-        } catch (error) {
-            Logger.logMessageByStatus(MessageStatus.ERROR, `${Messages.INSTALLATION_ERROR}: ${error}`);
+        } catch (error: any) {
+            Logger.logMessageByStatus(MessageStatus.ERROR, `${Messages.INSTALLATION_ERROR}: ${error.stack}`);
             process.exit(1);
         }
     }

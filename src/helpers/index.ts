@@ -9,6 +9,7 @@ import { Command } from "./commandHelper";
 import { FileHelper } from "./fileHelper";
 import { setSeqToken, getSeqToken } from "./globalStore";
 import { InstallHelper } from "./installHelper";
+import { GitHelper } from "./gitHelper";
 
 export {
     AuthHelper,
@@ -23,4 +24,5 @@ export {
     setSeqToken,
     getSeqToken,
     InstallHelper,
+    GitHelper,
 };

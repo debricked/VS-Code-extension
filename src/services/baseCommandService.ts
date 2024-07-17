@@ -1,11 +1,21 @@
 import { DebrickedCommandNode } from "../types";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
-import { StatusBarMessageHelper, Terminal, StatusMessage, Logger, QuickPick, InstallHelper } from "../helpers";
+import {
+    StatusBarMessageHelper,
+    Terminal,
+    StatusMessage,
+    Logger,
+    QuickPick,
+    InstallHelper,
+    Common,
+    setSeqToken,
+} from "../helpers";
 import * as vscode from "vscode";
 
 export class BaseCommandService {
     static async baseCommand(context: vscode.ExtensionContext) {
         try {
+            setSeqToken(Common.generateHashCode());
             const subCommand: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
 
             let selectedSubCommand: any;
@@ -31,7 +41,7 @@ export class BaseCommandService {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.HELP.cli_command),
             );
-            Logger.logMessageByStatus(MessageStatus.ERROR, error);
+            Logger.logMessageByStatus(MessageStatus.ERROR, error.stack);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.HELP.cli_command),
@@ -41,6 +51,7 @@ export class BaseCommandService {
 
     static async installCommand(context: vscode.ExtensionContext) {
         try {
+            setSeqToken(Common.generateHashCode());
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
             const installer = new InstallHelper();
             Logger.logMessageByStatus(
@@ -64,7 +75,7 @@ export class BaseCommandService {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.BASE_COMMAND.command),
             );
-            Logger.logMessageByStatus(MessageStatus.ERROR, error);
+            Logger.logMessageByStatus(MessageStatus.ERROR, error.stack);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),

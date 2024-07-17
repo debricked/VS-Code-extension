@@ -1,9 +1,10 @@
 import { Organization, MessageStatus, DebrickedCommands, Messages } from "../constants/index";
-import { StatusBarMessageHelper, Terminal, QuickPick, StatusMessage, Logger } from "../helpers";
+import { StatusBarMessageHelper, Terminal, QuickPick, StatusMessage, Logger, setSeqToken, Common } from "../helpers";
 
 export class HelpService {
     static async help() {
         try {
+            setSeqToken(Common.generateHashCode());
             const cmdParams = [];
             const subCommand: any = DebrickedCommands.BASE_COMMAND;
 
@@ -34,7 +35,7 @@ export class HelpService {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.HELP.cli_command),
             );
-            Logger.logMessageByStatus(MessageStatus.ERROR, error);
+            Logger.logMessageByStatus(MessageStatus.ERROR, error.stack);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.HELP.cli_command),

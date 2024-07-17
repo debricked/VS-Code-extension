@@ -1,4 +1,4 @@
-import { QuickPick, StatusBarMessageHelper, StatusMessage, Logger, Terminal } from "../helpers";
+import { QuickPick, StatusBarMessageHelper, StatusMessage, Logger, Terminal, GitHelper } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import { Flag, Repository } from "../types";
 import * as vscode from "vscode";
@@ -7,15 +7,14 @@ import { Common, setSeqToken } from "../helpers";
 export class ScanService {
     static async scanService() {
         try {
+            setSeqToken(Common.generateHashCode());
             const cmdParams = [];
             const command: any = DebrickedCommands.SCAN;
 
             cmdParams.push(command.cli_command);
-
-            if (Organization.workspace !== "") {
-                cmdParams.push(Organization.workspace);
-                Logger.logMessageByStatus(MessageStatus.INFO, `selected repo ${Organization.workspace}`);
-            } else {
+            const currentRepoName = await GitHelper.getRepositoryName();
+            if (currentRepoName === "") {
+                Logger.logMessageByStatus(MessageStatus.WARN, `No default repo selected`);
                 cmdParams.push("-r");
                 const availableWorkspace: Repository[] = [
                     {
@@ -32,7 +31,12 @@ export class ScanService {
                     Messages.QUICK_PICK_FLAG,
                 );
                 cmdParams.push(selectedRepo?.repoName);
-                Logger.logMessageByStatus(MessageStatus.INFO, `selected repo ${selectedRepo?.repoName}`);
+                Logger.logMessageByStatus(MessageStatus.INFO, `selected repo: ${selectedRepo?.repoName}`);
+            } else {
+                Logger.logMessageByStatus(
+                    MessageStatus.WARN,
+                    `scan performed on: ${await GitHelper.getRepositoryName()}`,
+                );
             }
 
             let selectedFlags: Flag | undefined;
@@ -47,10 +51,14 @@ export class ScanService {
                     cmdParams.push(selectedFlags.flagValue);
                 } else if (selectedFlags.flag === "-j" && selectedFlags.report) {
                     cmdParams.push(selectedFlags.report);
+                } else if (selectedFlags.flag === "-a") {
+                    cmdParams.push(`"${await GitHelper.getUsername()} (${await GitHelper.getEmail()})"`);
                 } else if (selectedFlags.flag === "-b" && selectedFlags.flagValue) {
-                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, "branch"));
+                    cmdParams.push(
+                        Common.replacePlaceholder(selectedFlags.flagValue, await GitHelper.getCurrentBranch()),
+                    );
                 } else if (selectedFlags.flag === "-c" && selectedFlags.flagValue) {
-                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, "commit"));
+                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, await GitHelper.getCommitHash()));
                 }
             }
 
@@ -70,7 +78,7 @@ export class ScanService {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.SCAN.cli_command),
             );
-            Logger.logMessageByStatus(MessageStatus.ERROR, error);
+            Logger.logMessageByStatus(MessageStatus.ERROR, error.stack);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
@@ -80,7 +88,7 @@ export class ScanService {
 
     static async runDebrickedScan(e: vscode.Uri) {
         if (e.path.endsWith("package.json")) {
-            setSeqToken(Common.generateHashCode("package.json"));
+            setSeqToken(Common.generateHashCode());
             await ScanService.scanService();
         }
     }
