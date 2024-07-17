@@ -10,12 +10,8 @@ export class AuthHelper {
      * @returns Promise<string | undefined>
      */
     static async getAccessToken(): Promise<string | undefined> {
-        if (!Organization.workspace) {
-            throw new Error(Messages.WS_NOT_FOUND);
-        }
-
-        const debrickedFolder = path.join(Organization.workspace, Organization.debrickedFolder);
-        const tokenFilePath = path.join(debrickedFolder, Organization.access_token_file);
+        const debrickedFolder = path.join(Organization.debricked_installed_dir, Organization.debrickedFolder);
+        const tokenFilePath = path.join(debrickedFolder, Organization.debricked_data_file);
 
         // Ensure the debricked folder exists
         if (!fs.existsSync(debrickedFolder)) {
@@ -24,9 +20,10 @@ export class AuthHelper {
 
         // Try to read the access token from the token.json file
         let accessToken: string | undefined;
+        let tokenData: any = {};
         if (fs.existsSync(tokenFilePath)) {
             const tokenFileContent = fs.readFileSync(tokenFilePath, "utf-8");
-            const tokenData = JSON.parse(tokenFileContent);
+            tokenData = JSON.parse(tokenFileContent);
             accessToken = tokenData.accessToken;
         }
 
@@ -39,8 +36,10 @@ export class AuthHelper {
             });
 
             if (accessToken) {
-                // Store the access token in the token.json file
-                fs.writeFileSync(tokenFilePath, JSON.stringify({ accessToken }, null, 2));
+                // Append the access token to the existing data
+                tokenData.accessToken = accessToken;
+                // Store the updated data in the token.json file
+                fs.writeFileSync(tokenFilePath, JSON.stringify(tokenData, null, 2));
             } else {
                 throw new Error(Messages.ACCESS_TOKEN_RQD);
             }

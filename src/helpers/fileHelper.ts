@@ -3,6 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { MessageStatus, Organization } from "../constants/index";
 import { Logger } from "./loggerHelper";
+import { Common } from "./commonHelper";
 
 export class FileHelper {
     /**
@@ -13,13 +14,8 @@ export class FileHelper {
      * @returns The path to the stored file.
      */
     public static async storeResultInFile(fileName: string, content: string): Promise<string> {
-        const resultFolderPath = path.join(Organization.workspace, Organization.report);
-
-        if (!fs.existsSync(resultFolderPath)) {
-            fs.mkdirSync(resultFolderPath);
-        }
-
-        const filePath = path.join(resultFolderPath, fileName);
+        Common.createDirectory(Organization.reportsFolderPath);
+        const filePath = path.join(Organization.reportsFolderPath, fileName);
         fs.writeFileSync(filePath, content, "utf8");
         Logger.logMessageByStatus(MessageStatus.INFO, `report saved in ${filePath}`);
         return filePath;

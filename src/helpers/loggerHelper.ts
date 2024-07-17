@@ -5,12 +5,15 @@ import { Common } from "../helpers";
 import { getSeqToken } from "../helpers";
 
 export class Logger {
-    private static logDirPath = path.join(Organization.workspace, Organization.report);
-    private static logFilePath = path.join(Logger.logDirPath, Organization.log_file);
+    private static logFilePath = path.join(
+        Organization.debricked_installed_dir,
+        Organization.debrickedFolder,
+        Organization.log_file,
+    );
 
     public static async logMessage(message: string) {
-        if (!fs.existsSync(Logger.logDirPath)) {
-            fs.mkdirSync(Logger.logDirPath, { recursive: true });
+        if (!fs.existsSync(Organization.debricked_installed_dir)) {
+            fs.mkdirSync(Organization.debricked_installed_dir, { recursive: true });
         }
 
         const timestamp = new Date().toISOString();

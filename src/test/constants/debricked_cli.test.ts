@@ -72,7 +72,6 @@ describe("Debricked CLI: Test Suite", () => {
                 log_file: "debricked.log",
                 workspace: path.join(__dirname, "../../../"),
                 debricked_cli: "debricked",
-                access_token_file: "token.json",
                 debricked_data_file: "debricked_data.json",
             });
         });

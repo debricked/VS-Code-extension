@@ -6,7 +6,7 @@ import { Organization } from "./constants/index";
 import { BaseCommandService } from "services";
 
 export async function activate(context: vscode.ExtensionContext) {
-    Common.checkUserId();
+    await Common.setupDebricked();
     registerCommands(context);
 
     const debCommandsProvider = new DebrickedCommandsTreeDataProvider();

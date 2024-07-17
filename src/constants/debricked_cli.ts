@@ -5,11 +5,16 @@ import * as vscode from "vscode";
 export class Organization {
     static readonly name = "debricked";
     static readonly debrickedFolder = `.${Organization.name}`;
-    static readonly report = `${Organization.debrickedFolder}/reports`;
+    static readonly reports = "reports";
     static readonly log_file = "debricked.log";
     static readonly workspace = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || path.join(__dirname, "../../");
     static readonly debricked_cli = Organization.name;
-    static readonly access_token_file = "token.json";
+    static readonly debricked_installed_dir = path.join(__dirname, "../");
+    static readonly reportsFolderPath = path.join(
+        Organization.workspace,
+        Organization.debrickedFolder,
+        Organization.reports,
+    );
     static readonly debricked_data_file = "debricked_data.json";
     static readonly debricked_installer = "resources/debricked-cli";
     static readonly EXTENSION_VERSION_KEY = "extensionVersion";
@@ -27,11 +32,10 @@ export class Organization {
     static getOrganizationInfo() {
         return {
             name: this.name,
-            report: this.report,
+            reports: this.reports,
             log_file: this.log_file,
             workspace: this.workspace,
             debricked_cli: this.debricked_cli,
-            access_token_file: this.access_token_file,
             debricked_data_file: this.debricked_data_file,
         };
     }
@@ -238,7 +242,7 @@ export class DebrickedCommands {
                 label: "JSON Path",
                 flag: "-j",
                 description: "write upload result as json to provided path",
-                report: `${Organization.report}/scan-output.json`,
+                report: `${Organization.debrickedFolder}/${Organization.reports}/scan-output.json`,
             },
             { label: "Author", flag: "-a", description: "commit author" },
             { label: "Branch", flag: "-b", description: "branch name", flagValue: "ide-PLACEHOLDER" },

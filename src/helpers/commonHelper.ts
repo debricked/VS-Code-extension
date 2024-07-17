@@ -1,12 +1,14 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import { Organization } from "../constants/index";
+import { MessageStatus, Organization } from "../constants/index";
 import * as crypto from "crypto";
+import { Logger } from "./loggerHelper";
+import { setSeqToken } from "./globalStore";
 
 export class Common {
     private static debrickedDataPath = path.join(
-        Organization.workspace,
+        Organization.debricked_installed_dir,
         Organization.debrickedFolder,
         Organization.debricked_data_file,
     );
@@ -15,6 +17,14 @@ export class Common {
         const dirPath = path.dirname(filePath);
         if (!fs.existsSync(dirPath)) {
             fs.mkdirSync(dirPath, { recursive: true });
+            Logger.logMessageByStatus(MessageStatus.INFO, `New file created : ${filePath}`);
+        }
+    }
+
+    static createDirectory(dirPath: string): void {
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+            Logger.logMessageByStatus(MessageStatus.INFO, `New Directory created : ${dirPath}`);
         }
     }
 
@@ -50,11 +60,18 @@ export class Common {
         if (user_id && user_id === "unknown-user") {
             const userHashCode = Common.generateHashCode(new Date().toDateString());
             Common.saveToDebrickedData("user_id", userHashCode);
+            Logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated : ${userHashCode}`);
         }
     }
 
     public static replacePlaceholder(originalString: string, placeholderValue: string) {
         const test = originalString.replace("PLACEHOLDER", placeholderValue);
         return test;
+    }
+
+    public static async setupDebricked(): Promise<void> {
+        setSeqToken(Common.generateHashCode());
+        await Common.checkUserId();
+        Common.createDirectory(Organization.reportsFolderPath);
     }
 }
