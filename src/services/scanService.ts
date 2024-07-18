@@ -7,6 +7,7 @@ import { Common, setSeqToken } from "../helpers";
 export class ScanService {
     static async scanService() {
         try {
+            Common.createDirectory(Organization.reportsFolderPath);
             setSeqToken(Common.generateHashCode());
             const cmdParams = [];
             const command: any = DebrickedCommands.SCAN;
@@ -18,6 +19,42 @@ export class ScanService {
                     MessageStatus.WARN,
                     `scan performed on: ${await GitHelper.getRepositoryName()}`,
                 );
+
+                let selectedFlags: Flag | undefined;
+                if (command.flags && command.flags.length > 0) {
+                    selectedFlags = await QuickPick.showQuickPick(command.flags, Messages.QUICK_PICK_FLAG);
+                }
+
+                if (selectedFlags && selectedFlags.flag) {
+                    cmdParams.push(selectedFlags.flag);
+
+                    if (selectedFlags.flag === "-r") {
+                        const providedRepo = await vscode.window.showInputBox({
+                            title: "Enter Repository name",
+                            prompt: "enter repository name",
+                            ignoreFocusOut: false,
+                        });
+
+                        if (providedRepo) {
+                            cmdParams.push(providedRepo);
+                            Logger.logMessageByStatus(MessageStatus.INFO, `selected repo: ${providedRepo}`);
+                        }
+                    } else if (selectedFlags.flag === "-i" && selectedFlags.flagValue) {
+                        cmdParams.push(selectedFlags.flagValue);
+                    } else if (selectedFlags.flag === "-j" && selectedFlags.report) {
+                        cmdParams.push(selectedFlags.report);
+                    } else if (selectedFlags.flag === "-a") {
+                        cmdParams.push(`"${await GitHelper.getUsername()} (${await GitHelper.getEmail()})"`);
+                    } else if (selectedFlags.flag === "-b" && selectedFlags.flagValue) {
+                        cmdParams.push(
+                            Common.replacePlaceholder(selectedFlags.flagValue, await GitHelper.getCurrentBranch()),
+                        );
+                    } else if (selectedFlags.flag === "-c" && selectedFlags.flagValue) {
+                        cmdParams.push(
+                            Common.replacePlaceholder(selectedFlags.flagValue, await GitHelper.getCommitHash()),
+                        );
+                    }
+                }
             } else {
                 Logger.logMessageByStatus(MessageStatus.WARN, `No default repo selected`);
                 cmdParams.push("-r");
@@ -32,40 +69,6 @@ export class ScanService {
                     Logger.logMessageByStatus(MessageStatus.INFO, `selected repo: ${providedRepo}`);
                 }
                 Logger.logMessageByStatus(MessageStatus.INFO, `selected repo: ${providedRepo}`);
-            }
-
-            let selectedFlags: Flag | undefined;
-            if (command.flags && command.flags.length > 0) {
-                selectedFlags = await QuickPick.showQuickPick(command.flags, Messages.QUICK_PICK_FLAG);
-            }
-
-            if (selectedFlags && selectedFlags.flag) {
-                cmdParams.push(selectedFlags.flag);
-
-                if (selectedFlags.flag === "-r") {
-                    const providedRepo = await vscode.window.showInputBox({
-                        title: "Enter Repository name",
-                        prompt: "enter repository name",
-                        ignoreFocusOut: false,
-                    });
-
-                    if (providedRepo) {
-                        cmdParams.push(providedRepo);
-                        Logger.logMessageByStatus(MessageStatus.INFO, `selected repo: ${providedRepo}`);
-                    }
-                } else if (selectedFlags.flag === "-i" && selectedFlags.flagValue) {
-                    cmdParams.push(selectedFlags.flagValue);
-                } else if (selectedFlags.flag === "-j" && selectedFlags.report) {
-                    cmdParams.push(selectedFlags.report);
-                } else if (selectedFlags.flag === "-a") {
-                    cmdParams.push(`"${await GitHelper.getUsername()} (${await GitHelper.getEmail()})"`);
-                } else if (selectedFlags.flag === "-b" && selectedFlags.flagValue) {
-                    cmdParams.push(
-                        Common.replacePlaceholder(selectedFlags.flagValue, await GitHelper.getCurrentBranch()),
-                    );
-                } else if (selectedFlags.flag === "-c" && selectedFlags.flagValue) {
-                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, await GitHelper.getCommitHash()));
-                }
             }
 
             StatusBarMessageHelper.setStatusBarMessage(
