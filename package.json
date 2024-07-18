@@ -73,7 +73,8 @@
         "test": "vscode-test --coverage",
         "clean": "rimraf out && rimraf dist && rimraf coverage && rimraf .debricked",
         "clean-all": "rimraf out && rimraf dist && rimraf coverage && rimraf .vscode-test",
-        "postinstall": "node ./resources/debricked-cli/uninstall.js && node ./resources/debricked-cli/install.js"
+        "postinstall": "node ./resources/debricked-cli/uninstall.js && node ./resources/debricked-cli/install.js",
+        "vsce": "vsce package"
     },
     "devDependencies": {
         "@types/chai": "^4.3.16",
