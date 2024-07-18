@@ -14,15 +14,17 @@ export class Terminal {
             const accessToken = await AuthHelper.getAccessToken();
 
             if (accessToken) {
+                Logger.logMessageByStatus(
+                    MessageStatus.INFO,
+                    `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: "${command} ${cmdParams.join(" ")}"`,
+                );
                 cmdParams.push(flags[0].flag);
                 cmdParams.push(accessToken);
-                command = `${command} ${cmdParams.join(" ")}`;
-                Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: ${command}`);
             }
         } else {
-            command = `${command} ${cmdParams.join(" ")}`;
-            Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: ${command}`);
+            Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: "${command}"`);
         }
+        command = `${command} ${cmdParams.join(" ")}`;
 
         let terminal: vscode.Terminal;
         if (vscode.window.activeTerminal) {

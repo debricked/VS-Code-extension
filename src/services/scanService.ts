@@ -1,80 +1,50 @@
 import { QuickPick, StatusBarMessageHelper, StatusMessage, Logger, Terminal, GitHelper } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
-import { Flag } from "../types";
+import { DebrickedCommandNode, Flag } from "../types";
 import * as vscode from "vscode";
 import { Common, setSeqToken } from "../helpers";
 
 export class ScanService {
     static async scanService() {
         try {
+            Logger.logMessageByStatus(MessageStatus.INFO, "Starting scan service...");
             Common.createDirectory(Organization.reportsFolderPath);
             setSeqToken(Common.generateHashCode());
             const cmdParams = [];
-            const command: any = DebrickedCommands.SCAN;
+            const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 
             cmdParams.push(command.cli_command);
             const currentRepoName = await GitHelper.getUpstream();
+            Logger.logMessageByStatus(MessageStatus.INFO, `Current repository name: ${currentRepoName}`);
+
+            let selectedFlags: Flag | undefined;
             if (currentRepoName.indexOf(".git") > -1) {
                 Logger.logMessageByStatus(
-                    MessageStatus.WARN,
-                    `scan performed on: ${await GitHelper.getRepositoryName()}`,
+                    MessageStatus.INFO,
+                    `Scan performed on: ${await GitHelper.getRepositoryName()}`,
                 );
 
-                let selectedFlags: Flag | undefined;
                 if (command.flags && command.flags.length > 0) {
                     selectedFlags = await QuickPick.showQuickPick(command.flags, Messages.QUICK_PICK_FLAG);
                 }
-
-                if (selectedFlags && selectedFlags.flag) {
-                    cmdParams.push(selectedFlags.flag);
-
-                    if (selectedFlags.flag === "-r") {
-                        const providedRepo = await vscode.window.showInputBox({
-                            title: "Enter Repository name",
-                            prompt: "enter repository name",
-                            ignoreFocusOut: false,
-                        });
-
-                        if (providedRepo) {
-                            cmdParams.push(providedRepo);
-                            Logger.logMessageByStatus(MessageStatus.INFO, `selected repo: ${providedRepo}`);
-                        }
-                    } else if (selectedFlags.flag === "-i" && selectedFlags.flagValue) {
-                        cmdParams.push(selectedFlags.flagValue);
-                    } else if (selectedFlags.flag === "-j" && selectedFlags.report) {
-                        cmdParams.push(selectedFlags.report);
-                    } else if (selectedFlags.flag === "-a") {
-                        cmdParams.push(`"${await GitHelper.getUsername()} (${await GitHelper.getEmail()})"`);
-                    } else if (selectedFlags.flag === "-b" && selectedFlags.flagValue) {
-                        cmdParams.push(
-                            Common.replacePlaceholder(selectedFlags.flagValue, await GitHelper.getCurrentBranch()),
-                        );
-                    } else if (selectedFlags.flag === "-c" && selectedFlags.flagValue) {
-                        cmdParams.push(
-                            Common.replacePlaceholder(selectedFlags.flagValue, await GitHelper.getCommitHash()),
-                        );
-                    }
-                }
             } else {
                 Logger.logMessageByStatus(MessageStatus.WARN, `No default repo selected`);
-                cmdParams.push("-r");
-                const providedRepo = await vscode.window.showInputBox({
-                    title: "Enter Repository name",
-                    prompt: "enter repository name",
-                    ignoreFocusOut: false,
-                });
 
-                if (providedRepo) {
-                    cmdParams.push(providedRepo);
-                    Logger.logMessageByStatus(MessageStatus.INFO, `selected repo: ${providedRepo}`);
+                if (command.flags && command.flags.length > 0) {
+                    selectedFlags = command.flags[0];
                 }
-                Logger.logMessageByStatus(MessageStatus.INFO, `selected repo: ${providedRepo}`);
+            }
+
+            if (selectedFlags && selectedFlags.flag) {
+                cmdParams.push(selectedFlags.flag);
+                await ScanService.handleFlags(selectedFlags, cmdParams);
             }
 
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.SCAN.cli_command),
             );
 
+            Logger.logMessageByStatus(MessageStatus.INFO, `Executing terminal command with parameters: ${cmdParams}`);
             Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, true);
 
             StatusBarMessageHelper.setStatusBarMessage(
@@ -87,16 +57,77 @@ export class ScanService {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.SCAN.cli_command),
             );
-            Logger.logMessageByStatus(MessageStatus.ERROR, error.stack);
+            Logger.logMessageByStatus(MessageStatus.ERROR, `Error during scan service: ${error.stack}`);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
             );
+            Logger.logMessageByStatus(MessageStatus.INFO, "Scan service finished.");
+        }
+    }
+
+    static async handleFlags(selectedFlags: Flag, cmdParams: string[]) {
+        Logger.logMessageByStatus(MessageStatus.INFO, `Handling flag: ${selectedFlags.flag}(${selectedFlags.label})`);
+        switch (selectedFlags.flag) {
+            case "-r":
+                const providedRepo = await vscode.window.showInputBox({
+                    title: "Enter Repository name",
+                    prompt: "Enter repository name",
+                    ignoreFocusOut: false,
+                });
+
+                if (providedRepo) {
+                    cmdParams.push(providedRepo);
+                    Logger.logMessageByStatus(MessageStatus.INFO, `Selected repo: ${providedRepo}`);
+                }
+                break;
+
+            case "-i":
+                if (selectedFlags.flagValue) {
+                    cmdParams.push(selectedFlags.flagValue);
+                    Logger.logMessageByStatus(MessageStatus.INFO, `Flag value added: ${selectedFlags.flagValue}`);
+                }
+                break;
+
+            case "-j":
+                if (selectedFlags.report) {
+                    cmdParams.push(selectedFlags.report);
+                    Logger.logMessageByStatus(MessageStatus.INFO, `Report added: ${selectedFlags.report}`);
+                }
+                break;
+
+            case "-a":
+                const username = await GitHelper.getUsername();
+                const email = await GitHelper.getEmail();
+                cmdParams.push(`"${username} (${email})"`);
+                Logger.logMessageByStatus(MessageStatus.INFO, `User info added: ${username} (${email})`);
+                break;
+
+            case "-b":
+                if (selectedFlags.flagValue) {
+                    const currentBranch = await GitHelper.getCurrentBranch();
+                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, currentBranch));
+                    Logger.logMessageByStatus(MessageStatus.INFO, `Branch info added: ${currentBranch}`);
+                }
+                break;
+
+            case "-c":
+                if (selectedFlags.flagValue) {
+                    const commitHash = await GitHelper.getCommitHash();
+                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, commitHash));
+                    Logger.logMessageByStatus(MessageStatus.INFO, `Commit hash added: ${commitHash}`);
+                }
+                break;
+
+            default:
+                Logger.logMessageByStatus(MessageStatus.WARN, `Unrecognized flag: ${selectedFlags.flag}`);
+                break;
         }
     }
 
     static async runDebrickedScan(e: vscode.Uri) {
         if (e.path.endsWith("package.json")) {
+            Logger.logMessageByStatus(MessageStatus.INFO, "Running Debricked scan on package.json...");
             setSeqToken(Common.generateHashCode());
             await ScanService.scanService();
         }
