@@ -1,13 +1,15 @@
 import * as vscode from "vscode";
-import { Common, setSeqToken } from "./helpers";
+import { Common, GitHelper, GlobalStore, Logger } from "./helpers";
 import { registerCommands } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
-import { Organization } from "./constants/index";
-import { BaseCommandService } from "services";
+import { MessageStatus, Organization } from "./constants/index";
+import { BaseCommandService, FileService } from "services";
+import * as fs from "fs";
 
 export async function activate(context: vscode.ExtensionContext) {
+    const globalStore = GlobalStore.getInstance();
     await Common.setupDebricked();
-    registerCommands(context);
+    await registerCommands(context);
 
     const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
     vscode.window.registerTreeDataProvider(Organization.debricked_command, debCommandsProvider);
@@ -20,9 +22,41 @@ export async function activate(context: vscode.ExtensionContext) {
     const isFirstActivation = context.globalState.get<boolean>(Organization.IS_FIRST_ACTIVATION_KEY, true);
 
     if (currentVersion !== storedVersion || isFirstActivation) {
-        setSeqToken(Common.generateHashCode());
-        BaseCommandService.installCommand(context);
+        globalStore.setSeqToken(Common.generateHashCode());
+        await BaseCommandService.installCommand(context);
     }
+
+    // Try to read the access token from the token.json file
+    let repositoryName: string | undefined;
+    let debrickedData: any = {};
+    if (fs.existsSync(Organization.debricked_data_filePath)) {
+        const debrickedFileContent = fs.readFileSync(Organization.debricked_data_filePath, "utf-8");
+        debrickedData = JSON.parse(debrickedFileContent);
+        repositoryName = debrickedData.repositoryName;
+    }
+
+    if (!repositoryName) {
+        const currentRepoName = await GitHelper.getUpstream();
+        Logger.logMessageByStatus(MessageStatus.INFO, `Current repository name: ${currentRepoName}`);
+
+        if (currentRepoName.indexOf(".git") > -1) {
+            repositoryName = await GitHelper.getRepositoryName();
+        } else {
+            repositoryName = await vscode.window.showInputBox({
+                prompt: "Enter Repository Name",
+                ignoreFocusOut: true,
+            });
+        }
+
+        if (repositoryName) {
+            // Append the access token to the existing data
+            debrickedData.repositoryName = repositoryName;
+            // Store the updated data in the token.json file
+            fs.writeFileSync(Organization.debricked_data_filePath, JSON.stringify(debrickedData, null, 2));
+        }
+    }
+
+    await FileService.findFilesService();
 }
 
 // This method is called when your extension is deactivated

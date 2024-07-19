@@ -8,14 +8,15 @@ import {
     QuickPick,
     InstallHelper,
     Common,
-    setSeqToken,
+    GlobalStore,
 } from "../helpers";
 import * as vscode from "vscode";
 
 export class BaseCommandService {
+    private static globalStore = GlobalStore.getInstance();
     static async baseCommand(context: vscode.ExtensionContext) {
         try {
-            setSeqToken(Common.generateHashCode());
+            BaseCommandService.globalStore.setSeqToken(Common.generateHashCode());
             const subCommand: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
 
             let selectedSubCommand: any;
@@ -51,7 +52,7 @@ export class BaseCommandService {
 
     static async installCommand(context: vscode.ExtensionContext) {
         try {
-            setSeqToken(Common.generateHashCode());
+            BaseCommandService.globalStore.setSeqToken(Common.generateHashCode());
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
             const installer = new InstallHelper();
             Logger.logMessageByStatus(

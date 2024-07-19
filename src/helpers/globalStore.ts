@@ -1,9 +1,33 @@
-let seqToken: string;
+export class GlobalStore {
+    private static instance: GlobalStore;
+    private seqToken: string = "";
+    private debrickedData: object = {};
 
-export const setSeqToken = (hashCode: string) => {
-    seqToken = hashCode;
-};
+    private constructor() {
+        // Private constructor to prevent direct instantiation
+    }
 
-export const getSeqToken = (): string => {
-    return seqToken;
-};
+    // Singleton pattern to ensure a single instance
+    public static getInstance(): GlobalStore {
+        if (!GlobalStore.instance) {
+            GlobalStore.instance = new GlobalStore();
+        }
+        return GlobalStore.instance;
+    }
+
+    public setSeqToken(hashCode: string): void {
+        this.seqToken = hashCode;
+    }
+
+    public getSeqToken(): string {
+        return this.seqToken;
+    }
+
+    public setDebrickedData(data: object): void {
+        this.debrickedData = data;
+    }
+
+    public getFilesToScan(): object {
+        return this.debrickedData;
+    }
+}

@@ -7,7 +7,7 @@ import { Logger } from "./loggerHelper";
 import { Common } from "./commonHelper";
 import { Command } from "./commandHelper";
 import { FileHelper } from "./fileHelper";
-import { setSeqToken, getSeqToken } from "./globalStore";
+import { GlobalStore } from "./globalStore";
 import { InstallHelper } from "./installHelper";
 import { GitHelper } from "./gitHelper";
 
@@ -21,8 +21,7 @@ export {
     Common,
     Command,
     FileHelper,
-    setSeqToken,
-    getSeqToken,
     InstallHelper,
     GitHelper,
+    GlobalStore,
 };

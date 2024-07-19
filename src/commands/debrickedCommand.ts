@@ -1,13 +1,14 @@
 import * as vscode from "vscode";
-import { DebrickedCommands } from "../constants/index";
-import { BaseCommandService, HelpService, ScanService } from "../services";
-import { Common, setSeqToken } from "../helpers";
+import { DebrickedCommands, MessageStatus } from "../constants/index";
+import { BaseCommandService, HelpService, ScanService, FileService } from "../services";
+import { Common, Logger, GlobalStore } from "../helpers";
 
 export class DebrickedCommand {
+    private static globalStore = GlobalStore.getInstance();
     public static async commands(context: vscode.ExtensionContext) {
         context.subscriptions.push(
             vscode.commands.registerCommand(DebrickedCommands.BASE_COMMAND.command, async () => {
-                BaseCommandService.baseCommand(context);
+                await BaseCommandService.baseCommand(context);
             }),
         );
 
@@ -17,44 +18,54 @@ export class DebrickedCommand {
                     ? DebrickedCommands.BASE_COMMAND.sub_commands[0].command
                     : "",
                 async () => {
-                    setSeqToken(
-                        Common.generateHashCode(
-                            DebrickedCommands.BASE_COMMAND.sub_commands
-                                ? DebrickedCommands.BASE_COMMAND.sub_commands[0].command
-                                : "",
-                        ),
-                    );
-                    BaseCommandService.installCommand(context);
+                    DebrickedCommand.globalStore.setSeqToken(Common.generateHashCode());
+                    await BaseCommandService.installCommand(context);
                 },
             ),
         );
 
         context.subscriptions.push(
             vscode.commands.registerCommand(DebrickedCommands.HELP.command, async () => {
-                HelpService.help();
+                await HelpService.help();
             }),
         );
 
         context.subscriptions.push(
             vscode.commands.registerCommand(DebrickedCommands.SCAN.command, async () => {
-                ScanService.scanService();
+                await ScanService.scanService();
+            }),
+        );
+
+        context.subscriptions.push(
+            vscode.commands.registerCommand(DebrickedCommands.FILES.command, async () => {
+                await FileService.filesService();
+            }),
+        );
+
+        const findFilesCommand = DebrickedCommands.FILES.sub_commands
+            ? DebrickedCommands.FILES.sub_commands[0].command
+            : "";
+        context.subscriptions.push(
+            vscode.commands.registerCommand(findFilesCommand, async () => {
+                await FileService.findFilesService();
             }),
         );
 
         // Add file watcher for package.json
-        const watcher = vscode.workspace.createFileSystemWatcher("**/package.json");
-        watcher.onDidChange(async (e) => {
-            await ScanService.runDebrickedScan(e);
-        });
+        const repositoryFilesToScan = ["debricked.fingerprints.txt", "package.json", "package-lock.json"];
 
-        watcher.onDidCreate(async (e) => {
-            await ScanService.runDebrickedScan(e);
-        });
+        repositoryFilesToScan.forEach((file) => {
+            const watcher = vscode.workspace.createFileSystemWatcher(`**/${file}`);
 
-        watcher.onDidDelete(async (e) => {
-            await ScanService.runDebrickedScan(e);
-        });
+            const runScan = async (e: vscode.Uri) => {
+                await ScanService.runDebrickedScan(e);
+            };
 
-        context.subscriptions.push(watcher);
+            watcher.onDidChange(runScan);
+            watcher.onDidCreate(runScan);
+            watcher.onDidDelete(runScan);
+            Logger.logMessageByStatus(MessageStatus.INFO, `register watcher on ${file}`);
+            context.subscriptions.push(watcher);
+        });
     }
 }

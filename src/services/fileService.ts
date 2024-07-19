@@ -1,0 +1,129 @@
+import {
+    StatusBarMessageHelper,
+    StatusMessage,
+    Logger,
+    Terminal,
+    QuickPick,
+    Command,
+    GlobalStore,
+    Common,
+} from "../helpers";
+import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
+import { DebrickedCommandNode } from "../types";
+import * as fs from "fs";
+
+export class FileService {
+    private static globalStore = GlobalStore.getInstance();
+    static async filesService() {
+        try {
+            Logger.logMessageByStatus(MessageStatus.INFO, "Starting File service...");
+            FileService.globalStore.setSeqToken(Common.generateHashCode());
+
+            const cmdParams = [];
+            const command: DebrickedCommandNode = DebrickedCommands.FILES;
+
+            cmdParams.push(command.cli_command);
+
+            let selectedSubCommand: DebrickedCommandNode | undefined;
+
+            if (command.sub_commands && command.sub_commands.length > 0) {
+                selectedSubCommand = await QuickPick.showQuickPick(
+                    command.sub_commands,
+                    Messages.QUICK_PICK_SUB_COMMAND,
+                );
+                if (selectedSubCommand && selectedSubCommand.cli_command) {
+                    cmdParams.push(selectedSubCommand.cli_command);
+                }
+            }
+
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.FILES.cli_command),
+            );
+
+            Logger.logMessageByStatus(MessageStatus.INFO, `Executing terminal command with parameters: ${cmdParams}`);
+            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, true);
+
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.FILES.cli_command),
+            );
+
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.FILES.cli_command),
+            );
+        } catch (error: any) {
+            StatusBarMessageHelper.showErrorMessage(
+                `${Organization.name} - ${DebrickedCommands.FILES.cli_command} ${MessageStatus.ERROR}: ${error.message}`,
+            );
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.FILES.cli_command),
+            );
+            Logger.logMessageByStatus(MessageStatus.ERROR, `Error during Files service: ${error.stack}`);
+        } finally {
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.FILES.cli_command),
+            );
+            Logger.logMessageByStatus(MessageStatus.INFO, "Files service finished.");
+        }
+    }
+
+    static async findFilesService() {
+        try {
+            Logger.logMessageByStatus(MessageStatus.INFO, "Starting find files service...");
+            FileService.globalStore.setSeqToken(Common.generateHashCode());
+            const cmdParams = [];
+            const command: DebrickedCommandNode = DebrickedCommands.FILES;
+
+            cmdParams.push(command.cli_command);
+
+            let selectedSubCommand: DebrickedCommandNode | undefined;
+            if (command.sub_commands && command.sub_commands.length > 0) {
+                selectedSubCommand = command.sub_commands[0];
+                if (selectedSubCommand && selectedSubCommand.cli_command) {
+                    cmdParams.push(selectedSubCommand.cli_command);
+                }
+            }
+
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.FILES.cli_command),
+            );
+
+            Logger.logMessageByStatus(MessageStatus.INFO, `Executing terminal command with parameters: ${cmdParams}`);
+
+            const foundFiles = await Command.executeAsyncCommand(
+                `${Organization.debricked_cli} ${cmdParams.join(" ")}`,
+                true,
+            );
+            const foundFilesArray = Common.stringToArray(foundFiles, "\n");
+
+            // Try to read the access token from the token.json file
+            let repositoryFilesToScan: string[] | undefined;
+            let debrickedData: any = {};
+            if (fs.existsSync(Organization.debricked_data_filePath)) {
+                const debrickedFileContent = fs.readFileSync(Organization.debricked_data_filePath, "utf-8");
+                debrickedData = JSON.parse(debrickedFileContent);
+                repositoryFilesToScan = debrickedData.repositoryFilesToScan;
+            }
+
+            if (!repositoryFilesToScan) {
+                debrickedData.repositoryFilesToScan = foundFilesArray;
+                // Store the updated data in the token.json file
+                fs.writeFileSync(Organization.debricked_data_filePath, JSON.stringify(debrickedData, null, 2));
+            }
+
+            Logger.logMessageByStatus(MessageStatus.INFO, `Found Files: ${foundFilesArray}`);
+        } catch (error: any) {
+            StatusBarMessageHelper.showErrorMessage(
+                `${Organization.name} - ${DebrickedCommands.FILES.cli_command} ${MessageStatus.ERROR}: ${error.message}`,
+            );
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.FILES.cli_command),
+            );
+            Logger.logMessageByStatus(MessageStatus.ERROR, `Error during Files service: ${error.stack}`);
+        } finally {
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.FILES.cli_command),
+            );
+            Logger.logMessageByStatus(MessageStatus.INFO, "Files service finished.");
+        }
+    }
+}

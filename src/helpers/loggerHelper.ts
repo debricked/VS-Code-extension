@@ -2,9 +2,10 @@ import * as fs from "fs";
 import * as path from "path";
 import { Organization } from "../constants/index";
 import { Common } from "../helpers";
-import { getSeqToken } from "../helpers";
+import { GlobalStore } from "./globalStore";
 
 export class Logger {
+    private static globalStore = GlobalStore.getInstance();
     private static logFilePath = path.join(
         Organization.debricked_installed_dir,
         Organization.debrickedFolder,
@@ -18,7 +19,7 @@ export class Logger {
 
         const timestamp = new Date().toISOString();
         const userId = await Common.getFromDebrickedData("user_id");
-        const sequenceId = getSeqToken() ? `[seq_id:${getSeqToken()}]` : "";
+        const sequenceId = Logger.globalStore.getSeqToken() ? `[seq_id:${Logger.globalStore.getSeqToken()}]` : "";
 
         const logEntry = `[${timestamp}] [user_id:${userId}] ${sequenceId} ${message}\n`;
         fs.appendFileSync(Logger.logFilePath, logEntry, "utf-8");

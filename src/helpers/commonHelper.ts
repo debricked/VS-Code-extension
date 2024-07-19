@@ -4,9 +4,11 @@ import * as path from "path";
 import { MessageStatus, Organization } from "../constants/index";
 import * as crypto from "crypto";
 import { Logger } from "./loggerHelper";
-import { setSeqToken } from "./globalStore";
+import { GlobalStore } from "./globalStore";
 
 export class Common {
+    private static globalStore = GlobalStore.getInstance();
+
     private static debrickedDataPath = path.join(
         Organization.debricked_installed_dir,
         Organization.debrickedFolder,
@@ -70,8 +72,18 @@ export class Common {
     }
 
     public static async setupDebricked(): Promise<void> {
-        setSeqToken(Common.generateHashCode());
+        Common.globalStore.setSeqToken(Common.generateHashCode());
         await Common.checkUserId();
         Common.createDirectory(Organization.reportsFolderPath);
+    }
+
+    public static stringToArray(inputString: string, separator: string) {
+        // Split the string by newline character
+        let array = inputString.split(separator);
+
+        // Trim whitespace and asterisks from each element
+        array = array.map((item) => item.trim().replace(/^\* /, ""));
+
+        return array;
     }
 }

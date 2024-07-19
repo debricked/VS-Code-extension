@@ -54,6 +54,16 @@
                 "command": "debricked.scan",
                 "title": "Start a Debricked dependency scan",
                 "category": "debricked"
+            },
+            {
+                "command": "debricked.files",
+                "title": "Analyze files",
+                "category": "debricked"
+            },
+            {
+                "command": "debricked.files.find",
+                "title": "Find all dependency files in inputted path",
+                "category": "debricked"
             }
         ]
     },

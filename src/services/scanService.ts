@@ -1,15 +1,25 @@
-import { QuickPick, StatusBarMessageHelper, StatusMessage, Logger, Terminal, GitHelper } from "../helpers";
+import {
+    QuickPick,
+    StatusBarMessageHelper,
+    StatusMessage,
+    Logger,
+    Terminal,
+    GitHelper,
+    Common,
+    GlobalStore,
+} from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag } from "../types";
 import * as vscode from "vscode";
-import { Common, setSeqToken } from "../helpers";
 
 export class ScanService {
+    private static globalStore = GlobalStore.getInstance();
+
     static async scanService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Starting scan service...");
             Common.createDirectory(Organization.reportsFolderPath);
-            setSeqToken(Common.generateHashCode());
+            ScanService.globalStore.setSeqToken(Common.generateHashCode());
             const cmdParams = [];
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 
@@ -126,10 +136,8 @@ export class ScanService {
     }
 
     static async runDebrickedScan(e: vscode.Uri) {
-        if (e.path.endsWith("package.json")) {
-            Logger.logMessageByStatus(MessageStatus.INFO, "Running Debricked scan on package.json...");
-            setSeqToken(Common.generateHashCode());
-            await ScanService.scanService();
-        }
+        Logger.logMessageByStatus(MessageStatus.INFO, `Running Debricked scan on ${e.path}`);
+        ScanService.globalStore.setSeqToken(Common.generateHashCode());
+        await ScanService.scanService();
     }
 }

@@ -44,7 +44,7 @@ export class Command {
         });
     }
 
-    public static async executeAsyncCommand(command: string): Promise<string> {
+    public static async executeAsyncCommand(command: string, accessTokenRequired: boolean = false): Promise<string> {
         try {
             const execAsync = promisify(exec);
 
@@ -54,6 +54,25 @@ export class Command {
                 throw new Error("No workspace folder open");
             }
             const cwd = workspaceFolders[0].uri.fsPath;
+
+            if (accessTokenRequired) {
+                const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
+                const accessToken = await AuthHelper.getAccessToken();
+
+                if (accessToken) {
+                    command = `${command} ${flags[0].flag} ${accessToken}`;
+                    Logger.logMessageByStatus(
+                        MessageStatus.INFO,
+                        `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: "${command} "`,
+                    );
+                }
+            } else {
+                Logger.logMessageByStatus(
+                    MessageStatus.INFO,
+                    `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: "${command}"`,
+                );
+            }
+
             const { stdout, stderr } = await execAsync(command, { cwd });
             if (stderr) {
                 Logger.logMessageByStatus(MessageStatus.ERROR, `Git command error: ${stderr}`);

@@ -1,10 +1,12 @@
 import { Organization, MessageStatus, DebrickedCommands, Messages } from "../constants/index";
-import { StatusBarMessageHelper, Terminal, QuickPick, StatusMessage, Logger, setSeqToken, Common } from "../helpers";
+import { StatusBarMessageHelper, Terminal, QuickPick, StatusMessage, Logger, Common, GlobalStore } from "../helpers";
 
 export class HelpService {
+    private static globalStore = GlobalStore.getInstance();
+
     static async help() {
         try {
-            setSeqToken(Common.generateHashCode());
+            HelpService.globalStore.setSeqToken(Common.generateHashCode());
             const cmdParams = [];
             const subCommand: any = DebrickedCommands.BASE_COMMAND;
 

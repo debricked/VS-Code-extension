@@ -16,6 +16,11 @@ export class Organization {
         Organization.reports,
     );
     static readonly debricked_data_file = "debricked_data.json";
+    static readonly debricked_data_filePath = path.join(
+        Organization.debricked_installed_dir,
+        Organization.debrickedFolder,
+        Organization.debricked_data_file,
+    );
     static readonly debricked_installer = "resources/debricked-cli";
     static readonly EXTENSION_VERSION_KEY = "extensionVersion";
     static readonly IS_FIRST_ACTIVATION_KEY = "isFirstActivation";
@@ -264,7 +269,12 @@ export class DebrickedCommands {
     };
 
     static getAllCommands(): DebrickedCommandNode[] {
-        return [DebrickedCommands.BASE_COMMAND, DebrickedCommands.HELP, DebrickedCommands.SCAN];
+        return [
+            DebrickedCommands.BASE_COMMAND,
+            DebrickedCommands.HELP,
+            DebrickedCommands.SCAN,
+            DebrickedCommands.FILES,
+        ];
     }
 
     static getCommand(commandName: string): DebrickedCommandNode | undefined {
