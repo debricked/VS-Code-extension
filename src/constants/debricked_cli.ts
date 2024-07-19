@@ -1,14 +1,16 @@
 import path from "path";
 import { DebrickedCommandNode, Flag } from "../types";
 import * as vscode from "vscode";
+import os from "os";
 
 export class Organization {
     static readonly name = "debricked";
+    static readonly command = os.platform() === "win32" ? "debricked.exe" : "debricked";
     static readonly debrickedFolder = `.${Organization.name}`;
     static readonly reports = "reports";
     static readonly log_file = "debricked.log";
     static readonly workspace = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || path.join(__dirname, "../../");
-    static readonly debricked_cli = Organization.name;
+    static readonly debricked_cli = path.join(__dirname, `../resources/debricked-cli/cli/${Organization.command}`);
     static readonly debricked_installed_dir = path.join(__dirname, "../");
     static readonly reportsFolderPath = path.join(
         Organization.workspace,

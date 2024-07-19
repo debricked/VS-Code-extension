@@ -2,51 +2,25 @@
 setlocal enabledelayedexpansion
 
 :: Set log file path
-set "logFile=%~dp0\debricked_install.log"
+set "logFile=%~dp0debricked_download.log"
 
-:: Start logging
-echo INFO: Debricked CLI Installation started at %date% %time% > "%logFile%"
-
-:: Check for admin rights
-call :check_admin || exit /b
+echo INFO: Debricked CLI Download started at %date% %time% >> "%logFile%"
 
 :: Define variables
 set "releaseVersion=release-v2"
 call :set_architecture
 set "downloadUrl=https://github.com/debricked/cli/releases/download/%releaseVersion%/cli_windows_%arch%.tar.gz"
-set "destinationPath=%~dp0debricked-cli.tar.gz"
-set "extractPath=%~dp0cli"
-set "installPath=C:\Program Files\debricked"
-set "exePath=%installPath%\debricked.exe"
+set "cliFolder=%~dp0cli"
 
-:: Main installation process
-call :remove_exe
-call :remove_install_dir
+:: Main download process
+call :create_cli_folder || exit /b
+call :download_and_extract_cli || exit /b
 
-call :download_cli || exit /b
-call :extract_cli || exit /b
-call :install_cli || exit /b
-call :cleanup || exit /b
-
-echo INFO: Debricked(%releaseVersion%) CLI installation completed successfully.
-debricked
-debricked >> "%logFile%"
+echo INFO: Debricked(%releaseVersion%) CLI download completed successfully.
 echo INFO: See %logFile% for details.
-timeout 10
 exit /b
 
 :: Functions
-:check_admin
-    net session >nul 2>&1
-    if %errorLevel% neq 0 (
-        echo WARNING: This script needs to be run as an administrator.
-        echo ERROR: Script not run as administrator. >> "%logFile%"
-        powershell -Command "Start-Process cmd -Verb RunAs -ArgumentList '/c %~dpnx0'"
-        exit /b 1
-    )
-    echo INFO: Admin rights confirmed. >> "%logFile%"
-    exit /b 0
-
 :set_architecture
     if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
         set "arch=x86_64"
@@ -56,85 +30,46 @@ exit /b
     echo INFO: Architecture set to %arch%. >> "%logFile%"
     exit /b 0
 
-:remove_exe
-    if exist "%exePath%" (
-        echo INFO: Removing debricked.exe...
-        del /F /Q "%exePath%" 2>>"%logFile%" && (
-            echo INFO: debricked.exe removed successfully. >> "%logFile%"
-        ) || (
-            echo ERROR: Failed to remove debricked.exe. >> "%logFile%"
+:create_cli_folder
+    if not exist "%cliFolder%" (
+        mkdir "%cliFolder%" || (
+            echo ERROR: Failed to create cli folder. >> "%logFile%"
+            exit /b 1
         )
-    ) else (
-        echo WARNING: debricked.exe not found at %exePath% >> "%logFile%"
     )
+    echo INFO: CLI folder created or already exists. >> "%logFile%"
     exit /b 0
 
-:remove_install_dir
-    if exist "%installPath%" (
-        dir /b "%installPath%" | findstr "^" >nul && (
-            echo WARNING: Install directory is not empty. Skipping removal. >> "%logFile%"
-        ) || (
-            echo INFO: Removing install directory...
-            rmdir "%installPath%" 2>>"%logFile%" && (
-                echo INFO: Install directory removed successfully. >> "%logFile%"
-            ) || (
-                echo ERROR: Failed to remove install directory. >> "%logFile%"
-            )
-        )
-    ) else (
-        echo WARNING: Install directory not found at %installPath% >> "%logFile%"
+:download_and_extract_cli
+    echo INFO: Downloading and extracting Debricked CLI from %downloadUrl%
+    echo INFO: Downloading and extracting from %downloadUrl% >> "%logFile%"
+    
+    :: Check if debricked.exe already exists
+    if exist "%cliFolder%\debricked.exe" (
+        echo INFO: Existing debricked.exe found. Backing up before update. >> "%logFile%"
+        move "%cliFolder%\debricked.exe" "%cliFolder%\debricked.exe.bak"
     )
-    exit /b 0
 
-:download_cli
-    echo INFO: Downloading Debricked CLI from %downloadUrl%
-    echo INFO: Downloading from %downloadUrl% >> "%logFile%"
-    powershell -Command "Invoke-WebRequest -Uri '%downloadUrl%' -OutFile '%destinationPath%' -UseBasicParsing; if ($?) { exit 0 } else { exit 1 }"
+    :: Download and extract debricked cli
+    curl -L "%downloadUrl%" | tar -xz -C "%cliFolder%" debricked.exe
     if %errorLevel% neq 0 (
-        echo ERROR: Failed to download Debricked CLI
-        echo ERROR: Download failed. >> "%logFile%"
-        exit /b 1
-    )
-    echo INFO: Download successful. >> "%logFile%"
-    exit /b 0
+        echo ERROR: Failed to download or extract Debricked CLI
+        echo ERROR: Download or extraction failed. >> "%logFile%"
 
-:extract_cli
-    if not exist "%extractPath%" mkdir "%extractPath%" || (
-        echo ERROR: Failed to create extract path. >> "%logFile%"
+        :: Restore backup if download failed
+        if exist "%cliFolder%\debricked.exe.bak" (
+            move "%cliFolder%\debricked.exe.bak" "%cliFolder%\debricked.exe"
+            echo INFO: Restored previous version due to download failure. >> "%logFile%"
+        )
         exit /b 1
     )
-    echo INFO: Extracting Debricked CLI to %extractPath% ...
-    echo INFO: Extracting to %extractPath% >> "%logFile%"
-    tar -xzf "%destinationPath%" -C "%extractPath%" || (
-        echo ERROR: Extraction failed. >> "%logFile%"
-        exit /b 1
-    )
-    del "%destinationPath%" || (
-        echo ERROR: Failed to delete downloaded file. >> "%logFile%"
-        exit /b 1
-    )
-    echo INFO: Extraction successful. >> "%logFile%"
-    exit /b 0
 
-:install_cli
-    if not exist "%installPath%" mkdir "%installPath%" || (
-        echo ERROR: Failed to create install path. >> "%logFile%"
-        exit /b 1
+    echo INFO: Download and extraction successful. >> "%logFile%"
+    echo INFO: debricked.exe is now located in %cliFolder% >> "%logFile%"
+    
+    :: Remove backup if update was successful
+    if exist "%cliFolder%\debricked.exe.bak" (
+        del "%cliFolder%\debricked.exe.bak"
+        echo INFO: Removed backup of previous version. >> "%logFile%"
     )
-    echo INFO: Installing Debricked CLI to %installPath% ...
-    echo INFO: Installing to %installPath% >> "%logFile%"
-    copy "%extractPath%\debricked.exe" "%exePath%" /Y || (
-        echo ERROR: Failed to copy executable. >> "%logFile%"
-        exit /b 1
-    )
-    echo INFO: Installation successful. >> "%logFile%"
-    exit /b 0
-
-:cleanup
-    rmdir /s /q "%extractPath%" || (
-        echo ERROR: Failed to clean up extract path. >> "%logFile%"
-        exit /b 1
-    )
-    echo INFO: Cleanup successful. >> "%logFile%"
-    echo INFO: Debricked(%releaseVersion%) CLI installation completed successfully. >> "%logFile%"
     exit /b 0

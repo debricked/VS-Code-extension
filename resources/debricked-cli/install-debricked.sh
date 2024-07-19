@@ -1,41 +1,14 @@
 #!/bin/bash
 
 # Set log file path
-logFile="/debricked_install.log"
+logFile="$(dirname "$0")/debricked_download.log"
 
-# Start logging
-echo "INFO: Debricked CLI Installation started at $(date)" > "$logFile"
+# Start logging (append instead of overwrite)
+echo "INFO: Debricked CLI Download started at $(date)" >> "$logFile"
 
 # Define variables
 releaseVersion="release-v2"
-installPath="/usr/local/bin/debricked"
-
-
-# Function to uninstall CLI
-uninstall_cli() {
-    if [ -f "$installPath" ]; then
-        echo "INFO: Uninstalling Debricked CLI from $installPath ..."
-        echo "WARNING: Attempting to uninstall from $installPath" >> "$logFile"
-        if sudo rm "$installPath"; then
-            echo "INFO: Debricked CLI uninstalled successfully."
-            echo "INFO: Uninstallation successful." >> "$logFile"
-        else
-            echo "ERROR: Failed to uninstall Debricked CLI."
-            echo "ERROR: Uninstallation failed." >> "$logFile"
-            exit 1
-        fi
-    else
-        echo "WARNING: Debricked CLI is not installed at $installPath."
-        echo "WARNING: CLI not found at $installPath. No action taken." >> "$logFile"
-    fi
-}
-
-# Main uninstallation process
-check_root
-uninstall_cli
-
-echo "INFO: Debricked CLI uninstallation process completed."
-echo "INFO: Uninstallation process completed at $(date)" >> "$logFile"
+cliFolder="$(dirname "$0")/cli"
 
 # Function to determine OS and architecture
 determine_os_and_arch() {
@@ -67,44 +40,61 @@ determine_os_and_arch() {
             ;;
     esac
 
-    echo "$os" "$arch"
+    echo "INFO: OS: $os, Architecture: $arch" >> "$logFile"
+}
+
+# Function to create cli folder
+create_cli_folder() {
+    if [ ! -d "$cliFolder" ]; then
+        mkdir -p "$cliFolder"
+        if [ $? -ne 0 ]; then
+            echo "ERROR: Failed to create cli folder."
+            echo "ERROR: Failed to create cli folder." >> "$logFile"
+            exit 1
+        fi
+    fi
+    echo "INFO: CLI folder created or already exists at $cliFolder" >> "$logFile"
 }
 
 # Function to download and extract CLI
-download_and_extract() {
-    local downloadUrl="$1"
+download_and_extract_cli() {
+    downloadUrl="https://github.com/debricked/cli/releases/download/$releaseVersion/cli_${os}_${arch}.tar.gz"
     echo "INFO: Downloading and extracting Debricked CLI from $downloadUrl"
-    echo "INFO: Attempting to download from $downloadUrl" >> "$logFile"
-    if curl -L "$downloadUrl" | tar -xz debricked; then
-        echo "INFO: Download and extraction successful." >> "$logFile"
+    echo "INFO: Downloading and extracting from $downloadUrl" >> "$logFile"
+    
+    # Check if debricked already exists
+    if [ -f "$cliFolder/debricked" ]; then
+        echo "INFO: Existing debricked CLI found. Backing up before update." >> "$logFile"
+        mv "$cliFolder/debricked" "$cliFolder/debricked.bak"
+    fi
+    
+    # Download and extract debricked cli
+    if curl -L "$downloadUrl" | tar -xz -C "$cliFolder" debricked; then
+        echo "INFO: Download and extraction successful." | tee -a "$logFile"
+        echo "INFO: debricked is now located in $cliFolder" | tee -a "$logFile"
+        
+        # Remove backup if update was successful
+        if [ -f "$cliFolder/debricked.bak" ]; then
+            rm "$cliFolder/debricked.bak"
+            echo "INFO: Removed backup of previous version." >> "$logFile"
+        fi
     else
         echo "ERROR: Failed to download or extract Debricked CLI."
         echo "ERROR: Download or extraction failed." >> "$logFile"
+        
+        # Restore backup if download failed
+        if [ -f "$cliFolder/debricked.bak" ]; then
+            mv "$cliFolder/debricked.bak" "$cliFolder/debricked"
+            echo "INFO: Restored previous version due to download failure." >> "$logFile"
+        fi
         exit 1
     fi
 }
 
-# Function to install CLI
-install_cli() {
-    echo "INFO: Installing Debricked CLI to $installPath ..."
-    echo "INFO: Attempting to install to $installPath" >> "$logFile"
-    if sudo mv debricked "$installPath" && sudo chmod +x "$installPath"; then
-        echo "INFO: Debricked CLI installed successfully."
-        echo "INFO: Installation successful." >> "$logFile"
-    else
-        echo "ERROR: Failed to install Debricked CLI."
-        echo "ERROR: Installation failed." >> "$logFile"
-        exit 1
-    fi
-}
+# Main process
+determine_os_and_arch
+create_cli_folder
+download_and_extract_cli
 
-# Main installation process
-read -r os arch < <(determine_os_and_arch)
-downloadUrl="https://github.com/debricked/cli/releases/download/$releaseVersion/cli_${os}_${arch}.tar.gz"
-
-download_and_extract "$downloadUrl"
-install_cli
-
-echo "INFO: Debricked($releaseVersion) CLI installation process completed."
-echo "INFO: Installation process completed at $(date)" >> "$logFile"
+echo "INFO: Debricked($releaseVersion) CLI download completed successfully."
 echo "INFO: See $logFile for details."

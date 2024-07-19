@@ -7,3 +7,4 @@ node_modules
 coverage
 .debricked
 resources/debricked-cli/debricked_install.log
+resources/debricked-cli/cli
