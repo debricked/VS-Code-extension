@@ -102,6 +102,9 @@ export class FileService {
             if (repositoryName) {
                 debrickedData[repositoryName].filesToScan = foundFilesArray;
             } else {
+                if (!debrickedData["unknown"]) {
+                    debrickedData["unknown"] = {};
+                }
                 debrickedData["unknown"].filesToScan = foundFilesArray;
             }
 

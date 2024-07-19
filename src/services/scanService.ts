@@ -1,14 +1,5 @@
-import {
-    QuickPick,
-    StatusBarMessageHelper,
-    StatusMessage,
-    Logger,
-    Terminal,
-    GitHelper,
-    Common,
-    GlobalStore,
-} from "../helpers";
-import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
+import { StatusBarMessageHelper, StatusMessage, Logger, Terminal, GitHelper, Common, GlobalStore } from "../helpers";
+import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag } from "../types";
 import * as vscode from "vscode";
 
@@ -27,7 +18,6 @@ export class ScanService {
             const currentRepoName = await GitHelper.getUpstream();
             Logger.logMessageByStatus(MessageStatus.INFO, `Current repository name: ${currentRepoName}`);
 
-            let selectedFlags: Flag | undefined;
             if (currentRepoName.indexOf(".git") > -1) {
                 Logger.logMessageByStatus(
                     MessageStatus.INFO,
@@ -35,19 +25,19 @@ export class ScanService {
                 );
 
                 if (command.flags && command.flags.length > 0) {
-                    selectedFlags = await QuickPick.showQuickPick(command.flags, Messages.QUICK_PICK_FLAG);
+                    await ScanService.handleFlags(command.flags[1], cmdParams);
+                    await ScanService.handleFlags(command.flags[3], cmdParams);
+                    await ScanService.handleFlags(command.flags[4], cmdParams);
                 }
             } else {
                 Logger.logMessageByStatus(MessageStatus.WARN, `No default repo selected`);
 
                 if (command.flags && command.flags.length > 0) {
-                    selectedFlags = command.flags[0];
+                    await ScanService.handleFlags(command.flags[0], cmdParams);
+                    await ScanService.handleFlags(command.flags[3], cmdParams);
+                    await ScanService.handleFlags(command.flags[4], cmdParams);
+                    await ScanService.handleFlags(command.flags[5], cmdParams);
                 }
-            }
-
-            if (selectedFlags && selectedFlags.flag) {
-                cmdParams.push(selectedFlags.flag);
-                await ScanService.handleFlags(selectedFlags, cmdParams);
             }
 
             StatusBarMessageHelper.setStatusBarMessage(
@@ -78,6 +68,7 @@ export class ScanService {
 
     static async handleFlags(selectedFlags: Flag, cmdParams: string[]) {
         Logger.logMessageByStatus(MessageStatus.INFO, `Handling flag: ${selectedFlags.flag}(${selectedFlags.label})`);
+        cmdParams.push(selectedFlags.flag);
         switch (selectedFlags.flag) {
             case "-r":
                 const providedRepo = await vscode.window.showInputBox({

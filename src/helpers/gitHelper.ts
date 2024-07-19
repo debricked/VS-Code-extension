@@ -50,24 +50,20 @@ export class GitHelper {
 
         if (currentRepo.indexOf(".git") > -1) {
             repositoryName = await GitHelper.getRepositoryName();
-            userName = await GitHelper.getUsername();
-            email = await GitHelper.getEmail();
-            if (!userName) {
-                userName = await vscode.window.showInputBox({
-                    prompt: "Enter User Name",
-                    ignoreFocusOut: false,
-                });
-            }
+        }
 
-            if (!email) {
-                email = await vscode.window.showInputBox({
-                    prompt: "Enter Email Name",
-                    ignoreFocusOut: false,
-                });
-            }
-        } else {
-            repositoryName = await vscode.window.showInputBox({
-                prompt: "Enter Repository Name",
+        userName = await GitHelper.getUsername();
+        if (!userName) {
+            userName = await vscode.window.showInputBox({
+                prompt: "Enter User Name",
+                ignoreFocusOut: false,
+            });
+        }
+
+        email = await GitHelper.getEmail();
+        if (!email) {
+            email = await vscode.window.showInputBox({
+                prompt: "Enter Email Name",
                 ignoreFocusOut: false,
             });
         }
