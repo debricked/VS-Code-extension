@@ -44,12 +44,22 @@ export class GitHelper {
     public static async setupGit(): Promise<void> {
         const currentRepo = await GitHelper.getUpstream();
         Logger.logMessageByStatus(MessageStatus.INFO, `Current repository: ${currentRepo}`);
-        let repositoryName: string | undefined;
         let userName: string | undefined;
         let email: string | undefined;
+        let debrickedData: any = await Common.readDataFromDebrickedJSON();
+        debrickedData = JSON.parse(debrickedData);
+        let selectedRepoName: string;
 
         if (currentRepo.indexOf(".git") > -1) {
-            repositoryName = await GitHelper.getRepositoryName();
+            selectedRepoName = await GitHelper.getRepositoryName();
+        } else {
+            selectedRepoName = "unknown";
+        }
+
+        if (selectedRepoName) {
+            if (!debrickedData[selectedRepoName]) {
+                debrickedData[selectedRepoName] = {};
+            }
         }
 
         userName = await GitHelper.getUsername();
@@ -58,6 +68,8 @@ export class GitHelper {
                 prompt: "Enter User Name",
                 ignoreFocusOut: false,
             });
+        } else {
+            debrickedData[selectedRepoName].userName = userName;
         }
 
         email = await GitHelper.getEmail();
@@ -66,22 +78,10 @@ export class GitHelper {
                 prompt: "Enter Email Name",
                 ignoreFocusOut: false,
             });
-        }
-
-        let debrickedData: any = await Common.readDataFromDebrickedJSON();
-        debrickedData = JSON.parse(debrickedData);
-
-        if (repositoryName) {
-            if (!debrickedData[repositoryName]) {
-                debrickedData[repositoryName] = {};
-            }
-            debrickedData[repositoryName].userName = userName;
-            debrickedData[repositoryName].email = email;
         } else {
-            debrickedData.unknown = {};
-            debrickedData.unknown.userName = "unknown-user";
-            debrickedData.unknown.email = "unknown-email";
+            debrickedData[selectedRepoName].email = email;
         }
+
         await Common.writeDataToDebrickedJSON(debrickedData);
     }
 }

@@ -99,14 +99,18 @@ export class FileService {
             let debrickedData: any = await Common.readDataFromDebrickedJSON();
             debrickedData = JSON.parse(debrickedData);
             const repositoryName = await GitHelper.getRepositoryName();
+
+            let selectedRepoName: string;
             if (repositoryName) {
-                debrickedData[repositoryName].filesToScan = foundFilesArray;
+                selectedRepoName = repositoryName;
             } else {
-                if (!debrickedData["unknown"]) {
-                    debrickedData["unknown"] = {};
+                selectedRepoName = "unknown";
+                if (!debrickedData[selectedRepoName]) {
+                    debrickedData[selectedRepoName] = {};
                 }
-                debrickedData["unknown"].filesToScan = foundFilesArray;
             }
+
+            debrickedData[selectedRepoName].filesToScan = foundFilesArray;
 
             await Common.writeDataToDebrickedJSON(debrickedData);
 
