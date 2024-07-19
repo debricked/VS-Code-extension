@@ -3,7 +3,7 @@ import { Common, GitHelper, GlobalStore, Logger } from "./helpers";
 import { registerCommands } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
-import { BaseCommandService, FileService } from "services";
+import { BaseCommandService } from "services";
 import * as fs from "fs";
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -26,7 +26,6 @@ export async function activate(context: vscode.ExtensionContext) {
         await BaseCommandService.installCommand(context);
     }
 
-    // Try to read the access token from the token.json file
     let repositoryName: string | undefined;
     let debrickedData: any = {};
     if (fs.existsSync(Organization.debricked_data_filePath)) {
@@ -55,8 +54,6 @@ export async function activate(context: vscode.ExtensionContext) {
             fs.writeFileSync(Organization.debricked_data_filePath, JSON.stringify(debrickedData, null, 2));
         }
     }
-
-    await FileService.findFilesService();
 }
 
 // This method is called when your extension is deactivated

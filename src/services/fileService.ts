@@ -10,7 +10,6 @@ import {
 } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode } from "../types";
-import * as fs from "fs";
 
 export class FileService {
     private static globalStore = GlobalStore.getInstance();
@@ -95,20 +94,10 @@ export class FileService {
             );
             const foundFilesArray = Common.stringToArray(foundFiles, "\n");
 
-            // Try to read the access token from the token.json file
-            let repositoryFilesToScan: string[] | undefined;
-            let debrickedData: any = {};
-            if (fs.existsSync(Organization.debricked_data_filePath)) {
-                const debrickedFileContent = fs.readFileSync(Organization.debricked_data_filePath, "utf-8");
-                debrickedData = JSON.parse(debrickedFileContent);
-                repositoryFilesToScan = debrickedData.repositoryFilesToScan;
-            }
-
-            if (!repositoryFilesToScan) {
-                debrickedData.repositoryFilesToScan = foundFilesArray;
-                // Store the updated data in the token.json file
-                fs.writeFileSync(Organization.debricked_data_filePath, JSON.stringify(debrickedData, null, 2));
-            }
+            let debrickedData: any = await Common.readDataFromDebrickedJSON();
+            debrickedData = JSON.parse(debrickedData);
+            debrickedData.filesToScan = foundFilesArray;
+            await Common.writeDataToDebrickedJSON(debrickedData);
 
             Logger.logMessageByStatus(MessageStatus.INFO, `Found Files: ${foundFilesArray}`);
         } catch (error: any) {

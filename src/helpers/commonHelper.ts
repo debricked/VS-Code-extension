@@ -86,4 +86,21 @@ export class Common {
 
         return array;
     }
+
+    public static async readDataFromDebrickedJSON() {
+        if (fs.existsSync(Organization.debricked_data_filePath)) {
+            Logger.logMessageByStatus(
+                MessageStatus.INFO,
+                `Fetching Debricked data from ${Organization.debricked_data_filePath}`,
+            );
+            return await fs.readFileSync(Organization.debricked_data_filePath, "utf-8");
+        }
+        Logger.logMessageByStatus(MessageStatus.ERROR, `No files found`);
+        return null;
+    }
+
+    public static async writeDataToDebrickedJSON(debrickedData: object) {
+        Common.globalStore.setDebrickedData(debrickedData);
+        await fs.writeFileSync(Organization.debricked_data_filePath, JSON.stringify(debrickedData, null, 2));
+    }
 }

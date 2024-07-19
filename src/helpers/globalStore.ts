@@ -1,7 +1,11 @@
+import { stringify } from "querystring";
+import { MessageStatus } from "../constants/index";
+import { Logger } from "./loggerHelper";
+
 export class GlobalStore {
     private static instance: GlobalStore;
     private seqToken: string = "";
-    private debrickedData: object = {};
+    private debrickedData: any;
 
     private constructor() {
         // Private constructor to prevent direct instantiation
@@ -17,6 +21,7 @@ export class GlobalStore {
 
     public setSeqToken(hashCode: string): void {
         this.seqToken = hashCode;
+        Logger.logMessageByStatus(MessageStatus.INFO, `New sequence token has been set: ${this.seqToken}`);
     }
 
     public getSeqToken(): string {
@@ -25,6 +30,14 @@ export class GlobalStore {
 
     public setDebrickedData(data: object): void {
         this.debrickedData = data;
+        Logger.logMessageByStatus(
+            MessageStatus.INFO,
+            `New Debricked data has been set: ${stringify(this.debrickedData)}`,
+        );
+    }
+
+    public getDebrickedData(): any {
+        return this.debrickedData;
     }
 
     public getFilesToScan(): object {

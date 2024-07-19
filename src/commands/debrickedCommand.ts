@@ -51,21 +51,31 @@ export class DebrickedCommand {
             }),
         );
 
-        // Add file watcher for package.json
-        const repositoryFilesToScan = ["debricked.fingerprints.txt", "package.json", "package-lock.json"];
+        // Add file watcher for all files found from 'debricked files find'
+        let debrickedData = DebrickedCommand.globalStore.getDebrickedData();
 
-        repositoryFilesToScan.forEach((file) => {
-            const watcher = vscode.workspace.createFileSystemWatcher(`**/${file}`);
+        if (debrickedData && debrickedData.filesToScan) {
+            Logger.logMessageByStatus(MessageStatus.INFO, `Found Debricked data`);
+        } else {
+            await FileService.findFilesService();
+            debrickedData = DebrickedCommand.globalStore.getDebrickedData();
+            Logger.logMessageByStatus(MessageStatus.INFO, `New Debricked data found:`);
+        }
 
-            const runScan = async (e: vscode.Uri) => {
-                await ScanService.runDebrickedScan(e);
-            };
+        if (debrickedData.filesToScan) {
+            debrickedData.filesToScan.forEach((file: any) => {
+                const watcher = vscode.workspace.createFileSystemWatcher(`**/${file}`);
 
-            watcher.onDidChange(runScan);
-            watcher.onDidCreate(runScan);
-            watcher.onDidDelete(runScan);
-            Logger.logMessageByStatus(MessageStatus.INFO, `register watcher on ${file}`);
-            context.subscriptions.push(watcher);
-        });
+                const runScan = async (e: vscode.Uri) => {
+                    await ScanService.runDebrickedScan(e);
+                };
+
+                watcher.onDidChange(runScan);
+                watcher.onDidCreate(runScan);
+                watcher.onDidDelete(runScan);
+                Logger.logMessageByStatus(MessageStatus.INFO, `register watcher on ${file}`);
+                context.subscriptions.push(watcher);
+            });
+        }
     }
 }
