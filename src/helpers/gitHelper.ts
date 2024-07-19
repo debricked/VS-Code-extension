@@ -1,4 +1,6 @@
-import { Command } from "../helpers";
+import { MessageStatus } from "../constants/index";
+import { Command, Common, Logger } from "../helpers";
+import * as vscode from "vscode";
 
 export class GitHelper {
     public static async getCurrentBranch() {
@@ -37,5 +39,53 @@ export class GitHelper {
         return await Command.executeAsyncCommand("git rev-parse --show-toplevel").then((repoPath) => {
             return repoPath.split("/").pop() || repoPath.split("\\").pop() || "";
         });
+    }
+
+    public static async setupGit(): Promise<void> {
+        const currentRepo = await GitHelper.getUpstream();
+        Logger.logMessageByStatus(MessageStatus.INFO, `Current repository: ${currentRepo}`);
+        let repositoryName: string | undefined;
+        let userName: string | undefined;
+        let email: string | undefined;
+
+        if (currentRepo.indexOf(".git") > -1) {
+            repositoryName = await GitHelper.getRepositoryName();
+            userName = await GitHelper.getUsername();
+            email = await GitHelper.getEmail();
+            if (!userName) {
+                userName = await vscode.window.showInputBox({
+                    prompt: "Enter User Name",
+                    ignoreFocusOut: false,
+                });
+            }
+
+            if (!email) {
+                email = await vscode.window.showInputBox({
+                    prompt: "Enter Email Name",
+                    ignoreFocusOut: false,
+                });
+            }
+        } else {
+            repositoryName = await vscode.window.showInputBox({
+                prompt: "Enter Repository Name",
+                ignoreFocusOut: false,
+            });
+        }
+
+        let debrickedData: any = await Common.readDataFromDebrickedJSON();
+        debrickedData = JSON.parse(debrickedData);
+
+        if (repositoryName) {
+            if (!debrickedData[repositoryName]) {
+                debrickedData[repositoryName] = {};
+            }
+            debrickedData[repositoryName].userName = userName;
+            debrickedData[repositoryName].email = email;
+        } else {
+            debrickedData.unknown = {};
+            debrickedData.unknown.userName = "unknown-user";
+            debrickedData.unknown.email = "unknown-email";
+        }
+        await Common.writeDataToDebrickedJSON(debrickedData);
     }
 }

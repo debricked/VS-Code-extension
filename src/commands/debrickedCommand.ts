@@ -62,8 +62,10 @@ export class DebrickedCommand {
             Logger.logMessageByStatus(MessageStatus.INFO, `New Debricked data found:`);
         }
 
-        if (debrickedData.filesToScan) {
-            debrickedData.filesToScan.forEach((file: any) => {
+        const filesToScan = await FileService.getFilesToScan();
+
+        if (filesToScan && filesToScan.length > 0) {
+            filesToScan.forEach((file: any) => {
                 const watcher = vscode.workspace.createFileSystemWatcher(`**/${file}`);
 
                 const runScan = async (e: vscode.Uri) => {

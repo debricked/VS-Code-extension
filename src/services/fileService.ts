@@ -7,6 +7,7 @@ import {
     Command,
     GlobalStore,
     Common,
+    GitHelper,
 } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode } from "../types";
@@ -93,10 +94,17 @@ export class FileService {
                 true,
             );
             const foundFilesArray = Common.stringToArray(foundFiles, "\n");
+            await GitHelper.setupGit();
 
             let debrickedData: any = await Common.readDataFromDebrickedJSON();
             debrickedData = JSON.parse(debrickedData);
-            debrickedData.filesToScan = foundFilesArray;
+            const repositoryName = await GitHelper.getRepositoryName();
+            if (repositoryName) {
+                debrickedData[repositoryName].filesToScan = foundFilesArray;
+            } else {
+                debrickedData["unknown"].filesToScan = foundFilesArray;
+            }
+
             await Common.writeDataToDebrickedJSON(debrickedData);
 
             Logger.logMessageByStatus(MessageStatus.INFO, `Found Files: ${foundFilesArray}`);
@@ -113,6 +121,16 @@ export class FileService {
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.FILES.cli_command),
             );
             Logger.logMessageByStatus(MessageStatus.INFO, "Files service finished.");
+        }
+    }
+
+    static async getFilesToScan() {
+        const debrickedData: any = await FileService.globalStore.getDebrickedData();
+        const repositoryName = await GitHelper.getRepositoryName();
+        if (repositoryName) {
+            return debrickedData[repositoryName].filesToScan;
+        } else {
+            return debrickedData["unknown"].filesToScan;
         }
     }
 }
