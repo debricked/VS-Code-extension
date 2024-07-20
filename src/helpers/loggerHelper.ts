@@ -13,9 +13,7 @@ export class Logger {
     );
 
     public static async logMessage(message: string) {
-        if (!fs.existsSync(Organization.debricked_installed_dir)) {
-            fs.mkdirSync(Organization.debricked_installed_dir, { recursive: true });
-        }
+        Common.createDirectory(Organization.debricked_installed_dir);
 
         const timestamp = new Date().toISOString();
         const userId = await Common.getFromDebrickedData("user_id");
