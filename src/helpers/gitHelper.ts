@@ -1,6 +1,5 @@
 import { MessageStatus } from "../constants/index";
-import { Command, Common, Logger } from "../helpers";
-import * as vscode from "vscode";
+import { Command, Common, Logger, ShowInputBoxHelper } from "../helpers";
 
 export class GitHelper {
     public static async getCurrentBranch() {
@@ -24,11 +23,17 @@ export class GitHelper {
     }
 
     public static async getUsername(): Promise<string> {
-        return await Command.executeAsyncCommand("git config --get user.name");
+        return (
+            (await Command.executeAsyncCommand("git config --get user.name")) ||
+            ShowInputBoxHelper.inputData("Please enter User Name", "unknown-user")
+        );
     }
 
     public static async getEmail(): Promise<string> {
-        return await Command.executeAsyncCommand("git config --get user.email");
+        return (
+            (await Command.executeAsyncCommand("git config --get user.email")) ||
+            ShowInputBoxHelper.inputData("Please enter Email ID", "unknown-email")
+        );
     }
 
     public static async getUpstream(): Promise<string> {
@@ -44,8 +49,6 @@ export class GitHelper {
     public static async setupGit(): Promise<void> {
         const currentRepo = await GitHelper.getUpstream();
         Logger.logMessageByStatus(MessageStatus.INFO, `Current repository: ${currentRepo}`);
-        let userName: string | undefined;
-        let email: string | undefined;
         let debrickedData: any = await Common.readDataFromDebrickedJSON();
         debrickedData = JSON.parse(debrickedData);
         let selectedRepoName: string;
@@ -62,25 +65,8 @@ export class GitHelper {
             }
         }
 
-        userName = await GitHelper.getUsername();
-        if (!userName) {
-            userName = await vscode.window.showInputBox({
-                prompt: "Enter User Name",
-                ignoreFocusOut: false,
-            });
-        } else {
-            debrickedData[selectedRepoName].userName = userName;
-        }
-
-        email = await GitHelper.getEmail();
-        if (!email) {
-            email = await vscode.window.showInputBox({
-                prompt: "Enter Email Name",
-                ignoreFocusOut: false,
-            });
-        } else {
-            debrickedData[selectedRepoName].email = email;
-        }
+        debrickedData[selectedRepoName].userName = await GitHelper.getUsername();
+        debrickedData[selectedRepoName].email = await GitHelper.getEmail();
 
         await Common.writeDataToDebrickedJSON(debrickedData);
     }

@@ -10,6 +10,7 @@ import { FileHelper } from "./fileHelper";
 import { GlobalStore } from "./globalStore";
 import { InstallHelper } from "./installHelper";
 import { GitHelper } from "./gitHelper";
+import { ShowInputBoxHelper } from "./showInputBoxHelper";
 
 export {
     AuthHelper,
@@ -24,4 +25,5 @@ export {
     InstallHelper,
     GitHelper,
     GlobalStore,
+    ShowInputBoxHelper,
 };
