@@ -16,12 +16,9 @@ export class AuthHelper {
 
         // Try to read the access token from the token.json file
         let accessToken: string | undefined;
-        let tokenData: any = {};
-        if (fs.existsSync(Organization.debricked_data_filePath)) {
-            const tokenFileContent = fs.readFileSync(Organization.debricked_data_filePath, "utf-8");
-            tokenData = JSON.parse(tokenFileContent);
-            accessToken = tokenData.accessToken;
-        }
+        let debrickedData: any = await Common.readDataFromDebrickedJSON();
+        debrickedData = JSON.parse(debrickedData);
+        accessToken = debrickedData.accessToken;
 
         if (!accessToken) {
             // Prompt the user to enter the access token
@@ -33,9 +30,9 @@ export class AuthHelper {
 
             if (accessToken) {
                 // Append the access token to the existing data
-                tokenData.accessToken = accessToken;
+                debrickedData.accessToken = accessToken;
                 // Store the updated data in the token.json file
-                fs.writeFileSync(Organization.debricked_data_filePath, JSON.stringify(tokenData, null, 2));
+                fs.writeFileSync(Organization.debricked_data_filePath, JSON.stringify(debrickedData, null, 2));
             } else {
                 throw new Error(Messages.ACCESS_TOKEN_RQD);
             }
