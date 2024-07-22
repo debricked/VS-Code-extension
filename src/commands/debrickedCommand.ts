@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { DebrickedCommands, MessageStatus } from "../constants/index";
-import { BaseCommandService, HelpService, ScanService, FileService } from "../services";
+import { BaseCommandService, ScanService, FileService } from "../services";
 import { Common, Logger, GlobalStore } from "../helpers";
 
 export class DebrickedCommand {
@@ -40,9 +40,14 @@ export class DebrickedCommand {
         );
 
         context.subscriptions.push(
-            vscode.commands.registerCommand(DebrickedCommands.HELP.command, async () => {
-                await HelpService.help();
-            }),
+            vscode.commands.registerCommand(
+                DebrickedCommands.BASE_COMMAND.sub_commands
+                    ? DebrickedCommands.BASE_COMMAND.sub_commands[2].command
+                    : "",
+                async () => {
+                    await BaseCommandService.help();
+                },
+            ),
         );
 
         context.subscriptions.push(

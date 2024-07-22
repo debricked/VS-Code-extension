@@ -29,26 +29,70 @@ export class BaseCommandService {
                 BaseCommandService.installCommand(context);
             } else if (selectedSubCommand && selectedSubCommand.cli_command === "access_token") {
                 BaseCommandService.updateCommand();
+            } else if (selectedSubCommand && selectedSubCommand.cli_command === "help") {
+                BaseCommandService.help();
             } else {
                 StatusBarMessageHelper.setStatusBarMessage(
-                    StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.HELP.cli_command),
+                    StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.BASE_COMMAND.cli_command),
                 );
                 Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description);
                 StatusBarMessageHelper.setStatusBarMessage(
-                    StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.HELP.cli_command),
+                    StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.BASE_COMMAND.cli_command),
                 );
             }
         } catch (error: any) {
             StatusBarMessageHelper.showErrorMessage(
-                `${Organization.name} - ${DebrickedCommands.HELP.cli_command} ${MessageStatus.ERROR}: ${error.message}`,
+                `${Organization.name} - ${DebrickedCommands.BASE_COMMAND.cli_command} ${MessageStatus.ERROR}: ${error.message}`,
             );
             StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.HELP.cli_command),
+                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.BASE_COMMAND.cli_command),
             );
             Logger.logMessageByStatus(MessageStatus.ERROR, error.stack);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.HELP.cli_command),
+                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.cli_command),
+            );
+        }
+    }
+
+    static async help() {
+        try {
+            Logger.logMessageByStatus(MessageStatus.INFO, "Register HelpCommand");
+            BaseCommandService.globalStore.setSeqToken(Common.generateHashCode());
+            const cmdParams = [];
+            const subCommand: any = DebrickedCommands.BASE_COMMAND;
+
+            let selectedFlags: any;
+            if (subCommand.command) {
+                selectedFlags = await QuickPick.showQuickPick(subCommand.flags, Messages.QUICK_PICK_FLAG);
+            }
+
+            let accessTokenRequired: boolean = false;
+            if (selectedFlags && selectedFlags.flag) {
+                accessTokenRequired = selectedFlags.flag === "-t" ? true : false;
+                if (!accessTokenRequired) {
+                    cmdParams.push(selectedFlags.flag);
+                }
+            }
+
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.BASE_COMMAND.cli_command),
+            );
+            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, accessTokenRequired);
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.BASE_COMMAND.cli_command),
+            );
+        } catch (error: any) {
+            StatusBarMessageHelper.showErrorMessage(
+                `${Organization.name} - ${DebrickedCommands.BASE_COMMAND.cli_command} ${MessageStatus.ERROR}: ${error.message}`,
+            );
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.BASE_COMMAND.cli_command),
+            );
+            Logger.logMessageByStatus(MessageStatus.ERROR, error.stack);
+        } finally {
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.cli_command),
             );
         }
     }

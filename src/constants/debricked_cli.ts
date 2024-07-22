@@ -5,8 +5,8 @@ export class DebrickedCommands {
     static readonly BASE_COMMAND: DebrickedCommandNode = {
         label: "Debricked",
         command: "debricked.debricked",
-        cli_command: "",
-        description: "debricked-cli",
+        cli_command: "debricked",
+        description: "debricked-cli - Help about any command",
         sub_commands: [
             {
                 label: "Install",
@@ -19,6 +19,12 @@ export class DebrickedCommands {
                 command: "debricked.debricked.access_token",
                 cli_command: "access_token",
                 description: "Add/Update Debricked access token",
+            },
+            {
+                label: "Help",
+                command: "debricked.debricked.help",
+                cli_command: "help",
+                description: "Help about any command",
             },
         ],
         flags: [
@@ -114,13 +120,6 @@ export class DebrickedCommands {
         command: "debricked.fingerprint",
         cli_command: "fingerprint",
         description: "Fingerprints files to match against the Debricked knowledge base.",
-    };
-
-    static readonly HELP: DebrickedCommandNode = {
-        label: "Help",
-        command: "debricked.help",
-        cli_command: "help",
-        description: "Help about any command",
     };
 
     static readonly REPORT: DebrickedCommandNode = {
@@ -230,12 +229,7 @@ export class DebrickedCommands {
     };
 
     static getAllCommands(): DebrickedCommandNode[] {
-        return [
-            DebrickedCommands.BASE_COMMAND,
-            DebrickedCommands.HELP,
-            DebrickedCommands.SCAN,
-            DebrickedCommands.FILES,
-        ];
+        return [DebrickedCommands.BASE_COMMAND, DebrickedCommands.SCAN, DebrickedCommands.FILES];
     }
 
     static getCommand(commandName: string): DebrickedCommandNode | undefined {
