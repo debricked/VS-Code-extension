@@ -12,6 +12,7 @@ export class DebrickedCommand {
         DebrickedCommand.globalStore.setSeqToken(Common.generateHashCode());
 
         const baseSubCommands: DebrickedCommandNode[] = DebrickedCommands.BASE_COMMAND.sub_commands || [];
+        const fileSubCommands: DebrickedCommandNode[] = DebrickedCommands.FILES.sub_commands || [];
 
         context.subscriptions.push(
             vscode.commands.registerCommand(DebrickedCommands.BASE_COMMAND.command, async () => {
@@ -49,11 +50,8 @@ export class DebrickedCommand {
             }),
         );
 
-        const findFilesCommand = DebrickedCommands.FILES.sub_commands
-            ? DebrickedCommands.FILES.sub_commands[0].command
-            : "";
         context.subscriptions.push(
-            vscode.commands.registerCommand(findFilesCommand, async () => {
+            vscode.commands.registerCommand(fileSubCommands[0].command, async () => {
                 await FileService.findFilesService();
             }),
         );
