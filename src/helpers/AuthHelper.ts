@@ -27,6 +27,8 @@ export class AuthHelper {
                 prompt: Messages.ENTER_ACCESS_TOKEN,
                 ignoreFocusOut: true,
                 password: true, // To hide the input characters
+                title: Messages.ACCESS_TOKEN,
+                placeHolder: Messages.ENTER_ACCESS_TOKEN,
             });
 
             if (accessToken) {
