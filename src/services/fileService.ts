@@ -16,7 +16,7 @@ export class FileService {
     private static globalStore = GlobalStore.getInstance();
     static async filesService() {
         try {
-            Logger.logMessageByStatus(MessageStatus.INFO, "Starting File service...");
+            Logger.logMessageByStatus(MessageStatus.INFO, "Register FileCommand");
             FileService.globalStore.setSeqToken(Common.generateHashCode());
 
             const cmdParams = [];
@@ -68,7 +68,7 @@ export class FileService {
 
     static async findFilesService() {
         try {
-            Logger.logMessageByStatus(MessageStatus.INFO, "Starting find files service...");
+            Logger.logMessageByStatus(MessageStatus.INFO, "Register Find File Command");
             FileService.globalStore.setSeqToken(Common.generateHashCode());
             const cmdParams = [];
             const command: DebrickedCommandNode = DebrickedCommands.FILES;
@@ -91,7 +91,6 @@ export class FileService {
 
             const foundFiles = await Command.executeAsyncCommand(
                 `${Organization.debricked_cli} ${cmdParams.join(" ")}`,
-                true,
             );
             const foundFilesArray = Common.stringToArray(foundFiles, "\n");
             await GitHelper.setupGit();

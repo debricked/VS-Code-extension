@@ -32,7 +32,6 @@ export class Common {
     }
 
     public static async setupDebricked(): Promise<void> {
-        Common.globalStore.setSeqToken(Common.generateHashCode());
         await Common.checkUserId();
         DebrickedDataHelper.createDir(Organization.reportsFolderPath);
     }

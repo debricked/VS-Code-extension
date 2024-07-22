@@ -11,7 +11,7 @@ export class AuthHelper {
      * @param void
      * @returns Promise<string | undefined>
      */
-    static async getAccessToken(): Promise<string | undefined> {
+    static async getAccessToken(useDefaultAccessToken: boolean = true): Promise<string | undefined> {
         const debrickedFolder = path.join(Organization.debricked_installed_dir, Organization.debrickedFolder);
         DebrickedDataHelper.createDir(debrickedFolder);
 
@@ -19,7 +19,10 @@ export class AuthHelper {
         let accessToken: string | undefined;
         let debrickedData: any = await Common.readDataFromDebrickedJSON();
         debrickedData = JSON.parse(debrickedData);
-        accessToken = debrickedData.accessToken;
+
+        if (useDefaultAccessToken) {
+            accessToken = debrickedData.accessToken;
+        }
 
         if (!accessToken) {
             // Prompt the user to enter the access token
