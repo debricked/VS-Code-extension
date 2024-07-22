@@ -8,6 +8,8 @@ import { BaseCommandService } from "services";
 export async function activate(context: vscode.ExtensionContext) {
     Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
     const globalStore = GlobalStore.getInstance();
+    globalStore.setSeqToken(Common.generateHashCode());
+
     await Common.setupDebricked();
     await DebrickedCommand.commands(context);
 
@@ -22,7 +24,6 @@ export async function activate(context: vscode.ExtensionContext) {
     const isFirstActivation = context.globalState.get<boolean>(Organization.IS_FIRST_ACTIVATION_KEY, true);
 
     if (currentVersion !== storedVersion || isFirstActivation) {
-        globalStore.setSeqToken(Common.generateHashCode());
         await BaseCommandService.installCommand(context);
     }
 }
@@ -30,4 +31,6 @@ export async function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export function deactivate() {
     Logger.logMessageByStatus(MessageStatus.INFO, "Deactivate Debricked VS Code Extension");
+    const globalStore = GlobalStore.getInstance();
+    globalStore.setSeqToken(Common.generateHashCode());
 }

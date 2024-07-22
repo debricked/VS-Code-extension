@@ -5,7 +5,10 @@ import { Common, Logger, GlobalStore } from "../helpers";
 
 export class DebrickedCommand {
     private static globalStore = GlobalStore.getInstance();
+
     public static async commands(context: vscode.ExtensionContext) {
+        DebrickedCommand.globalStore.setSeqToken(Common.generateHashCode());
+
         Logger.logMessageByStatus(MessageStatus.INFO, "Register commands");
 
         context.subscriptions.push(
@@ -20,7 +23,6 @@ export class DebrickedCommand {
                     ? DebrickedCommands.BASE_COMMAND.sub_commands[0].command
                     : "",
                 async () => {
-                    DebrickedCommand.globalStore.setSeqToken(Common.generateHashCode());
                     await BaseCommandService.installCommand(context);
                 },
             ),
