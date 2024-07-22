@@ -25,20 +25,31 @@ export class BaseCommandService {
                 selectedSubCommand = await QuickPick.showQuickPick(subCommand, Messages.QUICK_PICK_FLAG);
             }
 
-            if (selectedSubCommand && selectedSubCommand.cli_command === "install") {
-                BaseCommandService.installCommand(context);
-            } else if (selectedSubCommand && selectedSubCommand.cli_command === "access_token") {
-                BaseCommandService.updateCommand();
-            } else if (selectedSubCommand && selectedSubCommand.cli_command === "help") {
-                BaseCommandService.help();
-            } else {
-                StatusBarMessageHelper.setStatusBarMessage(
-                    StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.BASE_COMMAND.cli_command),
-                );
-                Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description);
-                StatusBarMessageHelper.setStatusBarMessage(
-                    StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.BASE_COMMAND.cli_command),
-                );
+            switch (selectedSubCommand.cli_command) {
+                case "install":
+                    BaseCommandService.installCommand(context);
+                    break;
+
+                case "access_token":
+                    BaseCommandService.updateCommand();
+                    break;
+
+                case "help":
+                    BaseCommandService.help();
+                    break;
+
+                default:
+                    StatusBarMessageHelper.setStatusBarMessage(
+                        StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.BASE_COMMAND.cli_command),
+                    );
+                    Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description);
+                    StatusBarMessageHelper.setStatusBarMessage(
+                        StatusMessage.getStatusMessage(
+                            MessageStatus.COMPLETE,
+                            DebrickedCommands.BASE_COMMAND.cli_command,
+                        ),
+                    );
+                    break;
             }
         } catch (error: any) {
             StatusBarMessageHelper.showErrorMessage(
