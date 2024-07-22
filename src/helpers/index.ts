@@ -11,6 +11,7 @@ import { GlobalStore } from "./globalStore";
 import { InstallHelper } from "./installHelper";
 import { GitHelper } from "./gitHelper";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
+import { DebrickedDataHelper } from "./debrickedDataHelper";
 
 export {
     AuthHelper,
@@ -26,4 +27,5 @@ export {
     GitHelper,
     GlobalStore,
     ShowInputBoxHelper,
+    DebrickedDataHelper,
 };

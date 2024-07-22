@@ -2,6 +2,7 @@ import { StatusBarMessageHelper, StatusMessage, Logger, Terminal, GitHelper, Com
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag } from "../types";
 import * as vscode from "vscode";
+import { DebrickedDataHelper } from "../helpers";
 
 export class ScanService {
     private static globalStore = GlobalStore.getInstance();
@@ -9,7 +10,7 @@ export class ScanService {
     static async scanService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Starting scan service...");
-            Common.createDirectory(Organization.reportsFolderPath);
+            DebrickedDataHelper.createDir(Organization.reportsFolderPath);
             ScanService.globalStore.setSeqToken(Common.generateHashCode());
             const cmdParams = [];
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;

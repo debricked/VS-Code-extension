@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Organization } from "../constants/index";
-import { Common } from "../helpers";
 import { GlobalStore } from "./globalStore";
+import { DebrickedDataHelper } from "./debrickedDataHelper";
 
 export class Logger {
     private static globalStore = GlobalStore.getInstance();
@@ -13,10 +13,10 @@ export class Logger {
     );
 
     public static async logMessage(message: string) {
-        Common.createDirectory(Organization.debricked_installed_dir);
+        DebrickedDataHelper.createDir(Organization.debricked_installed_dir);
 
         const timestamp = new Date().toISOString();
-        const userId = await Common.getFromDebrickedData("user_id");
+        const userId = await DebrickedDataHelper.getSpecificKeyFromDebrickedData("user_id");
         const sequenceId = Logger.globalStore.getSeqToken() ? `[seq_id:${Logger.globalStore.getSeqToken()}]` : "";
 
         const logEntry = `[${timestamp}] [user_id:${userId}] ${sequenceId} ${message}\n`;

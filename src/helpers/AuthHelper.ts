@@ -3,6 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { Messages, Organization } from "../constants/index";
 import { Common } from "../helpers";
+import { DebrickedDataHelper } from "./debrickedDataHelper";
 
 export class AuthHelper {
     /**
@@ -12,7 +13,7 @@ export class AuthHelper {
      */
     static async getAccessToken(): Promise<string | undefined> {
         const debrickedFolder = path.join(Organization.debricked_installed_dir, Organization.debrickedFolder);
-        Common.createDirectory(debrickedFolder);
+        DebrickedDataHelper.createDir(debrickedFolder);
 
         // Try to read the access token from the token.json file
         let accessToken: string | undefined;
