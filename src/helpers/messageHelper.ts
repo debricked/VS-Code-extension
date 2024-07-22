@@ -1,6 +1,6 @@
 import { MessageStatus, Organization } from "../constants/index";
 
-export default class StatusMessage {
+export class StatusMessage {
     public static getStatusMessage(type: string, command: string): string {
         switch (type) {
             case MessageStatus.START:

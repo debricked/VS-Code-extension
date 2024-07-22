@@ -1,18 +1,7 @@
-import { expect, sinon, goCliPath, seqToken } from "../setup";
-import HelpService from "../../services/helpService";
-import {
-    StatusBarMessageHelper,
-    Terminal,
-    QuickPick,
-    AuthHelper,
-    Logger,
-} from "../../helpers";
-import {
-    Organization,
-    MessageStatus,
-    DebrickedCommands,
-} from "../../constants";
-import { Flag } from "../../types";
+import { expect, sinon } from "../setup";
+import { HelpService } from "../../services/helpService";
+import { StatusBarMessageHelper, Terminal, QuickPick, Logger, StatusMessage } from "../../helpers";
+import { Organization, MessageStatus, DebrickedCommands } from "../../constants";
 
 describe("HelpService: Test Suite", () => {
     let setStatusBarMessageStub: sinon.SinonStub;
@@ -20,21 +9,13 @@ describe("HelpService: Test Suite", () => {
     let showErrorMessageStub: sinon.SinonStub;
     let logMessageByStatusStub: sinon.SinonStub;
     let showQuickPickStub: sinon.SinonStub;
-    let getAccessTokenStub: sinon.SinonStub;
 
     before(() => {
-        setStatusBarMessageStub = sinon.stub(
-            StatusBarMessageHelper,
-            "setStatusBarMessage",
-        );
+        setStatusBarMessageStub = sinon.stub(StatusBarMessageHelper, "setStatusBarMessage");
         createAndUseTerminalStub = sinon.stub(Terminal, "createAndUseTerminal");
-        showErrorMessageStub = sinon.stub(
-            StatusBarMessageHelper,
-            "showErrorMessage",
-        );
+        showErrorMessageStub = sinon.stub(StatusBarMessageHelper, "showErrorMessage");
         logMessageByStatusStub = sinon.stub(Logger, "logMessageByStatus");
         showQuickPickStub = sinon.stub(QuickPick, "showQuickPick");
-        getAccessTokenStub = sinon.stub(AuthHelper, "getAccessToken");
     });
 
     afterEach(() => {
@@ -47,33 +28,17 @@ describe("HelpService: Test Suite", () => {
         showErrorMessageStub.restore();
         logMessageByStatusStub.restore();
         showQuickPickStub.restore();
-        getAccessTokenStub.restore();
     });
 
     it("should run help without errors", async () => {
         const selectedFlags = { flag: "-h" };
-        const flags: Flag[] = [
-            {
-                label: "Help",
-                flag: "-h",
-                description: "help for debricked",
-            },
-        ];
         showQuickPickStub.resolves(selectedFlags);
 
-        sinon.stub(DebrickedCommands, "getCommandSpecificFlags").returns(flags);
-        getAccessTokenStub.resolves("access_token");
-
-        await HelpService.help(goCliPath, seqToken);
+        await HelpService.help();
 
         expect(setStatusBarMessageStub.callCount).to.equal(3);
-        expect(
-            createAndUseTerminalStub.calledOnceWith(
-                DebrickedCommands.BASE_COMMAND.description,
-                `${goCliPath} ${selectedFlags.flag} access_token`,
-                seqToken,
-            ),
-        ).to.be.true;
+        expect(createAndUseTerminalStub.calledOnceWith(DebrickedCommands.BASE_COMMAND.description, ["-h"], false)).to.be
+            .true;
         expect(showErrorMessageStub.notCalled).to.be.true;
         expect(logMessageByStatusStub.notCalled).to.be.true;
     });
@@ -82,7 +47,7 @@ describe("HelpService: Test Suite", () => {
         const errorMessage = "Test error";
         createAndUseTerminalStub.throws(new Error(errorMessage));
 
-        await HelpService.help(goCliPath, seqToken);
+        await HelpService.help();
 
         expect(setStatusBarMessageStub.callCount).to.equal(3);
         expect(
@@ -90,21 +55,27 @@ describe("HelpService: Test Suite", () => {
                 `${Organization.name} - ${DebrickedCommands.HELP.cli_command} ${MessageStatus.ERROR}: ${errorMessage}`,
             ),
         ).to.be.true;
-        expect(
-            logMessageByStatusStub.calledOnceWith(
-                MessageStatus.ERROR,
-                sinon.match.any,
-                seqToken,
-            ),
-        ).to.be.true;
+        expect(logMessageByStatusStub.calledOnceWith(MessageStatus.ERROR, sinon.match.any)).to.be.true;
     });
 
-    it("should not call AuthHelper.getAccessToken when the selected flag is not auth-related", async () => {
-        const selectedFlags = { flag: "--other" };
+    it("should call Terminal.createAndUseTerminal with the correct parameters", async () => {
+        const selectedFlags = { flag: "-t" };
         showQuickPickStub.resolves(selectedFlags);
 
-        await HelpService.help(goCliPath, seqToken);
+        await HelpService.help();
 
-        expect(getAccessTokenStub.notCalled).to.be.true;
+        expect(setStatusBarMessageStub.callCount).to.equal(3);
+    });
+
+    it("should show error message if quick pick fails", async () => {
+        showQuickPickStub.rejects(new Error("QuickPick failed"));
+
+        await HelpService.help();
+
+        expect(
+            setStatusBarMessageStub.calledWith(
+                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.HELP.cli_command),
+            ),
+        ).to.be.true;
     });
 });

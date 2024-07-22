@@ -1,79 +1,46 @@
-import {
-    Organization,
-    MessageStatus,
-    DebrickedCommands,
-} from "../constants/index";
-import {
-    StatusBarMessageHelper,
-    Terminal,
-    QuickPick,
-    StatusMessage,
-    AuthHelper,
-    Logger,
-} from "../helpers";
+import { Organization, MessageStatus, DebrickedCommands, Messages } from "../constants/index";
+import { StatusBarMessageHelper, Terminal, QuickPick, StatusMessage, Logger, Common, GlobalStore } from "../helpers";
 
-export default class HelpService {
-    static async help(goCliPath: string, seqToken: string) {
+export class HelpService {
+    private static globalStore = GlobalStore.getInstance();
+
+    static async help() {
         try {
+            HelpService.globalStore.setSeqToken(Common.generateHashCode());
             const cmdParams = [];
             const subCommand: any = DebrickedCommands.BASE_COMMAND;
 
             let selectedFlags: any;
             if (subCommand.command) {
-                selectedFlags = await QuickPick.showQuickPick(
-                    subCommand.flags,
-                    "Select a flag to use (optional)",
-                );
+                selectedFlags = await QuickPick.showQuickPick(subCommand.flags, Messages.QUICK_PICK_FLAG);
             }
 
+            let accessTokenRequired: boolean = false;
             if (selectedFlags && selectedFlags.flag) {
-                cmdParams.push(selectedFlags.flag);
-            }
-
-            let flags =
-                DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
-            let accessToken: string | undefined;
-            if (selectedFlags && selectedFlags.flag === flags[0].flag) {
-                accessToken = await AuthHelper.getAccessToken();
-                if (accessToken) {
-                    cmdParams.push(accessToken);
+                accessTokenRequired = selectedFlags.flag === "-t" ? true : false;
+                if (!accessTokenRequired) {
+                    cmdParams.push(selectedFlags.flag);
                 }
             }
 
             StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(
-                    MessageStatus.START,
-                    DebrickedCommands.HELP.cli_command,
-                ),
+                StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.HELP.cli_command),
             );
-            Terminal.createAndUseTerminal(
-                DebrickedCommands.BASE_COMMAND.description,
-                `${goCliPath} ${cmdParams.join(" ")}`,
-                seqToken,
-            );
+            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, accessTokenRequired);
             StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(
-                    MessageStatus.COMPLETE,
-                    DebrickedCommands.HELP.cli_command,
-                ),
+                StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.HELP.cli_command),
             );
         } catch (error: any) {
             StatusBarMessageHelper.showErrorMessage(
                 `${Organization.name} - ${DebrickedCommands.HELP.cli_command} ${MessageStatus.ERROR}: ${error.message}`,
             );
             StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(
-                    MessageStatus.ERROR,
-                    DebrickedCommands.HELP.cli_command,
-                ),
+                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.HELP.cli_command),
             );
-            Logger.logMessageByStatus(MessageStatus.ERROR, error, seqToken);
+            Logger.logMessageByStatus(MessageStatus.ERROR, error.stack);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(
-                    MessageStatus.FINISHED,
-                    DebrickedCommands.HELP.cli_command,
-                ),
+                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.HELP.cli_command),
             );
         }
     }

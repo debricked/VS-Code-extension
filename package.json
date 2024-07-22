@@ -3,7 +3,7 @@
     "displayName": "debricked",
     "description": "A fast and flexible software composition analysis VS Code Extension and CLI tool, given to you by Debricked.",
     "publisher": "debricked",
-    "version": "0.0.1",
+    "version": "0.0.0",
     "engines": {
         "vscode": "^1.90.0"
     },
@@ -12,7 +12,28 @@
     ],
     "activationEvents": [],
     "main": "./dist/extension.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/debricked/VS-Code-extension"
+    },
     "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "debricked",
+                    "title": "Debricked",
+                    "icon": "resources/assets/debricked-icon.svg"
+                }
+            ]
+        },
+        "views": {
+            "debricked": [
+                {
+                    "id": "debrickedCommands",
+                    "name": "Debricked"
+                }
+            ]
+        },
         "commands": [
             {
                 "command": "debricked.debricked",
@@ -20,8 +41,28 @@
                 "category": "debricked"
             },
             {
+                "command": "debricked.debricked.install",
+                "title": "Install Debricked-cli",
+                "category": "debricked"
+            },
+            {
                 "command": "debricked.help",
                 "title": "Help about any command",
+                "category": "debricked"
+            },
+            {
+                "command": "debricked.scan",
+                "title": "Start a Debricked dependency scan",
+                "category": "debricked"
+            },
+            {
+                "command": "debricked.files",
+                "title": "Analyze files",
+                "category": "debricked"
+            },
+            {
+                "command": "debricked.files.find",
+                "title": "Find all dependency files in inputted path",
                 "category": "debricked"
             }
         ]
@@ -40,28 +81,37 @@
         "lint": "eslint src --ext ts",
         "lint:fix": "eslint --fix src --ext ts",
         "test": "vscode-test --coverage",
-        "clean": "rimraf out && rimraf dist && rimraf coverage",
+        "clean": "rimraf out && rimraf dist && rimraf coverage && rimraf .debricked",
         "clean-all": "rimraf out && rimraf dist && rimraf coverage && rimraf .vscode-test",
-        "postinstall": "node ./resources/debricked-cli/uninstall.js && node ./resources/debricked-cli/install.js"
+        "vsce": "vsce package"
     },
     "devDependencies": {
         "@types/chai": "^4.3.16",
+        "@types/chai-as-promised": "^7.1.8",
         "@types/mocha": "^10.0.6",
+        "@types/mock-fs": "^4.13.4",
         "@types/node": "20.x",
+        "@types/proxyquire": "^1.3.31",
         "@types/sinon": "^17.0.3",
         "@types/vscode": "^1.90.0",
-        "@typescript-eslint/eslint-plugin": "^7.11.0",
-        "@typescript-eslint/parser": "^7.11.0",
+        "@typescript-eslint/eslint-plugin": "^7.16.0",
+        "@typescript-eslint/parser": "^7.16.0",
         "@vscode/test-cli": "^0.0.9",
         "@vscode/test-electron": "^2.4.0",
         "chai": "^5.1.1",
+        "chai-as-promised": "^8.0.0",
         "esbuild": "^0.21.5",
         "eslint": "^8.57.0",
-        "eslint-plugin-prettier": "^5.1.3",
         "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.1.3",
         "mocha": "^10.4.0",
         "npm-run-all": "^4.1.5",
+        "prettier": "^3.3.2",
         "sinon": "^18.0.0",
         "typescript": "^5.4.5"
+    },
+    "dependencies": {
+        "mock-fs": "^5.2.0",
+        "proxyquire": "^2.1.3"
     }
 }

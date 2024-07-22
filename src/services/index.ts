@@ -1,4 +1,6 @@
-import BaseCommandService from "./baseCommandService";
-import HelpService from "./helpService";
+import { BaseCommandService } from "./baseCommandService";
+import { FileService } from "./fileService";
+import { HelpService } from "./helpService";
+import { ScanService } from "./scanService";
 
-export { BaseCommandService, HelpService };
+export { BaseCommandService, HelpService, ScanService, FileService };

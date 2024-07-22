@@ -6,8 +6,9 @@
         "sourceType": "module"
     },
     "plugins": ["@typescript-eslint"],
-    "extends": ["plugin:prettier/recommended"],
+    "extends": ["plugin:@typescript-eslint/recommended"],
     "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/naming-convention": [
             "warn",
             {
@@ -24,12 +25,6 @@
             "error",
             {
                 "max": 1
-            }
-        ],
-        "max-len": [
-            "error",
-            {
-                "code": 900
             }
         ]
     },

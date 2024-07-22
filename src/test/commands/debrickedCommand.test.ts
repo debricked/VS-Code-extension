@@ -1,37 +1,35 @@
+import * as vscode from "vscode";
 import { sinon } from "../setup";
-import { BaseCommandService, HelpService } from "../../services";
-import { Common } from "../../helpers";
+import { DebrickedCommand } from "../../commands/debrickedCommand";
 
 describe("DebrickedCommand: Test Suite", () => {
-    let baseCommandStub: sinon.SinonStub;
-    let helpStub: sinon.SinonStub;
-    let generateHashCodeStub: sinon.SinonStub;
+    let sandbox: sinon.SinonSandbox;
+    let context: vscode.ExtensionContext;
+    let registerCommandStub: sinon.SinonStub;
 
-    before(async () => {
-        baseCommandStub = sinon.stub(BaseCommandService, "baseCommand");
-        helpStub = sinon.stub(HelpService, "help");
-        generateHashCodeStub = sinon.stub(Common, "generateHashCode");
+    before(() => {
+        sandbox = sinon.createSandbox();
+        context = { subscriptions: [] } as any;
+        registerCommandStub = sandbox.stub(vscode.commands, "registerCommand");
     });
 
     afterEach(() => {
-        sinon.resetHistory();
+        sandbox.restore();
     });
 
-    after(() => {
-        baseCommandStub.restore();
-        helpStub.restore();
-        generateHashCodeStub.restore();
+    it("should run base command on BASE_COMMAND trigger", async () => {
+        await DebrickedCommand.commands(context);
+        const baseCommandCallback = registerCommandStub.getCall(0).args[1];
+        await baseCommandCallback();
     });
 
-    it("should register BASE_COMMAND and call BaseCommandService.baseCommand", async () => {
-        // generateHashCodeStub
-        //     .withArgs(DebrickedCommands.BASE_COMMAND.command)
-        //     .returns(seqToken);
-        // console.log(context.subscriptions);
-        // const baseCommand = context.subscriptions.find(
-        //     (sub) =>
-        //         (sub as any).command === DebrickedCommands.BASE_COMMAND.command,
-        // ) as vscode.Disposable;
-        // expect(baseCommand).to.not.be.undefined;
+    it("should run help command on HELP trigger", async () => {
+        const helpCommandCallback = registerCommandStub.getCall(1).args[1];
+        await helpCommandCallback();
+    });
+
+    it("should run scan command on SCAN trigger", async () => {
+        const scanCommandCallback = registerCommandStub.getCall(2).args[1];
+        await scanCommandCallback();
     });
 });

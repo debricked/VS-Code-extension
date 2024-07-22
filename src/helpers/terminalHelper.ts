@@ -1,14 +1,38 @@
-import { Logger } from "../helpers";
+import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
+import { AuthHelper, Logger } from "../helpers";
 import * as vscode from "vscode";
 
-export default class Terminal {
-    public static createAndUseTerminal(
+export class Terminal {
+    public static async createAndUseTerminal(
         description: string,
-        command: string,
-        seqToken: string,
-    ): vscode.Terminal {
-        Logger.logMessage(`Executing command: ${command}`, seqToken);
-        const terminal = vscode.window.createTerminal(description);
+        cmdParams: string[] = [],
+        accessTokenRequired: boolean = false,
+    ): Promise<vscode.Terminal> {
+        let command: string = `${Organization.debricked_cli}`;
+        if (accessTokenRequired) {
+            const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
+            const accessToken = await AuthHelper.getAccessToken();
+
+            if (accessToken) {
+                Logger.logMessageByStatus(
+                    MessageStatus.INFO,
+                    `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: "${command} ${cmdParams.join(" ")}"`,
+                );
+                cmdParams.push(flags[0].flag);
+                cmdParams.push(accessToken);
+            }
+        } else {
+            Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: "${command}"`);
+        }
+        command = `${command} ${cmdParams.join(" ")}`;
+
+        let terminal: vscode.Terminal;
+        if (vscode.window.activeTerminal) {
+            terminal = vscode.window.activeTerminal;
+        } else {
+            terminal = vscode.window.createTerminal(description);
+        }
+
         terminal.sendText(command);
         terminal.show();
         return terminal;

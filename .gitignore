@@ -5,3 +5,6 @@ node_modules
 .vscode
 *.vsix
 coverage
+.debricked
+resources/debricked-cli/debricked_download.log
+resources/debricked-cli/cli
