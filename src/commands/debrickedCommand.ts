@@ -2,14 +2,16 @@ import * as vscode from "vscode";
 import { DebrickedCommands, MessageStatus } from "../constants/index";
 import { BaseCommandService, ScanService, FileService } from "../services";
 import { Common, Logger, GlobalStore } from "../helpers";
+import { DebrickedCommandNode } from "../types";
 
 export class DebrickedCommand {
     private static globalStore = GlobalStore.getInstance();
 
     public static async commands(context: vscode.ExtensionContext) {
+        Logger.logMessageByStatus(MessageStatus.INFO, "Register commands");
         DebrickedCommand.globalStore.setSeqToken(Common.generateHashCode());
 
-        Logger.logMessageByStatus(MessageStatus.INFO, "Register commands");
+        const baseSubCommands: DebrickedCommandNode[] = DebrickedCommands.BASE_COMMAND.sub_commands || [];
 
         context.subscriptions.push(
             vscode.commands.registerCommand(DebrickedCommands.BASE_COMMAND.command, async () => {
@@ -18,36 +20,21 @@ export class DebrickedCommand {
         );
 
         context.subscriptions.push(
-            vscode.commands.registerCommand(
-                DebrickedCommands.BASE_COMMAND.sub_commands
-                    ? DebrickedCommands.BASE_COMMAND.sub_commands[0].command
-                    : "",
-                async () => {
-                    await BaseCommandService.installCommand(context);
-                },
-            ),
+            vscode.commands.registerCommand(baseSubCommands[0].command, async () => {
+                await BaseCommandService.installCommand(context);
+            }),
         );
 
         context.subscriptions.push(
-            vscode.commands.registerCommand(
-                DebrickedCommands.BASE_COMMAND.sub_commands
-                    ? DebrickedCommands.BASE_COMMAND.sub_commands[1].command
-                    : "",
-                async () => {
-                    await BaseCommandService.updateCommand();
-                },
-            ),
+            vscode.commands.registerCommand(baseSubCommands[1].command, async () => {
+                await BaseCommandService.updateCommand();
+            }),
         );
 
         context.subscriptions.push(
-            vscode.commands.registerCommand(
-                DebrickedCommands.BASE_COMMAND.sub_commands
-                    ? DebrickedCommands.BASE_COMMAND.sub_commands[2].command
-                    : "",
-                async () => {
-                    await BaseCommandService.help();
-                },
-            ),
+            vscode.commands.registerCommand(baseSubCommands[2].command, async () => {
+                await BaseCommandService.help();
+            }),
         );
 
         context.subscriptions.push(
