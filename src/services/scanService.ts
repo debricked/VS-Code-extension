@@ -9,7 +9,8 @@ export class ScanService {
 
     static async scanService() {
         try {
-            Logger.logMessageByStatus(MessageStatus.INFO, "Starting scan service...");
+            Logger.logMessageByStatus(MessageStatus.INFO, "Register ScanCommand");
+
             DebrickedDataHelper.createDir(Organization.reportsFolderPath);
             ScanService.globalStore.setSeqToken(Common.generateHashCode());
             const cmdParams = [];

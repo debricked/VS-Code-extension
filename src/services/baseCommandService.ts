@@ -16,6 +16,7 @@ export class BaseCommandService {
     private static globalStore = GlobalStore.getInstance();
     static async baseCommand(context: vscode.ExtensionContext) {
         try {
+            Logger.logMessageByStatus(MessageStatus.INFO, "Register BaseCommand");
             BaseCommandService.globalStore.setSeqToken(Common.generateHashCode());
             const subCommand: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
 
@@ -52,6 +53,8 @@ export class BaseCommandService {
 
     static async installCommand(context: vscode.ExtensionContext) {
         try {
+            Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
+
             BaseCommandService.globalStore.setSeqToken(Common.generateHashCode());
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
             const installer = new InstallHelper();

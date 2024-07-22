@@ -6,6 +6,8 @@ import { Common, Logger, GlobalStore } from "../helpers";
 export class DebrickedCommand {
     private static globalStore = GlobalStore.getInstance();
     public static async commands(context: vscode.ExtensionContext) {
+        Logger.logMessageByStatus(MessageStatus.INFO, "Register commands");
+
         context.subscriptions.push(
             vscode.commands.registerCommand(DebrickedCommands.BASE_COMMAND.command, async () => {
                 await BaseCommandService.baseCommand(context);

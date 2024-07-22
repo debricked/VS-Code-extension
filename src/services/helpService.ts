@@ -6,6 +6,8 @@ export class HelpService {
 
     static async help() {
         try {
+            Logger.logMessageByStatus(MessageStatus.INFO, "Register HelpCommand");
+
             HelpService.globalStore.setSeqToken(Common.generateHashCode());
             const cmdParams = [];
             const subCommand: any = DebrickedCommands.BASE_COMMAND;

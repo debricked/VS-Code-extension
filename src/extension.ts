@@ -1,14 +1,15 @@
 import * as vscode from "vscode";
-import { Common, GlobalStore } from "./helpers";
-import { registerCommands } from "./commands";
+import { Common, GlobalStore, Logger } from "./helpers";
+import { DebrickedCommand } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
-import { Organization } from "./constants/index";
+import { MessageStatus, Organization } from "./constants/index";
 import { BaseCommandService } from "services";
 
 export async function activate(context: vscode.ExtensionContext) {
+    Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
     const globalStore = GlobalStore.getInstance();
     await Common.setupDebricked();
-    await registerCommands(context);
+    await DebrickedCommand.commands(context);
 
     const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
     vscode.window.registerTreeDataProvider(Organization.debricked_command, debCommandsProvider);
@@ -27,4 +28,6 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+    Logger.logMessageByStatus(MessageStatus.INFO, "Deactivate Debricked VS Code Extension");
+}
