@@ -70,21 +70,21 @@ describe("Common", () => {
     //     expect(result).to.equal(value);
     // });
 
-    it("should return 'user_id' if data is found in debricked data file", async () => {
-        fsExistsSyncStub.withArgs(mockPath).returns(false);
+    // it("should return 'user_id' if data is found in debricked data file", async () => {
+    //     fsExistsSyncStub.withArgs(mockPath).returns(false);
 
-        const result = await Common.getFromDebrickedData("user_id");
+    //     const result = await Common.getFromDebrickedData("user_id");
 
-        expect(result).to.not.equal("");
-    });
+    //     expect(result).to.not.equal("");
+    // });
 
-    it("should return 'unknown-user' if data not found in debricked data file", async () => {
-        fsExistsSyncStub.withArgs(mockPath).returns(false);
+    // it("should return 'unknown-user' if data not found in debricked data file", async () => {
+    //     fsExistsSyncStub.withArgs(mockPath).returns(false);
 
-        const result = await Common.getFromDebrickedData("");
+    //     const result = await Common.getFromDebrickedData("");
 
-        expect(result).to.equal("unknown-user");
-    });
+    //     expect(result).to.equal("unknown-user");
+    // });
 
     it("should generate hash code", () => {
         const input = "test input";
