@@ -29,6 +29,17 @@ export class DebrickedCommand {
         );
 
         context.subscriptions.push(
+            vscode.commands.registerCommand(
+                DebrickedCommands.BASE_COMMAND.sub_commands
+                    ? DebrickedCommands.BASE_COMMAND.sub_commands[1].command
+                    : "",
+                async () => {
+                    await BaseCommandService.updateCommand();
+                },
+            ),
+        );
+
+        context.subscriptions.push(
             vscode.commands.registerCommand(DebrickedCommands.HELP.command, async () => {
                 await HelpService.help();
             }),

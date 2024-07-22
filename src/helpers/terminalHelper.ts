@@ -7,11 +7,12 @@ export class Terminal {
         description: string,
         cmdParams: string[] = [],
         accessTokenRequired: boolean = false,
+        useDefaultAccessToken: boolean = true,
     ): Promise<vscode.Terminal> {
         let command: string = `${Organization.debricked_cli}`;
         if (accessTokenRequired) {
             const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
-            const accessToken = await AuthHelper.getAccessToken();
+            const accessToken = await AuthHelper.getAccessToken(useDefaultAccessToken);
 
             if (accessToken) {
                 Logger.logMessageByStatus(

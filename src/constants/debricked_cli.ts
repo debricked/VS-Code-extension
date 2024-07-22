@@ -14,6 +14,12 @@ export class DebrickedCommands {
                 cli_command: "install",
                 description: "Install Debricked-cli",
             },
+            {
+                label: "Add/Update Access Token",
+                command: "debricked.debricked.access_token",
+                cli_command: "access_token",
+                description: "Add/Update Debricked access token",
+            },
         ],
         flags: [
             {

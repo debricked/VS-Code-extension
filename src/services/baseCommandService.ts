@@ -27,6 +27,8 @@ export class BaseCommandService {
 
             if (selectedSubCommand && selectedSubCommand.cli_command === "install") {
                 BaseCommandService.installCommand(context);
+            } else if (selectedSubCommand && selectedSubCommand.cli_command === "access_token") {
+                BaseCommandService.updateCommand();
             } else {
                 StatusBarMessageHelper.setStatusBarMessage(
                     StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.HELP.cli_command),
@@ -72,6 +74,27 @@ export class BaseCommandService {
                     `${Organization.EXTENSION_VERSION_KEY}: ${context.globalState.get<boolean>(Organization.EXTENSION_VERSION_KEY)}`,
                 );
             });
+        } catch (error: any) {
+            StatusBarMessageHelper.showErrorMessage(
+                `${Organization.name} - ${DebrickedCommands.BASE_COMMAND.command} ${MessageStatus.ERROR}: ${error.message}`,
+            );
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.BASE_COMMAND.command),
+            );
+            Logger.logMessageByStatus(MessageStatus.ERROR, error.stack);
+        } finally {
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),
+            );
+        }
+    }
+
+    static async updateCommand() {
+        try {
+            Logger.logMessageByStatus(MessageStatus.INFO, "Register UpdateCommand");
+            BaseCommandService.globalStore.setSeqToken(Common.generateHashCode());
+
+            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, [], true, false);
         } catch (error: any) {
             StatusBarMessageHelper.showErrorMessage(
                 `${Organization.name} - ${DebrickedCommands.BASE_COMMAND.command} ${MessageStatus.ERROR}: ${error.message}`,

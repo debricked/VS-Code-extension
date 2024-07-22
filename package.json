@@ -46,6 +46,11 @@
                 "category": "debricked"
             },
             {
+                "command": "debricked.debricked.access_token",
+                "title": "Add/Update Debricked access token",
+                "category": "debricked"
+            },
+            {
                 "command": "debricked.help",
                 "title": "Help about any command",
                 "category": "debricked"
