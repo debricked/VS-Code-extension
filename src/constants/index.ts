@@ -1,5 +1,7 @@
-import { ApiEndpoints, DebrickedCommands, Organization } from "./debricked_cli";
+import { ApiEndpoints } from "./apiEndpoints";
+import { DebrickedCommands } from "./debricked_cli";
 import { Messages } from "./messages";
 import { MessageStatus } from "./messageStatus";
+import { Organization } from "./organization";
 
 export { ApiEndpoints, DebrickedCommands, Organization, Messages, MessageStatus };
