@@ -7,7 +7,8 @@ import { DebrickedCommandNode } from "../types";
 export class DebrickedCommand {
     private static globalStore = GlobalStore.getInstance();
 
-    public static async commands(context: vscode.ExtensionContext) {
+    public static async commands(context: vscode.ExtensionContext, progress: any) {
+        progress.report({ message: "Registering debricked commands" });
         Logger.logMessageByStatus(MessageStatus.INFO, "Register commands");
         DebrickedCommand.globalStore.setSeqToken(Common.generateHashCode());
 
@@ -62,7 +63,7 @@ export class DebrickedCommand {
         if (debrickedData && debrickedData.filesToScan) {
             Logger.logMessageByStatus(MessageStatus.INFO, `Found Debricked data`);
         } else {
-            await FileService.findFilesService();
+            await FileService.findFilesService(progress);
             debrickedData = DebrickedCommand.globalStore.getDebrickedData();
             Logger.logMessageByStatus(MessageStatus.INFO, `New Debricked data found:`);
         }
@@ -71,6 +72,7 @@ export class DebrickedCommand {
 
         if (filesToScan && filesToScan.length > 0) {
             filesToScan.forEach((file: any) => {
+                progress.report({ message: `Initializing watcher on ${file}` });
                 const watcher = vscode.workspace.createFileSystemWatcher(`**/${file}`);
 
                 const runScan = async (e: vscode.Uri) => {
@@ -84,5 +86,6 @@ export class DebrickedCommand {
                 context.subscriptions.push(watcher);
             });
         }
+        progress.report({ message: `debricked is now ready to use` });
     }
 }

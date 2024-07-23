@@ -66,8 +66,9 @@ export class FileService {
         }
     }
 
-    static async findFilesService() {
+    static async findFilesService(progress?: any) {
         try {
+            progress.report({ message: "Finding manifest files..." });
             Logger.logMessageByStatus(MessageStatus.INFO, "Register Find File Command");
             FileService.globalStore.setSeqToken(Common.generateHashCode());
             const cmdParams = [];
@@ -93,20 +94,14 @@ export class FileService {
                 `${Organization.debricked_cli} ${cmdParams.join(" ")}`,
             );
             const foundFilesArray = Common.stringToArray(foundFiles, "\n");
-            await GitHelper.setupGit();
+            await GitHelper.setupGit(progress);
 
             let debrickedData: any = await Common.readDataFromDebrickedJSON();
             debrickedData = JSON.parse(debrickedData);
-            const repositoryName = await GitHelper.getRepositoryName();
+            const selectedRepoName = await GitHelper.getRepositoryName();
 
-            let selectedRepoName: string;
-            if (repositoryName) {
-                selectedRepoName = repositoryName;
-            } else {
-                selectedRepoName = "unknown";
-                if (!debrickedData[selectedRepoName]) {
-                    debrickedData[selectedRepoName] = {};
-                }
+            if (selectedRepoName && !debrickedData[selectedRepoName]) {
+                debrickedData[selectedRepoName] = {};
             }
 
             debrickedData[selectedRepoName].filesToScan = foundFilesArray;
