@@ -26,6 +26,12 @@ export class DebrickedCommands {
                 cli_command: "help",
                 description: "Help about any command",
             },
+            {
+                label: "Logs",
+                command: "debricked.debricked.log",
+                cli_command: "log",
+                description: "Debricked logs",
+            },
         ],
         flags: [
             {

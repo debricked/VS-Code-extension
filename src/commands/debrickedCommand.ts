@@ -42,6 +42,12 @@ export class DebrickedCommand {
         );
 
         context.subscriptions.push(
+            vscode.commands.registerCommand(baseSubCommands[3].command, async () => {
+                await Logger.openLogFile();
+            }),
+        );
+
+        context.subscriptions.push(
             vscode.commands.registerCommand(DebrickedCommands.SCAN.command, async () => {
                 await ScanService.scanService();
             }),

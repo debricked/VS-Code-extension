@@ -15,12 +15,15 @@ export async function activate(context: vscode.ExtensionContext) {
         },
         async (progress) => {
             progress.report({ message: "Activating VS Code Extension", increment: 5 });
-            Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
+            Logger.initialize(context);
             GlobalState.initialize(context);
+
             const globalState = GlobalState.getInstance();
             globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
-
             await Common.setupDebricked();
+
+            Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
+
             await DebrickedCommand.commands(context, progress);
             const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
             vscode.window.registerTreeDataProvider(Organization.debricked_command, debCommandsProvider);

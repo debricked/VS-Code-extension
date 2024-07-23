@@ -3,12 +3,27 @@ import * as path from "path";
 import { Organization, MessageStatus } from "../constants/index";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
 import { GlobalState } from "./globalState";
+import * as vscode from "vscode";
 
 export class Logger {
     private static logDirPath = path.join(Organization.debricked_installed_dir, Organization.debrickedFolder);
-    private static logFilePath = path.join(Logger.logDirPath, Organization.log_file);
+    private static logFilePath: string;
     private static get globalState(): GlobalState {
         return GlobalState.getInstance();
+    }
+
+    public static initialize(context: vscode.ExtensionContext) {
+        const logDir = context.logUri.fsPath;
+        this.logFilePath = path.join(logDir, Organization.log_file);
+
+        // Ensure the log directory exists
+        DebrickedDataHelper.createDir(logDir);
+    }
+
+    public static async openLogFile() {
+        const logUri = vscode.Uri.file(this.logFilePath);
+        const document = await vscode.workspace.openTextDocument(logUri);
+        await vscode.window.showTextDocument(document);
     }
 
     public static setLogFile(fileName: string) {
@@ -16,8 +31,6 @@ export class Logger {
     }
 
     private static async writeLog(message: string) {
-        DebrickedDataHelper.createDir(Organization.debricked_installed_dir);
-
         const timestamp = new Date().toISOString();
         const userId = await Logger.globalState.getGlobalDataByKey(Organization.DEBRICKED_DATA_KEY, "user_id");
         const sequenceId = Logger.globalState.getGlobalData(Organization.SEQ_ID_KEY)
