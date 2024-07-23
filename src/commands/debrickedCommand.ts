@@ -2,14 +2,18 @@ import * as vscode from "vscode";
 import { DebrickedCommands, MessageStatus } from "../constants/index";
 import { BaseCommandService, ScanService, FileService } from "../services";
 import { Common, Logger, GlobalStore } from "../helpers";
+import { DebrickedCommandNode } from "../types";
 
 export class DebrickedCommand {
     private static globalStore = GlobalStore.getInstance();
 
-    public static async commands(context: vscode.ExtensionContext) {
+    public static async commands(context: vscode.ExtensionContext, progress: any) {
+        progress.report({ message: "Registering debricked commands", increment: 30 });
+        Logger.logMessageByStatus(MessageStatus.INFO, "Register commands");
         DebrickedCommand.globalStore.setSeqToken(Common.generateHashCode());
 
-        Logger.logMessageByStatus(MessageStatus.INFO, "Register commands");
+        const baseSubCommands: DebrickedCommandNode[] = DebrickedCommands.BASE_COMMAND.sub_commands || [];
+        const fileSubCommands: DebrickedCommandNode[] = DebrickedCommands.FILES.sub_commands || [];
 
         context.subscriptions.push(
             vscode.commands.registerCommand(DebrickedCommands.BASE_COMMAND.command, async () => {
@@ -18,36 +22,21 @@ export class DebrickedCommand {
         );
 
         context.subscriptions.push(
-            vscode.commands.registerCommand(
-                DebrickedCommands.BASE_COMMAND.sub_commands
-                    ? DebrickedCommands.BASE_COMMAND.sub_commands[0].command
-                    : "",
-                async () => {
-                    await BaseCommandService.installCommand(context);
-                },
-            ),
+            vscode.commands.registerCommand(baseSubCommands[0].command, async () => {
+                await BaseCommandService.installCommand(context);
+            }),
         );
 
         context.subscriptions.push(
-            vscode.commands.registerCommand(
-                DebrickedCommands.BASE_COMMAND.sub_commands
-                    ? DebrickedCommands.BASE_COMMAND.sub_commands[1].command
-                    : "",
-                async () => {
-                    await BaseCommandService.updateCommand();
-                },
-            ),
+            vscode.commands.registerCommand(baseSubCommands[1].command, async () => {
+                await BaseCommandService.updateCommand();
+            }),
         );
 
         context.subscriptions.push(
-            vscode.commands.registerCommand(
-                DebrickedCommands.BASE_COMMAND.sub_commands
-                    ? DebrickedCommands.BASE_COMMAND.sub_commands[2].command
-                    : "",
-                async () => {
-                    await BaseCommandService.help();
-                },
-            ),
+            vscode.commands.registerCommand(baseSubCommands[2].command, async () => {
+                await BaseCommandService.help();
+            }),
         );
 
         context.subscriptions.push(
@@ -62,11 +51,8 @@ export class DebrickedCommand {
             }),
         );
 
-        const findFilesCommand = DebrickedCommands.FILES.sub_commands
-            ? DebrickedCommands.FILES.sub_commands[0].command
-            : "";
         context.subscriptions.push(
-            vscode.commands.registerCommand(findFilesCommand, async () => {
+            vscode.commands.registerCommand(fileSubCommands[0].command, async () => {
                 await FileService.findFilesService();
             }),
         );
@@ -77,7 +63,7 @@ export class DebrickedCommand {
         if (debrickedData && debrickedData.filesToScan) {
             Logger.logMessageByStatus(MessageStatus.INFO, `Found Debricked data`);
         } else {
-            await FileService.findFilesService();
+            await FileService.findFilesService(progress);
             debrickedData = DebrickedCommand.globalStore.getDebrickedData();
             Logger.logMessageByStatus(MessageStatus.INFO, `New Debricked data found:`);
         }
@@ -86,6 +72,7 @@ export class DebrickedCommand {
 
         if (filesToScan && filesToScan.length > 0) {
             filesToScan.forEach((file: any) => {
+                progress.report({ message: `Initializing watcher on ${file}`, increment: 5 });
                 const watcher = vscode.workspace.createFileSystemWatcher(`**/${file}`);
 
                 const runScan = async (e: vscode.Uri) => {

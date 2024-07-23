@@ -25,20 +25,31 @@ export class BaseCommandService {
                 selectedSubCommand = await QuickPick.showQuickPick(subCommand, Messages.QUICK_PICK_FLAG);
             }
 
-            if (selectedSubCommand && selectedSubCommand.cli_command === "install") {
-                BaseCommandService.installCommand(context);
-            } else if (selectedSubCommand && selectedSubCommand.cli_command === "access_token") {
-                BaseCommandService.updateCommand();
-            } else if (selectedSubCommand && selectedSubCommand.cli_command === "help") {
-                BaseCommandService.help();
-            } else {
-                StatusBarMessageHelper.setStatusBarMessage(
-                    StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.BASE_COMMAND.cli_command),
-                );
-                Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description);
-                StatusBarMessageHelper.setStatusBarMessage(
-                    StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.BASE_COMMAND.cli_command),
-                );
+            switch (selectedSubCommand.cli_command) {
+                case "install":
+                    BaseCommandService.installCommand(context);
+                    break;
+
+                case "access_token":
+                    BaseCommandService.updateCommand();
+                    break;
+
+                case "help":
+                    BaseCommandService.help();
+                    break;
+
+                default:
+                    StatusBarMessageHelper.setStatusBarMessage(
+                        StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.BASE_COMMAND.cli_command),
+                    );
+                    Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description);
+                    StatusBarMessageHelper.setStatusBarMessage(
+                        StatusMessage.getStatusMessage(
+                            MessageStatus.COMPLETE,
+                            DebrickedCommands.BASE_COMMAND.cli_command,
+                        ),
+                    );
+                    break;
             }
         } catch (error: any) {
             StatusBarMessageHelper.showErrorMessage(
@@ -97,8 +108,9 @@ export class BaseCommandService {
         }
     }
 
-    static async installCommand(context: vscode.ExtensionContext) {
+    static async installCommand(context: vscode.ExtensionContext, progress?: any) {
         try {
+            progress.report({ message: `fetching debricked cli `, increment: 2 });
             Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
 
             BaseCommandService.globalStore.setSeqToken(Common.generateHashCode());
@@ -109,7 +121,8 @@ export class BaseCommandService {
                 `${Organization.IS_FIRST_ACTIVATION_KEY}: ${context.globalState.get<boolean>(Organization.IS_FIRST_ACTIVATION_KEY)} - ${Organization.EXTENSION_VERSION_KEY}: ${currentVersion}`,
             );
 
-            installer.runInstallScript().then(() => {
+            installer.runInstallScript(progress).then(() => {
+                progress.report({ message: `cli completed successfully`, increment: 3 });
                 context.globalState.update(Organization.IS_FIRST_ACTIVATION_KEY, false);
                 context.globalState.update(Organization.EXTENSION_VERSION_KEY, currentVersion);
 

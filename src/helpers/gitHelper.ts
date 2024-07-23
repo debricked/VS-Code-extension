@@ -41,12 +41,16 @@ export class GitHelper {
     }
 
     public static async getRepositoryName(): Promise<string> {
-        return await Command.executeAsyncCommand("git rev-parse --show-toplevel").then((repoPath) => {
-            return repoPath.split("/").pop() || repoPath.split("\\").pop() || "";
-        });
+        return (
+            (await Command.executeAsyncCommand("git rev-parse --show-toplevel").then((repoPath) => {
+                return repoPath.split("/").pop() || repoPath.split("\\").pop() || "";
+            })) || "unknown"
+        );
     }
 
-    public static async setupGit(): Promise<void> {
+    public static async setupGit(progress?: any): Promise<void> {
+        progress.report({ message: "Fetching Git repository details...", increment: 5 });
+
         const currentRepo = await GitHelper.getUpstream();
         Logger.logMessageByStatus(MessageStatus.INFO, `Current repository: ${currentRepo}`);
         let debrickedData: any = await Common.readDataFromDebrickedJSON();
