@@ -1,7 +1,10 @@
-import { MessageStatus } from "../constants/index";
-import { Command, Common, Logger, ShowInputBoxHelper } from "../helpers";
+import { MessageStatus, Organization } from "../constants/index";
+import { Command, GlobalState, Logger, ShowInputBoxHelper } from "../helpers";
 
 export class GitHelper {
+    private static get globalState(): GlobalState {
+        return GlobalState.getInstance();
+    }
     public static async getCurrentBranch() {
         return await Command.executeAsyncCommand("git branch --show-current");
     }
@@ -53,8 +56,7 @@ export class GitHelper {
 
         const currentRepo = await GitHelper.getUpstream();
         Logger.logMessageByStatus(MessageStatus.INFO, `Current repository: ${currentRepo}`);
-        let debrickedData: any = await Common.readDataFromDebrickedJSON();
-        debrickedData = JSON.parse(debrickedData);
+        const debrickedData: any = await GitHelper.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
         let selectedRepoName: string;
 
         if (currentRepo.indexOf(".git") > -1) {
@@ -72,6 +74,6 @@ export class GitHelper {
         debrickedData[selectedRepoName].userName = await GitHelper.getUsername();
         debrickedData[selectedRepoName].email = await GitHelper.getEmail();
 
-        await Common.writeDataToDebrickedJSON(debrickedData);
+        await GitHelper.globalState.setGlobalData(Organization.DEBRICKED_DATA_KEY, debrickedData);
     }
 }

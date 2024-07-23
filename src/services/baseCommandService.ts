@@ -1,23 +1,18 @@
 import { DebrickedCommandNode } from "../types";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
-import {
-    StatusBarMessageHelper,
-    Terminal,
-    StatusMessage,
-    Logger,
-    QuickPick,
-    InstallHelper,
-    Common,
-    GlobalStore,
-} from "../helpers";
+import { StatusBarMessageHelper, Terminal, StatusMessage, Logger, QuickPick, InstallHelper, Common } from "../helpers";
 import * as vscode from "vscode";
+import { GlobalState } from "helpers/globalState";
 
 export class BaseCommandService {
-    private static globalStore = GlobalStore.getInstance();
-    static async baseCommand(context: vscode.ExtensionContext) {
+    private static get globalState(): GlobalState {
+        return GlobalState.getInstance();
+    }
+
+    static async baseCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register BaseCommand");
-            BaseCommandService.globalStore.setSeqToken(Common.generateHashCode());
+            BaseCommandService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
             const subCommand: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
 
             let selectedSubCommand: any;
@@ -27,7 +22,7 @@ export class BaseCommandService {
 
             switch (selectedSubCommand.cli_command) {
                 case "install":
-                    BaseCommandService.installCommand(context);
+                    BaseCommandService.installCommand();
                     break;
 
                 case "access_token":
@@ -69,7 +64,7 @@ export class BaseCommandService {
     static async help() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register HelpCommand");
-            BaseCommandService.globalStore.setSeqToken(Common.generateHashCode());
+            BaseCommandService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
             const cmdParams = [];
             const subCommand: any = DebrickedCommands.BASE_COMMAND;
 
@@ -108,27 +103,27 @@ export class BaseCommandService {
         }
     }
 
-    static async installCommand(context: vscode.ExtensionContext, progress?: any) {
+    static async installCommand(progress?: any) {
         try {
             progress.report({ message: `fetching debricked cli `, increment: 2 });
             Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
+            BaseCommandService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
 
-            BaseCommandService.globalStore.setSeqToken(Common.generateHashCode());
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
             const installer = new InstallHelper();
             Logger.logMessageByStatus(
                 MessageStatus.INFO,
-                `${Organization.IS_FIRST_ACTIVATION_KEY}: ${context.globalState.get<boolean>(Organization.IS_FIRST_ACTIVATION_KEY)} - ${Organization.EXTENSION_VERSION_KEY}: ${currentVersion}`,
+                `${Organization.IS_FIRST_ACTIVATION_KEY}: ${BaseCommandService.globalState.getGlobalData(Organization.IS_FIRST_ACTIVATION_KEY, "")} - ${Organization.EXTENSION_VERSION_KEY}: ${currentVersion}`,
             );
 
             installer.runInstallScript(progress).then(() => {
                 progress.report({ message: `cli completed successfully`, increment: 3 });
-                context.globalState.update(Organization.IS_FIRST_ACTIVATION_KEY, false);
-                context.globalState.update(Organization.EXTENSION_VERSION_KEY, currentVersion);
+                BaseCommandService.globalState.setGlobalData(Organization.IS_FIRST_ACTIVATION_KEY, false);
+                BaseCommandService.globalState.setGlobalData(Organization.EXTENSION_VERSION_KEY, currentVersion);
 
                 Logger.logMessageByStatus(
                     MessageStatus.INFO,
-                    `${Organization.EXTENSION_VERSION_KEY}: ${context.globalState.get<boolean>(Organization.EXTENSION_VERSION_KEY)}`,
+                    `${Organization.EXTENSION_VERSION_KEY}: ${BaseCommandService.globalState.getGlobalData(Organization.EXTENSION_VERSION_KEY, "")}`,
                 );
             });
         } catch (error: any) {
@@ -149,7 +144,7 @@ export class BaseCommandService {
     static async updateCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register UpdateCommand");
-            BaseCommandService.globalStore.setSeqToken(Common.generateHashCode());
+            BaseCommandService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
 
             Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, [], true, false);
         } catch (error: any) {

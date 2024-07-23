@@ -1,29 +1,31 @@
 import * as vscode from "vscode";
-import { DebrickedCommands, MessageStatus } from "../constants/index";
+import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { BaseCommandService, ScanService, FileService } from "../services";
-import { Common, Logger, GlobalStore } from "../helpers";
+import { Logger, GlobalState, Common } from "../helpers";
 import { DebrickedCommandNode } from "../types";
 
 export class DebrickedCommand {
-    private static globalStore = GlobalStore.getInstance();
-
+    private static get globalState(): GlobalState {
+        return GlobalState.getInstance();
+    }
     public static async commands(context: vscode.ExtensionContext, progress: any) {
         progress.report({ message: "Registering debricked commands", increment: 30 });
         Logger.logMessageByStatus(MessageStatus.INFO, "Register commands");
-        DebrickedCommand.globalStore.setSeqToken(Common.generateHashCode());
+        DebrickedCommand.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
 
         const baseSubCommands: DebrickedCommandNode[] = DebrickedCommands.BASE_COMMAND.sub_commands || [];
         const fileSubCommands: DebrickedCommandNode[] = DebrickedCommands.FILES.sub_commands || [];
 
         context.subscriptions.push(
             vscode.commands.registerCommand(DebrickedCommands.BASE_COMMAND.command, async () => {
-                await BaseCommandService.baseCommand(context);
+                await BaseCommandService.baseCommand();
             }),
         );
 
         context.subscriptions.push(
             vscode.commands.registerCommand(baseSubCommands[0].command, async () => {
-                await BaseCommandService.installCommand(context);
+                    DebrickedCommand.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+                await BaseCommandService.installCommand();
             }),
         );
 
@@ -58,13 +60,13 @@ export class DebrickedCommand {
         );
 
         // Add file watcher for all files found from 'debricked files find'
-        let debrickedData = DebrickedCommand.globalStore.getDebrickedData();
+        let debrickedData: any = await DebrickedCommand.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
 
         if (debrickedData && debrickedData.filesToScan) {
             Logger.logMessageByStatus(MessageStatus.INFO, `Found Debricked data`);
         } else {
             await FileService.findFilesService(progress);
-            debrickedData = DebrickedCommand.globalStore.getDebrickedData();
+            debrickedData = await DebrickedCommand.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
             Logger.logMessageByStatus(MessageStatus.INFO, `New Debricked data found:`);
         }
 

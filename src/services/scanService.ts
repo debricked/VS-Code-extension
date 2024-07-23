@@ -1,18 +1,27 @@
-import { StatusBarMessageHelper, StatusMessage, Logger, Terminal, GitHelper, Common, GlobalStore } from "../helpers";
+import {
+    StatusBarMessageHelper,
+    StatusMessage,
+    Logger,
+    Terminal,
+    GitHelper,
+    Common,
+    GlobalState,
+    DebrickedDataHelper,
+} from "../helpers";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag } from "../types";
 import * as vscode from "vscode";
-import { DebrickedDataHelper } from "../helpers";
 
 export class ScanService {
-    private static globalStore = GlobalStore.getInstance();
-
+    private static get globalState(): GlobalState {
+        return GlobalState.getInstance();
+    }
     static async scanService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register ScanCommand");
 
             DebrickedDataHelper.createDir(Organization.reportsFolderPath);
-            ScanService.globalStore.setSeqToken(Common.generateHashCode());
+            ScanService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
             const cmdParams = [];
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 
@@ -130,7 +139,7 @@ export class ScanService {
 
     static async runDebrickedScan(e: vscode.Uri) {
         Logger.logMessageByStatus(MessageStatus.INFO, `Running Debricked scan on ${e.path}`);
-        ScanService.globalStore.setSeqToken(Common.generateHashCode());
+        ScanService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
         await ScanService.scanService();
     }
 }

@@ -34,6 +34,8 @@ export class Organization {
     static readonly os_win32 = "win32";
     static readonly os_linux = "linux";
     static readonly os_darwin = "darwin";
+    static readonly DEBRICKED_DATA_KEY = "debrickedData";
+    static readonly SEQ_ID_KEY = "sequenceID";
 
     static getOrganizationInfo() {
         return {

@@ -1,11 +1,13 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
 import * as path from "path";
 import { Messages, Organization } from "../constants/index";
-import { Common } from "../helpers";
+import { GlobalState } from "../helpers";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
 
 export class AuthHelper {
+    private static get globalState(): GlobalState {
+        return GlobalState.getInstance();
+    }
     /**
      * Get access token
      * @param void
@@ -17,8 +19,7 @@ export class AuthHelper {
 
         // Try to read the access token from the token.json file
         let accessToken: string | undefined;
-        let debrickedData: any = await Common.readDataFromDebrickedJSON();
-        debrickedData = JSON.parse(debrickedData);
+        const debrickedData: any = await AuthHelper.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
 
         if (useDefaultAccessToken) {
             accessToken = debrickedData.accessToken;
@@ -37,8 +38,7 @@ export class AuthHelper {
             if (accessToken) {
                 // Append the access token to the existing data
                 debrickedData.accessToken = accessToken;
-                // Store the updated data in the token.json file
-                fs.writeFileSync(Organization.debricked_data_filePath, JSON.stringify(debrickedData, null, 2));
+                await AuthHelper.globalState.setGlobalData(Organization.DEBRICKED_DATA_KEY, debrickedData);
             } else {
                 throw new Error(Messages.ACCESS_TOKEN_RQD);
             }
