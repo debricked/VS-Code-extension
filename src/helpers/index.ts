@@ -7,11 +7,11 @@ import { Logger } from "./loggerHelper";
 import { Common } from "./commonHelper";
 import { Command } from "./commandHelper";
 import { FileHelper } from "./fileHelper";
-import { GlobalStore } from "./globalStore";
 import { InstallHelper } from "./installHelper";
 import { GitHelper } from "./gitHelper";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
+import { GlobalState } from "./globalState";
 
 export {
     AuthHelper,
@@ -25,7 +25,7 @@ export {
     FileHelper,
     InstallHelper,
     GitHelper,
-    GlobalStore,
     ShowInputBoxHelper,
     DebrickedDataHelper,
+    GlobalState,
 };

@@ -1,9 +1,10 @@
 import * as vscode from "vscode";
-import { Common, GlobalStore, Logger } from "./helpers";
+import { Common, Logger } from "./helpers";
 import { DebrickedCommand } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
 import { BaseCommandService } from "services";
+import { GlobalState } from "helpers/globalState";
 
 export async function activate(context: vscode.ExtensionContext) {
     await vscode.window.withProgress(
@@ -15,24 +16,25 @@ export async function activate(context: vscode.ExtensionContext) {
         async (progress) => {
             progress.report({ message: "Activating VS Code Extension", increment: 5 });
             Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
-            const globalStore = GlobalStore.getInstance();
-            globalStore.setSeqToken(Common.generateHashCode());
+            GlobalState.initialize(context);
+            const globalState = GlobalState.getInstance();
+            globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
 
             await Common.setupDebricked();
             await DebrickedCommand.commands(context, progress);
-
             const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
             vscode.window.registerTreeDataProvider(Organization.debricked_command, debCommandsProvider);
 
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
-            const storedVersion = context.globalState.get<string>(
+            const storedVersion = globalState.getGlobalData(
                 Organization.EXTENSION_VERSION_KEY,
                 Organization.base_version,
             );
-            const isFirstActivation = context.globalState.get<boolean>(Organization.IS_FIRST_ACTIVATION_KEY, true);
+            const isFirstActivation = globalState.getGlobalData(Organization.IS_FIRST_ACTIVATION_KEY, true);
 
             if (currentVersion !== storedVersion || isFirstActivation) {
-                await BaseCommandService.installCommand(context, progress);
+                globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+                await BaseCommandService.installCommand(progress);
             }
             progress.report({ message: `debricked is now ready to use`, increment: 5 });
         },
@@ -40,8 +42,10 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {
+export async function deactivate() {
     Logger.logMessageByStatus(MessageStatus.INFO, "Deactivate Debricked VS Code Extension");
-    const globalStore = GlobalStore.getInstance();
-    globalStore.setSeqToken(Common.generateHashCode());
+    const globalState = GlobalState.getInstance();
+    // for testing environment
+    await globalState.clearAllGlobalData();
+    globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
 }

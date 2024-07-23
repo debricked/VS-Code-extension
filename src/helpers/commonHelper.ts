@@ -1,13 +1,14 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
 import { MessageStatus, Organization } from "../constants/index";
 import * as crypto from "crypto";
 import { Logger } from "./loggerHelper";
-import { GlobalStore } from "./globalStore";
+import { GlobalState } from "./globalState";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
 
 export class Common {
-    private static globalStore = GlobalStore.getInstance();
+    private static get globalState(): GlobalState {
+        return GlobalState.getInstance();
+    }
 
     public static async getInput(prompt: string): Promise<string | undefined> {
         return await vscode.window.showInputBox({ prompt });
@@ -18,10 +19,11 @@ export class Common {
     }
 
     public static async checkUserId(): Promise<void> {
-        const user_id = await DebrickedDataHelper.getSpecificKeyFromDebrickedData("user_id");
+        const user_id = await Common.globalState.getGlobalDataByKey(Organization.DEBRICKED_DATA_KEY, "user_id");
         if (user_id === null) {
             const userHashCode = Common.generateHashCode(new Date().toDateString());
-            DebrickedDataHelper.saveToDebrickedData("user_id", userHashCode);
+            const debrickedData: any = await Common.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
+            debrickedData["user_id"] = userHashCode;
             Logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated : ${userHashCode}`);
         }
     }
@@ -32,6 +34,7 @@ export class Common {
     }
 
     public static async setupDebricked(): Promise<void> {
+        Common.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
         await Common.checkUserId();
         DebrickedDataHelper.createDir(Organization.reportsFolderPath);
     }
@@ -44,22 +47,5 @@ export class Common {
         array = array.map((item) => item.trim().replace(/^\* /, ""));
 
         return array;
-    }
-
-    public static async readDataFromDebrickedJSON() {
-        if (fs.existsSync(Organization.debricked_data_filePath)) {
-            Logger.logMessageByStatus(
-                MessageStatus.INFO,
-                `Fetching Debricked data from ${Organization.debricked_data_filePath}`,
-            );
-            return await fs.readFileSync(Organization.debricked_data_filePath, "utf-8");
-        }
-        Logger.logMessageByStatus(MessageStatus.ERROR, `No files found`);
-        return null;
-    }
-
-    public static async writeDataToDebrickedJSON(debrickedData: object) {
-        Common.globalStore.setDebrickedData(debrickedData);
-        await fs.writeFileSync(Organization.debricked_data_filePath, JSON.stringify(debrickedData, null, 2));
     }
 }
