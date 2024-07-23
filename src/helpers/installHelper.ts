@@ -47,7 +47,7 @@ export class InstallHelper {
 
     public async runInstallScript(progress?: any) {
         try {
-            progress.report({ message: `Installing debricked cli` });
+            progress.report({ message: `Installing debricked cli`, increment: 5 });
 
             const { install, command } = this.getScriptPath();
 

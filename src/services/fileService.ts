@@ -68,7 +68,7 @@ export class FileService {
 
     static async findFilesService(progress?: any) {
         try {
-            progress.report({ message: "Finding manifest files..." });
+            progress.report({ message: "Finding manifest files...", increment: 40 });
             Logger.logMessageByStatus(MessageStatus.INFO, "Register Find File Command");
             FileService.globalStore.setSeqToken(Common.generateHashCode());
             const cmdParams = [];

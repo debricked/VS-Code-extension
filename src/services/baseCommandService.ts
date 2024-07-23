@@ -110,7 +110,7 @@ export class BaseCommandService {
 
     static async installCommand(context: vscode.ExtensionContext, progress?: any) {
         try {
-            progress.report({ message: `fetching debricked cli ` });
+            progress.report({ message: `fetching debricked cli `, increment: 2 });
             Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
 
             BaseCommandService.globalStore.setSeqToken(Common.generateHashCode());
@@ -122,7 +122,7 @@ export class BaseCommandService {
             );
 
             installer.runInstallScript(progress).then(() => {
-                progress.report({ message: `cli completed successfully` });
+                progress.report({ message: `cli completed successfully`, increment: 3 });
                 context.globalState.update(Organization.IS_FIRST_ACTIVATION_KEY, false);
                 context.globalState.update(Organization.EXTENSION_VERSION_KEY, currentVersion);
 

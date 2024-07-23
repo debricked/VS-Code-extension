@@ -8,7 +8,7 @@ export class DebrickedCommand {
     private static globalStore = GlobalStore.getInstance();
 
     public static async commands(context: vscode.ExtensionContext, progress: any) {
-        progress.report({ message: "Registering debricked commands" });
+        progress.report({ message: "Registering debricked commands", increment: 30 });
         Logger.logMessageByStatus(MessageStatus.INFO, "Register commands");
         DebrickedCommand.globalStore.setSeqToken(Common.generateHashCode());
 
@@ -72,7 +72,7 @@ export class DebrickedCommand {
 
         if (filesToScan && filesToScan.length > 0) {
             filesToScan.forEach((file: any) => {
-                progress.report({ message: `Initializing watcher on ${file}` });
+                progress.report({ message: `Initializing watcher on ${file}`, increment: 5 });
                 const watcher = vscode.workspace.createFileSystemWatcher(`**/${file}`);
 
                 const runScan = async (e: vscode.Uri) => {
@@ -86,6 +86,5 @@ export class DebrickedCommand {
                 context.subscriptions.push(watcher);
             });
         }
-        progress.report({ message: `debricked is now ready to use` });
     }
 }

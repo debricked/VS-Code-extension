@@ -13,7 +13,7 @@ export async function activate(context: vscode.ExtensionContext) {
             cancellable: false,
         },
         async (progress) => {
-            progress.report({ message: "Activating VS Code Extension" });
+            progress.report({ message: "Activating VS Code Extension", increment: 5 });
             Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
             const globalStore = GlobalStore.getInstance();
             globalStore.setSeqToken(Common.generateHashCode());
@@ -34,6 +34,7 @@ export async function activate(context: vscode.ExtensionContext) {
             if (currentVersion !== storedVersion || isFirstActivation) {
                 await BaseCommandService.installCommand(context, progress);
             }
+            progress.report({ message: `debricked is now ready to use`, increment: 5 });
         },
     );
 }
