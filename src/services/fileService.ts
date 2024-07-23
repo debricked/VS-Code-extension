@@ -11,6 +11,7 @@ import {
 } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode } from "../types";
+import * as vscode from "vscode";
 
 export class FileService {
     private static get globalState(): GlobalState {
@@ -68,48 +69,63 @@ export class FileService {
         }
     }
 
-    static async findFilesService(progress?: any) {
+    static async findFilesService() {
         try {
-            progress.report({ message: "Finding manifest files...", increment: 40 });
-            Logger.logMessageByStatus(MessageStatus.INFO, "Register Find File Command");
-            FileService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
-            const cmdParams = [];
-            const command: DebrickedCommandNode = DebrickedCommands.FILES;
+            await vscode.window.withProgress(
+                {
+                    location: vscode.ProgressLocation.Notification,
+                    title: "Debricked",
+                    cancellable: false,
+                },
+                async (progress) => {
+                    progress.report({ message: "Finding manifest files..." });
+                    Logger.logMessageByStatus(MessageStatus.INFO, "Register Find File Command");
+                    FileService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+                    const cmdParams = [];
+                    const command: DebrickedCommandNode = DebrickedCommands.FILES;
 
-            cmdParams.push(command.cli_command);
+                    cmdParams.push(command.cli_command);
 
-            let selectedSubCommand: DebrickedCommandNode | undefined;
-            if (command.sub_commands && command.sub_commands.length > 0) {
-                selectedSubCommand = command.sub_commands[0];
-                if (selectedSubCommand && selectedSubCommand.cli_command) {
-                    cmdParams.push(selectedSubCommand.cli_command);
-                }
-            }
+                    let selectedSubCommand: DebrickedCommandNode | undefined;
+                    if (command.sub_commands && command.sub_commands.length > 0) {
+                        selectedSubCommand = command.sub_commands[0];
+                        if (selectedSubCommand && selectedSubCommand.cli_command) {
+                            cmdParams.push(selectedSubCommand.cli_command);
+                        }
+                    }
 
-            StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.FILES.cli_command),
+                    StatusBarMessageHelper.setStatusBarMessage(
+                        StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.FILES.cli_command),
+                    );
+
+                    Logger.logMessageByStatus(
+                        MessageStatus.INFO,
+                        `Executing terminal command with parameters: ${cmdParams}`,
+                    );
+
+                    const foundFiles = await Command.executeAsyncCommand(
+                        `${Organization.debricked_cli} ${cmdParams.join(" ")}`,
+                    );
+                    const foundFilesArray = Common.stringToArray(foundFiles, "\n");
+                    await GitHelper.setupGit(progress);
+
+                    const debrickedData: any = await FileService.globalState.getGlobalData(
+                        Organization.DEBRICKED_DATA_KEY,
+                        {},
+                    );
+                    const selectedRepoName = await GitHelper.getRepositoryName();
+
+                    if (selectedRepoName && !debrickedData[selectedRepoName]) {
+                        debrickedData[selectedRepoName] = {};
+                    }
+
+                    debrickedData[selectedRepoName].filesToScan = foundFilesArray;
+
+                    await FileService.globalState.setGlobalData(Organization.DEBRICKED_DATA_KEY, debrickedData);
+
+                    Logger.logMessageByStatus(MessageStatus.INFO, `Found Files: ${foundFilesArray}`);
+                },
             );
-
-            Logger.logMessageByStatus(MessageStatus.INFO, `Executing terminal command with parameters: ${cmdParams}`);
-
-            const foundFiles = await Command.executeAsyncCommand(
-                `${Organization.debricked_cli} ${cmdParams.join(" ")}`,
-            );
-            const foundFilesArray = Common.stringToArray(foundFiles, "\n");
-            await GitHelper.setupGit(progress);
-
-            const debrickedData: any = await FileService.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
-            const selectedRepoName = await GitHelper.getRepositoryName();
-
-            if (selectedRepoName && !debrickedData[selectedRepoName]) {
-                debrickedData[selectedRepoName] = {};
-            }
-
-            debrickedData[selectedRepoName].filesToScan = foundFilesArray;
-
-            await FileService.globalState.setGlobalData(Organization.DEBRICKED_DATA_KEY, debrickedData);
-
-            Logger.logMessageByStatus(MessageStatus.INFO, `Found Files: ${foundFilesArray}`);
         } catch (error: any) {
             StatusBarMessageHelper.showErrorMessage(
                 `${Organization.name} - ${DebrickedCommands.FILES.cli_command} ${MessageStatus.ERROR}: ${error.message}`,
