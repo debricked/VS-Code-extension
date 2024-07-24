@@ -19,10 +19,10 @@ export class AuthHelper {
 
         // Try to read the access token from the token.json file
         let accessToken: string | undefined;
-        const debrickedData: any = await AuthHelper.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
+        const defaultAccessToken: any = await AuthHelper.globalState.getSecretData(Organization.ACCESS_TOKEN_KEY);
 
         if (useDefaultAccessToken) {
-            accessToken = debrickedData.accessToken;
+            accessToken = defaultAccessToken;
         }
 
         if (!accessToken) {
@@ -36,9 +36,7 @@ export class AuthHelper {
             });
 
             if (accessToken) {
-                // Append the access token to the existing data
-                debrickedData.accessToken = accessToken;
-                await AuthHelper.globalState.setGlobalData(Organization.DEBRICKED_DATA_KEY, debrickedData);
+                await AuthHelper.globalState.setSecretData(Organization.ACCESS_TOKEN_KEY, accessToken);
             } else {
                 throw new Error(Messages.ACCESS_TOKEN_RQD);
             }

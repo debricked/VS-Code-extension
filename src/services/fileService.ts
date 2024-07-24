@@ -111,19 +111,16 @@ export class FileService {
                     progress.report({ message: "Fetching Git repository details...", increment: 25 });
                     await GitHelper.setupGit();
                     progress.report({ message: "Fetched Git repository details", increment: 25 });
-                    const debrickedData: any = await FileService.globalState.getGlobalData(
-                        Organization.DEBRICKED_DATA_KEY,
-                        {},
-                    );
+                    const repoData: any = await FileService.globalState.getGlobalData(Organization.REPO_DATA_KEY, {});
                     const selectedRepoName = await GitHelper.getRepositoryName();
 
-                    if (selectedRepoName && !debrickedData[selectedRepoName]) {
-                        debrickedData[selectedRepoName] = {};
+                    if (selectedRepoName && !repoData[selectedRepoName]) {
+                        repoData[selectedRepoName] = {};
                     }
 
-                    debrickedData[selectedRepoName].filesToScan = foundFilesArray;
+                    repoData[selectedRepoName].filesToScan = foundFilesArray;
 
-                    await FileService.globalState.setGlobalData(Organization.DEBRICKED_DATA_KEY, debrickedData);
+                    await FileService.globalState.setGlobalData(Organization.REPO_DATA_KEY, repoData);
                     progress.report({ message: "Manifest Files have found", increment: 25 });
                     Logger.logMessageByStatus(MessageStatus.INFO, `Found Files: ${foundFilesArray}`);
                 },

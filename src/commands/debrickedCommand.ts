@@ -65,13 +65,13 @@ export class DebrickedCommand {
         );
 
         // Add file watcher for all files found from 'debricked files find'
-        let debrickedData: any = await DebrickedCommand.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
+        let repoData: any = await DebrickedCommand.globalState.getGlobalData(Organization.REPO_DATA_KEY, {});
         const selectedRepoName = await GitHelper.getRepositoryName();
-        if (debrickedData && debrickedData[selectedRepoName].filesToScan) {
+        if (repoData && repoData[selectedRepoName]?.filesToScan) {
             Logger.logMessageByStatus(MessageStatus.INFO, `Found Debricked data`);
         } else {
             await FileService.findFilesService();
-            debrickedData = await DebrickedCommand.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
+            repoData = await DebrickedCommand.globalState.getGlobalData(Organization.REPO_DATA_KEY, {});
             Logger.logMessageByStatus(MessageStatus.INFO, `New Debricked data found:`);
         }
 

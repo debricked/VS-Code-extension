@@ -54,7 +54,7 @@ export class GitHelper {
     public static async setupGit(): Promise<void> {
         const currentRepo = await GitHelper.getUpstream();
         Logger.logMessageByStatus(MessageStatus.INFO, `Current repository: ${currentRepo}`);
-        const debrickedData: any = await GitHelper.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
+        const repoData: any = await GitHelper.globalState.getGlobalData(Organization.REPO_DATA_KEY, {});
         let selectedRepoName: string;
 
         if (currentRepo.indexOf(".git") > -1) {
@@ -64,14 +64,14 @@ export class GitHelper {
         }
 
         if (selectedRepoName) {
-            if (!debrickedData[selectedRepoName]) {
-                debrickedData[selectedRepoName] = {};
+            if (!repoData[selectedRepoName]) {
+                repoData[selectedRepoName] = {};
             }
         }
 
-        debrickedData[selectedRepoName].userName = await GitHelper.getUsername();
-        debrickedData[selectedRepoName].email = await GitHelper.getEmail();
+        repoData[selectedRepoName].userName = await GitHelper.getUsername();
+        repoData[selectedRepoName].email = await GitHelper.getEmail();
 
-        await GitHelper.globalState.setGlobalData(Organization.DEBRICKED_DATA_KEY, debrickedData);
+        await GitHelper.globalState.setGlobalData(Organization.DEBRICKED_DATA_KEY, repoData);
     }
 }

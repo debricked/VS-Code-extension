@@ -36,6 +36,8 @@ export class Organization {
     static readonly os_darwin = "darwin";
     static readonly DEBRICKED_DATA_KEY = "debrickedData";
     static readonly SEQ_ID_KEY = "sequenceID";
+    static readonly ACCESS_TOKEN_KEY = "accessToken";
+    static readonly REPO_DATA_KEY = "repoData";
 
     static getOrganizationInfo() {
         return {

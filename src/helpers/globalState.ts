@@ -59,4 +59,24 @@ export class GlobalState {
         const clearPromises = allKeys.map((key) => this.context.globalState.update(key, undefined));
         await Promise.all(clearPromises);
     }
+
+    public setSecretData<T>(key: string, value: T): Thenable<void> {
+        return this.context.secrets.store(key, JSON.stringify(value));
+    }
+
+    public async getSecretData<T>(key: string) {
+        const storedValue = await this.context.secrets.get(key);
+        if (storedValue !== undefined) {
+            try {
+                return JSON.parse(storedValue) as T;
+            } catch (error) {
+                Logger.logMessageByStatus(MessageStatus.ERROR, `Error parsing stored value for key ${key}: ${error}`);
+            }
+        }
+        return storedValue;
+    }
+
+    public deleteSecretData(key: string): Thenable<void> {
+        return this.context.secrets.delete(key);
+    }
 }
