@@ -116,7 +116,7 @@ export class BaseCommandService {
                 `${Organization.IS_FIRST_ACTIVATION_KEY}: ${BaseCommandService.globalState.getGlobalData(Organization.IS_FIRST_ACTIVATION_KEY, "")} - ${Organization.EXTENSION_VERSION_KEY}: ${currentVersion}`,
             );
 
-            installer.runInstallScript(progress).then(() => {
+            installer.runInstallScript().then(() => {
                 progress.report({ message: `cli completed successfully`, increment: 3 });
                 BaseCommandService.globalState.setGlobalData(Organization.IS_FIRST_ACTIVATION_KEY, false);
                 BaseCommandService.globalState.setGlobalData(Organization.EXTENSION_VERSION_KEY, currentVersion);

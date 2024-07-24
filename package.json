@@ -56,6 +56,11 @@
                 "category": "debricked"
             },
             {
+                "command": "debricked.debricked.log",
+                "title": "Debricked logs",
+                "category": "debricked"
+            },
+            {
                 "command": "debricked.scan",
                 "title": "Start a Debricked dependency scan",
                 "category": "debricked"

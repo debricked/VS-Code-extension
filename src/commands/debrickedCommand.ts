@@ -24,7 +24,7 @@ export class DebrickedCommand {
 
         context.subscriptions.push(
             vscode.commands.registerCommand(baseSubCommands[0].command, async () => {
-                    DebrickedCommand.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+                DebrickedCommand.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
                 await BaseCommandService.installCommand();
             }),
         );
@@ -38,6 +38,12 @@ export class DebrickedCommand {
         context.subscriptions.push(
             vscode.commands.registerCommand(baseSubCommands[2].command, async () => {
                 await BaseCommandService.help();
+            }),
+        );
+
+        context.subscriptions.push(
+            vscode.commands.registerCommand(baseSubCommands[3].command, async () => {
+                await Logger.openLogFile();
             }),
         );
 
@@ -65,7 +71,7 @@ export class DebrickedCommand {
         if (debrickedData && debrickedData.filesToScan) {
             Logger.logMessageByStatus(MessageStatus.INFO, `Found Debricked data`);
         } else {
-            await FileService.findFilesService(progress);
+            await FileService.findFilesService();
             debrickedData = await DebrickedCommand.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
             Logger.logMessageByStatus(MessageStatus.INFO, `New Debricked data found:`);
         }

@@ -3,6 +3,7 @@ import * as os from "os";
 import { exec } from "child_process";
 import { Messages, MessageStatus, Organization } from "../constants/index";
 import { Logger } from "../helpers";
+import * as vscode from "vscode";
 
 export class InstallHelper {
     private platform: string;
@@ -45,17 +46,27 @@ export class InstallHelper {
         });
     }
 
-    public async runInstallScript(progress?: any) {
+    public async runInstallScript() {
         try {
-            progress.report({ message: `Installing debricked cli`, increment: 5 });
+            await vscode.window.withProgress(
+                {
+                    location: vscode.ProgressLocation.Notification,
+                    title: "Debricked",
+                    cancellable: false,
+                },
+                async (progress) => {
+                    progress.report({ message: `Installing debricked cli` });
 
-            const { install, command } = this.getScriptPath();
+                    const { install, command } = this.getScriptPath();
 
-            Logger.logMessageByStatus(MessageStatus.INFO, `Starting installation...`);
-            const installCommand = this.platform === Organization.os_win32 ? `"${install}"` : `${command} "${install}"`;
-            const installOutput = await this.executeCommand(installCommand);
-            Logger.logMessageByStatus(MessageStatus.INFO, `${installOutput}`);
-            Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}`);
+                    Logger.logMessageByStatus(MessageStatus.INFO, `Starting installation...`);
+                    const installCommand =
+                        this.platform === Organization.os_win32 ? `"${install}"` : `${command} "${install}"`;
+                    const installOutput = await this.executeCommand(installCommand);
+                    Logger.logMessageByStatus(MessageStatus.INFO, `${installOutput}`);
+                    Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}`);
+                },
+            );
         } catch (error: any) {
             Logger.logMessageByStatus(MessageStatus.ERROR, `${Messages.INSTALLATION_ERROR}: ${error.stack}`);
             process.exit(1);
