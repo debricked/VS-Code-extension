@@ -8,8 +8,7 @@ export class DebrickedCommand {
     private static get globalState(): GlobalState {
         return GlobalState.getInstance();
     }
-    public static async commands(context: vscode.ExtensionContext, progress: any) {
-        progress.report({ message: "Registering debricked commands", increment: 30 });
+    public static async commands(context: vscode.ExtensionContext) {
         Logger.logMessageByStatus(MessageStatus.INFO, "Register commands");
         DebrickedCommand.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
 
@@ -80,7 +79,6 @@ export class DebrickedCommand {
 
         if (filesToScan && filesToScan.length > 0) {
             filesToScan.forEach((file: any) => {
-                progress.report({ message: `Initializing watcher on ${file}`, increment: 5 });
                 const watcher = vscode.workspace.createFileSystemWatcher(`**/${file}`);
 
                 const runScan = async (e: vscode.Uri) => {

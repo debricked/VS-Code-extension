@@ -7,6 +7,7 @@ import { BaseCommandService } from "services";
 import { GlobalState } from "helpers/globalState";
 
 export async function activate(context: vscode.ExtensionContext) {
+    GlobalState.initialize(context);
     await vscode.window.withProgress(
         {
             location: vscode.ProgressLocation.Notification,
@@ -14,17 +15,25 @@ export async function activate(context: vscode.ExtensionContext) {
             cancellable: false,
         },
         async (progress) => {
-            progress.report({ message: "Activating VS Code Extension", increment: 5 });
+            let progressCount = 0;
+            progress.report({ increment: progressCount });
             Logger.initialize(context);
             GlobalState.initialize(context);
 
             const globalState = GlobalState.getInstance();
             globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
             await Common.setupDebricked();
-
+            progress.report({
+                message: "Activating VS Code Extension",
+                increment: (progressCount = progressCount + 20),
+            });
             Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
 
-            await DebrickedCommand.commands(context, progress);
+            await DebrickedCommand.commands(context);
+            progress.report({
+                message: "Registering Debricked commands",
+                increment: (progressCount = progressCount + 20),
+            });
             const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
             vscode.window.registerTreeDataProvider(Organization.debricked_command, debCommandsProvider);
 
@@ -37,9 +46,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
             if (currentVersion !== storedVersion || isFirstActivation) {
                 globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
-                await BaseCommandService.installCommand(progress);
+                await BaseCommandService.installCommand();
+                progress.report({
+                    message: "Installing Debricked cli",
+                    increment: (progressCount = progressCount + 20),
+                });
             }
-            progress.report({ message: `debricked is now ready to use`, increment: 5 });
+            progress.report({ message: "Debricked extension is ready to use", increment: 100 - progressCount });
         },
     );
 }

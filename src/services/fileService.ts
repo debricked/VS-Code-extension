@@ -78,7 +78,8 @@ export class FileService {
                     cancellable: false,
                 },
                 async (progress) => {
-                    progress.report({ message: "Finding manifest files..." });
+                    progress.report({ increment: 0 });
+                    progress.report({ message: "Finding manifest files...", increment: 25 });
                     Logger.logMessageByStatus(MessageStatus.INFO, "Register Find File Command");
                     FileService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
                     const cmdParams = [];
@@ -107,8 +108,9 @@ export class FileService {
                         `${Organization.debricked_cli} ${cmdParams.join(" ")}`,
                     );
                     const foundFilesArray = Common.stringToArray(foundFiles, "\n");
-                    await GitHelper.setupGit(progress);
-
+                    progress.report({ message: "Fetching Git repository details...", increment: 25 });
+                    await GitHelper.setupGit();
+                    progress.report({ message: "Fetched Git repository details", increment: 25 });
                     const debrickedData: any = await FileService.globalState.getGlobalData(
                         Organization.DEBRICKED_DATA_KEY,
                         {},
@@ -122,7 +124,7 @@ export class FileService {
                     debrickedData[selectedRepoName].filesToScan = foundFilesArray;
 
                     await FileService.globalState.setGlobalData(Organization.DEBRICKED_DATA_KEY, debrickedData);
-
+                    progress.report({ message: "Manifest Files have found", increment: 25 });
                     Logger.logMessageByStatus(MessageStatus.INFO, `Found Files: ${foundFilesArray}`);
                 },
             );

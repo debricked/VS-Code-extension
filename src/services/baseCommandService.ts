@@ -103,9 +103,9 @@ export class BaseCommandService {
         }
     }
 
-    static async installCommand(progress?: any) {
+    static async installCommand() {
         try {
-            progress.report({ message: `fetching debricked cli `, increment: 2 });
+            
             Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
             BaseCommandService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
 
@@ -117,7 +117,6 @@ export class BaseCommandService {
             );
 
             installer.runInstallScript().then(() => {
-                progress.report({ message: `cli completed successfully`, increment: 3 });
                 BaseCommandService.globalState.setGlobalData(Organization.IS_FIRST_ACTIVATION_KEY, false);
                 BaseCommandService.globalState.setGlobalData(Organization.EXTENSION_VERSION_KEY, currentVersion);
 

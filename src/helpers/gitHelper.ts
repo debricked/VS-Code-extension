@@ -51,9 +51,7 @@ export class GitHelper {
         );
     }
 
-    public static async setupGit(progress?: any): Promise<void> {
-        progress.report({ message: "Fetching Git repository details...", increment: 5 });
-
+    public static async setupGit(): Promise<void> {
         const currentRepo = await GitHelper.getUpstream();
         Logger.logMessageByStatus(MessageStatus.INFO, `Current repository: ${currentRepo}`);
         const debrickedData: any = await GitHelper.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
