@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { BaseCommandService, ScanService, FileService } from "../services";
-import { Logger, GlobalState, Common } from "../helpers";
+import { Logger, GlobalState, Common, GitHelper } from "../helpers";
 import { DebrickedCommandNode } from "../types";
 
 export class DebrickedCommand {
@@ -66,8 +66,8 @@ export class DebrickedCommand {
 
         // Add file watcher for all files found from 'debricked files find'
         let debrickedData: any = await DebrickedCommand.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
-
-        if (debrickedData && debrickedData.filesToScan) {
+        const selectedRepoName = await GitHelper.getRepositoryName();
+        if (debrickedData && debrickedData[selectedRepoName].filesToScan) {
             Logger.logMessageByStatus(MessageStatus.INFO, `Found Debricked data`);
         } else {
             await FileService.findFilesService();

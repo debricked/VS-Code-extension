@@ -11,7 +11,7 @@ export async function activate(context: vscode.ExtensionContext) {
     await vscode.window.withProgress(
         {
             location: vscode.ProgressLocation.Notification,
-            title: "Debricked extension is getting ready",
+            title: "Debricked",
             cancellable: false,
         },
         async (progress) => {
@@ -22,18 +22,18 @@ export async function activate(context: vscode.ExtensionContext) {
 
             const globalState = GlobalState.getInstance();
             globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
-            await Common.setupDebricked();
             progress.report({
                 message: "Activating VS Code Extension",
                 increment: (progressCount = progressCount + 20),
             });
+            await Common.setupDebricked();
             Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
 
-            await DebrickedCommand.commands(context);
             progress.report({
                 message: "Registering Debricked commands",
                 increment: (progressCount = progressCount + 20),
             });
+            await DebrickedCommand.commands(context);
             const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
             vscode.window.registerTreeDataProvider(Organization.debricked_command, debCommandsProvider);
 
@@ -46,11 +46,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
             if (currentVersion !== storedVersion || isFirstActivation) {
                 globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
-                await BaseCommandService.installCommand();
                 progress.report({
                     message: "Installing Debricked cli",
                     increment: (progressCount = progressCount + 20),
                 });
+                await BaseCommandService.installCommand();
             }
             progress.report({ message: "Debricked extension is ready to use", increment: 100 - progressCount });
         },
