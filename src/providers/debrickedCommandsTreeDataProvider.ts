@@ -9,9 +9,15 @@ export class DebrickedCommandsTreeDataProvider implements vscode.TreeDataProvide
         this._onDidChangeTreeData.event;
 
     getTreeItem(element: DebrickedCommandNode): vscode.TreeItem {
+        const subCommands: DebrickedCommandNode[] | undefined = element.sub_commands?.filter(
+            (sub_command: DebrickedCommandNode) => sub_command.isVisibleInTree !== false,
+        );
+
         const treeItem = new vscode.TreeItem(
             element.label,
-            element.sub_commands ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None,
+            subCommands && subCommands.length > 0
+                ? vscode.TreeItemCollapsibleState.Collapsed
+                : vscode.TreeItemCollapsibleState.None,
         );
 
         if (element.command) {

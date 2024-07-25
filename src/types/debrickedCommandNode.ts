@@ -9,4 +9,5 @@ export interface DebrickedCommandNode {
     flags?: Flag[];
     global_flags?: Flag[];
     report?: string;
+    isVisibleInTree?: boolean;
 }
