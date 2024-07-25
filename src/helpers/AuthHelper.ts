@@ -1,8 +1,6 @@
 import * as vscode from "vscode";
-import * as path from "path";
 import { Messages, Organization } from "../constants/index";
-import { GlobalState } from "../helpers";
-import { DebrickedDataHelper } from "./debrickedDataHelper";
+import { GlobalState, Logger } from "../helpers";
 
 export class AuthHelper {
     private static get globalState(): GlobalState {
@@ -13,35 +11,40 @@ export class AuthHelper {
      * @param void
      * @returns Promise<string | undefined>
      */
-    static async getAccessToken(useDefaultAccessToken: boolean = true): Promise<string | undefined> {
-        const debrickedFolder = path.join(Organization.debricked_installed_dir, Organization.debrickedFolder);
-        DebrickedDataHelper.createDir(debrickedFolder);
+    static async getToken(useDefaultToken: boolean = true, tokenKey: "access" | "bearer"): Promise<string | undefined> {
+        try {
+            let token: string | undefined;
+            const TOKEN_KEY = tokenKey === "access" ? Organization.ACCESS_TOKEN_KEY : Organization.BEARER_TOKEN_KEY;
+            const defaultAccessToken: any = await AuthHelper.globalState.getSecretData(TOKEN_KEY);
 
-        // Try to read the access token from the token.json file
-        let accessToken: string | undefined;
-        const defaultAccessToken: any = await AuthHelper.globalState.getSecretData(Organization.ACCESS_TOKEN_KEY);
-
-        if (useDefaultAccessToken) {
-            accessToken = defaultAccessToken;
-        }
-
-        if (!accessToken) {
-            // Prompt the user to enter the access token
-            accessToken = await vscode.window.showInputBox({
-                prompt: Messages.ENTER_ACCESS_TOKEN,
-                ignoreFocusOut: true,
-                password: true, // To hide the input characters
-                title: Messages.ACCESS_TOKEN,
-                placeHolder: Messages.ENTER_ACCESS_TOKEN,
-            });
-
-            if (accessToken) {
-                await AuthHelper.globalState.setSecretData(Organization.ACCESS_TOKEN_KEY, accessToken);
-            } else {
-                throw new Error(Messages.ACCESS_TOKEN_RQD);
+            if (useDefaultToken) {
+                token = defaultAccessToken;
             }
-        }
 
-        return accessToken;
+            if (!token) {
+                // Prompt the user to enter the access token
+                Logger.logInfo("InputBox Opened for tokens");
+                token = await vscode.window.showInputBox({
+                    prompt: tokenKey === "access" ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
+                    ignoreFocusOut: true,
+                    password: true, // To hide the input characters
+                    title: tokenKey === "access" ? Messages.ACCESS_TOKEN : Messages.BEARER_TOKEN,
+                    placeHolder: tokenKey === "access" ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
+                });
+
+                if (token) {
+                    await AuthHelper.globalState.setSecretData(TOKEN_KEY, token);
+                    vscode.window.showInformationMessage("Token has been saved");
+                } else {
+                    throw new Error(Messages.ACCESS_TOKEN_RQD);
+                }
+            }
+
+            return token;
+        } catch (error: any) {
+            await vscode.window.showErrorMessage(error.message);
+            Logger.logError("Token input was empty or some other error occurred");
+            return undefined;
+        }
     }
 }

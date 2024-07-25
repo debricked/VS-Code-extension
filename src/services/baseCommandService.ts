@@ -1,9 +1,17 @@
 import { DebrickedCommandNode } from "../types";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
-import { StatusBarMessageHelper, Terminal, StatusMessage, Logger, QuickPick, InstallHelper, Common } from "../helpers";
+import {
+    StatusBarMessageHelper,
+    Terminal,
+    StatusMessage,
+    Logger,
+    QuickPick,
+    InstallHelper,
+    Common,
+    AuthHelper,
+} from "../helpers";
 import * as vscode from "vscode";
 import { GlobalState } from "helpers/globalState";
-
 export class BaseCommandService {
     private static get globalState(): GlobalState {
         return GlobalState.getInstance();
@@ -20,12 +28,12 @@ export class BaseCommandService {
                 selectedSubCommand = await QuickPick.showQuickPick(subCommand, Messages.QUICK_PICK_FLAG);
             }
 
-            switch (selectedSubCommand.cli_command) {
+            switch (selectedSubCommand?.cli_command) {
                 case "install":
                     BaseCommandService.installCommand();
                     break;
 
-                case "access_token":
+                case "token":
                     BaseCommandService.updateCommand();
                     break;
 
@@ -142,8 +150,23 @@ export class BaseCommandService {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register UpdateCommand");
             BaseCommandService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+            let subCommand: DebrickedCommandNode[] | undefined;
+            if (DebrickedCommands.BASE_COMMAND.sub_commands) {
+                subCommand = DebrickedCommands.BASE_COMMAND.sub_commands[1].sub_commands;
+            }
 
-            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, [], true, false);
+            let selectedSubCommand: any;
+            if (subCommand) {
+                selectedSubCommand = await QuickPick.showQuickPick(subCommand, Messages.QUICK_PICK_FLAG);
+            }
+            switch (selectedSubCommand?.cli_command) {
+                case "accessToken":
+                    AuthHelper.getToken(false, "access");
+                    break;
+                case "bearerToken":
+                    AuthHelper.getToken(false, "bearer");
+                    break;
+            }
         } catch (error: any) {
             StatusBarMessageHelper.showErrorMessage(
                 `${Organization.name} - ${DebrickedCommands.BASE_COMMAND.command} ${MessageStatus.ERROR}: ${error.message}`,

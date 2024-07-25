@@ -48,8 +48,8 @@
                 "icon": "$(cloud-download)"
             },
             {
-                "command": "debricked.debricked.access_token",
-                "title": "Add/Update Debricked access token",
+                "command": "debricked.debricked.token",
+                "title": "Add/Update Debricked tokens",
                 "category": "debricked",
                 "icon": "$(lock)"
             },

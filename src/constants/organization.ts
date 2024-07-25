@@ -38,6 +38,7 @@ export class Organization {
     static readonly SEQ_ID_KEY = "sequenceID";
     static readonly ACCESS_TOKEN_KEY = "accessToken";
     static readonly REPO_DATA_KEY = "repoData";
+    static readonly BEARER_TOKEN_KEY = "bearerToken";
 
     static getOrganizationInfo() {
         return {

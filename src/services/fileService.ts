@@ -34,7 +34,7 @@ export class FileService {
                     command.sub_commands,
                     Messages.QUICK_PICK_SUB_COMMAND,
                 );
-                if (selectedSubCommand && selectedSubCommand.cli_command) {
+                if (selectedSubCommand?.cli_command) {
                     cmdParams.push(selectedSubCommand.cli_command);
                 }
             }
