@@ -103,9 +103,8 @@ export class BaseCommandService {
         }
     }
 
-    static async installCommand(progress?: any) {
+    static async installCommand() {
         try {
-            progress.report({ message: `fetching debricked cli `, increment: 2 });
             Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
             BaseCommandService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
 
@@ -116,16 +115,14 @@ export class BaseCommandService {
                 `${Organization.IS_FIRST_ACTIVATION_KEY}: ${BaseCommandService.globalState.getGlobalData(Organization.IS_FIRST_ACTIVATION_KEY, "")} - ${Organization.EXTENSION_VERSION_KEY}: ${currentVersion}`,
             );
 
-            installer.runInstallScript().then(() => {
-                progress.report({ message: `cli completed successfully`, increment: 3 });
-                BaseCommandService.globalState.setGlobalData(Organization.IS_FIRST_ACTIVATION_KEY, false);
-                BaseCommandService.globalState.setGlobalData(Organization.EXTENSION_VERSION_KEY, currentVersion);
+            await installer.runInstallScript();
+            BaseCommandService.globalState.setGlobalData(Organization.IS_FIRST_ACTIVATION_KEY, false);
+            BaseCommandService.globalState.setGlobalData(Organization.EXTENSION_VERSION_KEY, currentVersion);
 
-                Logger.logMessageByStatus(
-                    MessageStatus.INFO,
-                    `${Organization.EXTENSION_VERSION_KEY}: ${BaseCommandService.globalState.getGlobalData(Organization.EXTENSION_VERSION_KEY, "")}`,
-                );
-            });
+            Logger.logMessageByStatus(
+                MessageStatus.INFO,
+                `${Organization.EXTENSION_VERSION_KEY}: ${BaseCommandService.globalState.getGlobalData(Organization.EXTENSION_VERSION_KEY, "")}`,
+            );
         } catch (error: any) {
             StatusBarMessageHelper.showErrorMessage(
                 `${Organization.name} - ${DebrickedCommands.BASE_COMMAND.command} ${MessageStatus.ERROR}: ${error.message}`,

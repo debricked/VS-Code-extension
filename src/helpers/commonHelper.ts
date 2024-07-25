@@ -20,10 +20,12 @@ export class Common {
 
     public static async checkUserId(): Promise<void> {
         const user_id = await Common.globalState.getGlobalDataByKey(Organization.DEBRICKED_DATA_KEY, "user_id");
-        if (user_id === null) {
+        if (!user_id) {
             const userHashCode = Common.generateHashCode(new Date().toDateString());
             const debrickedData: any = await Common.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
             debrickedData["user_id"] = userHashCode;
+            await Common.globalState.setGlobalData(Organization.DEBRICKED_DATA_KEY, debrickedData);
+
             Logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated : ${userHashCode}`);
         }
     }

@@ -38,44 +38,61 @@
             {
                 "command": "debricked.debricked",
                 "title": "Debricked : A fast and flexible software composition analysis CLI tool, given to you by Debricked.",
-                "category": "debricked"
+                "category": "debricked",
+                "icon": "$(gear)"
             },
             {
                 "command": "debricked.debricked.install",
                 "title": "Install Debricked-cli",
-                "category": "debricked"
+                "category": "debricked",
+                "icon": "$(cloud-download)"
             },
             {
                 "command": "debricked.debricked.access_token",
                 "title": "Add/Update Debricked access token",
-                "category": "debricked"
+                "category": "debricked",
+                "icon": "$(lock)"
             },
             {
                 "command": "debricked.debricked.help",
                 "title": "Help about any command",
-                "category": "debricked"
+                "category": "debricked",
+                "icon": "$(lightbulb)"
             },
             {
                 "command": "debricked.debricked.log",
                 "title": "Debricked logs",
-                "category": "debricked"
+                "category": "debricked",
+                "icon": "$(file-text)"
             },
             {
                 "command": "debricked.scan",
                 "title": "Start a Debricked dependency scan",
-                "category": "debricked"
+                "category": "debricked",
+                "icon": "$(debug-start)"
             },
             {
                 "command": "debricked.files",
                 "title": "Analyze files",
-                "category": "debricked"
+                "category": "debricked",
+                "icon": "$(files)"
             },
             {
                 "command": "debricked.files.find",
                 "title": "Find all dependency files in inputted path",
-                "category": "debricked"
+                "category": "debricked",
+                "icon": "$(search)"
             }
-        ]
+        ],
+        "menus": {
+            "editor/title": [
+                {
+                    "command": "debricked.scan",
+                    "group": "navigation",
+                    "when": "debrickedFilesToScan"
+                }
+            ]
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run package",

@@ -1,15 +1,15 @@
 import * as vscode from "vscode";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { BaseCommandService, ScanService, FileService } from "../services";
-import { Logger, GlobalState, Common } from "../helpers";
+import { Logger, GlobalState, Common, GitHelper } from "../helpers";
 import { DebrickedCommandNode } from "../types";
+import path from "path";
 
 export class DebrickedCommand {
     private static get globalState(): GlobalState {
         return GlobalState.getInstance();
     }
-    public static async commands(context: vscode.ExtensionContext, progress: any) {
-        progress.report({ message: "Registering debricked commands", increment: 30 });
+    public static async commands(context: vscode.ExtensionContext) {
         Logger.logMessageByStatus(MessageStatus.INFO, "Register commands");
         DebrickedCommand.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
 
@@ -66,21 +66,30 @@ export class DebrickedCommand {
         );
 
         // Add file watcher for all files found from 'debricked files find'
-        let debrickedData: any = await DebrickedCommand.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
-
-        if (debrickedData && debrickedData.filesToScan) {
+        let repoData: any = await DebrickedCommand.globalState.getGlobalData(Organization.REPO_DATA_KEY, {});
+        const selectedRepoName = await GitHelper.getRepositoryName();
+        if (repoData && repoData[selectedRepoName]?.filesToScan) {
             Logger.logMessageByStatus(MessageStatus.INFO, `Found Debricked data`);
         } else {
             await FileService.findFilesService();
-            debrickedData = await DebrickedCommand.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
+            repoData = await DebrickedCommand.globalState.getGlobalData(Organization.REPO_DATA_KEY, {});
             Logger.logMessageByStatus(MessageStatus.INFO, `New Debricked data found:`);
         }
 
         const filesToScan = await FileService.getFilesToScan();
 
         if (filesToScan && filesToScan.length > 0) {
+            const filesPattern = new RegExp(filesToScan.map((file: any) => `^${file}$`).join("|"));
+
+            vscode.window.onDidChangeActiveTextEditor((editor) => {
+                if (editor && filesPattern.test(path.basename(editor.document.fileName))) {
+                    vscode.commands.executeCommand("setContext", "debrickedFilesToScan", true);
+                } else {
+                    vscode.commands.executeCommand("setContext", "debrickedFilesToScan", false);
+                }
+            });
+
             filesToScan.forEach((file: any) => {
-                progress.report({ message: `Initializing watcher on ${file}`, increment: 5 });
                 const watcher = vscode.workspace.createFileSystemWatcher(`**/${file}`);
 
                 const runScan = async (e: vscode.Uri) => {
