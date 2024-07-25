@@ -34,9 +34,11 @@ export class AuthHelper {
 
                 if (token) {
                     await AuthHelper.globalState.setSecretData(TOKEN_KEY, token);
-                    vscode.window.showInformationMessage("Token has been saved");
+                    const message = tokenKey === "access" ? Messages.ACCESS_TOKEN_SAVED : Messages.BEARER_TOKEN_SAVED;
+                    vscode.window.showInformationMessage(message);
                 } else {
-                    throw new Error(Messages.ACCESS_TOKEN_RQD);
+                    const message = tokenKey === "access" ? Messages.ACCESS_TOKEN_RQD : Messages.BEARER_TOKEN_RQD;
+                    throw new Error(message);
                 }
             }
 

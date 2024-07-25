@@ -5,6 +5,8 @@ export class Messages {
     static readonly ENTER_BEARER_TOKEN = "Enter your Debricked bearer token";
     static readonly ACCESS_TOKEN_RQD = "Access token is required";
     static readonly BEARER_TOKEN_RQD = "Bearer token is required";
+    static readonly ACCESS_TOKEN_SAVED = "Access token has been saved";
+    static readonly BEARER_TOKEN_SAVED = "Bearer token has been saved";
     static readonly WS_NOT_FOUND = "No workspace folder found";
     static readonly QUICK_PICK_FLAG = "Select a flag to use (optional)";
     static readonly QUICK_PICK_SUB_COMMAND = "Select a command to use (optional)";
