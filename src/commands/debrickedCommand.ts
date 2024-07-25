@@ -3,6 +3,7 @@ import { DebrickedCommands, MessageStatus, Organization } from "../constants/ind
 import { BaseCommandService, ScanService, FileService } from "../services";
 import { Logger, GlobalState, Common, GitHelper } from "../helpers";
 import { DebrickedCommandNode } from "../types";
+import path from "path";
 
 export class DebrickedCommand {
     private static get globalState(): GlobalState {
@@ -78,6 +79,16 @@ export class DebrickedCommand {
         const filesToScan = await FileService.getFilesToScan();
 
         if (filesToScan && filesToScan.length > 0) {
+            const filesPattern = new RegExp(filesToScan.map((file: any) => `^${file}$`).join("|"));
+
+            vscode.window.onDidChangeActiveTextEditor((editor) => {
+                if (editor && filesPattern.test(path.basename(editor.document.fileName))) {
+                    vscode.commands.executeCommand("setContext", "debrickedFilesToScan", true);
+                } else {
+                    vscode.commands.executeCommand("setContext", "debrickedFilesToScan", false);
+                }
+            });
+
             filesToScan.forEach((file: any) => {
                 const watcher = vscode.workspace.createFileSystemWatcher(`**/${file}`);
 
