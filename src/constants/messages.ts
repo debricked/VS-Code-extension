@@ -15,4 +15,5 @@ export class Messages {
     static readonly UNSUPPORTED_OS = "Unsupported operating system";
     static readonly INSTALLATION_SUCCESS = "Installation script executed successfully";
     static readonly INSTALLATION_ERROR = "Installation script execution failed";
+    static readonly UNKNOWN = "unknown";
 }

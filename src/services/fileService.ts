@@ -106,7 +106,7 @@ export class FileService {
             repoData[selectedRepoName].filesToScan = foundFilesArray;
 
             await FileService.globalState.setGlobalData(Organization.REPO_DATA_KEY, repoData);
-            Logger.logMessageByStatus(MessageStatus.INFO, `Found Files: ${foundFilesArray}`);
+            Logger.logMessageByStatus(MessageStatus.INFO, `Found ${foundFilesArray.length} Files: ${foundFilesArray}`);
             return foundFilesArray;
         } catch (error: any) {
             StatusBarMessageHelper.showErrorMessage(

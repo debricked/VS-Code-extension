@@ -9,8 +9,8 @@ import {
     DebrickedDataHelper,
     ShowInputBoxHelper,
 } from "../helpers";
-import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
-import { DebrickedCommandNode, Flag } from "../types";
+import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
+import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import path from "path";
 
@@ -28,28 +28,26 @@ export class ScanService {
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 
             cmdParams.push(command.cli_command);
-            const currentRepoName = await GitHelper.getUpstream();
-            Logger.logMessageByStatus(MessageStatus.INFO, `Current repository name: ${currentRepoName}`);
+            const currentRepoData: RepositoryInfo = await ScanService.globalState.getGlobalDataByKey(
+                Organization.REPO_DATA_KEY,
+                await GitHelper.getRepositoryName(),
+            );
+            Logger.logMessageByStatus(MessageStatus.INFO, `Current repository name: ${currentRepoData.repositoryName}`);
 
-            if (currentRepoName.indexOf(".git") > -1) {
-                Logger.logMessageByStatus(
-                    MessageStatus.INFO,
-                    `Scan performed on: ${await GitHelper.getRepositoryName()}`,
-                );
-
+            if (currentRepoData?.repositoryName !== Messages.UNKNOWN) {
                 if (command.flags && command.flags.length > 0) {
-                    await ScanService.handleFlags(command.flags[1], cmdParams);
-                    await ScanService.handleFlags(command.flags[3], cmdParams);
-                    await ScanService.handleFlags(command.flags[4], cmdParams);
+                    await ScanService.handleFlags(command.flags[1], cmdParams, currentRepoData);
+                    await ScanService.handleFlags(command.flags[3], cmdParams, currentRepoData);
+                    await ScanService.handleFlags(command.flags[4], cmdParams, currentRepoData);
                 }
             } else {
                 Logger.logMessageByStatus(MessageStatus.WARN, `No default repo selected`);
 
                 if (command.flags && command.flags.length > 0) {
-                    await ScanService.handleFlags(command.flags[0], cmdParams);
-                    await ScanService.handleFlags(command.flags[3], cmdParams);
-                    await ScanService.handleFlags(command.flags[4], cmdParams);
-                    await ScanService.handleFlags(command.flags[5], cmdParams);
+                    await ScanService.handleFlags(command.flags[0], cmdParams, currentRepoData);
+                    await ScanService.handleFlags(command.flags[3], cmdParams, currentRepoData);
+                    await ScanService.handleFlags(command.flags[4], cmdParams, currentRepoData);
+                    await ScanService.handleFlags(command.flags[5], cmdParams, currentRepoData);
                 }
             }
 
@@ -79,7 +77,7 @@ export class ScanService {
         }
     }
 
-    static async handleFlags(selectedFlags: Flag, cmdParams: string[]) {
+    static async handleFlags(selectedFlags: Flag, cmdParams: string[], currentRepoData: RepositoryInfo) {
         Logger.logMessageByStatus(MessageStatus.INFO, `Handling flag: ${selectedFlags.flag}(${selectedFlags.label})`);
         cmdParams.push(selectedFlags.flag);
         switch (selectedFlags.flag) {
@@ -111,23 +109,22 @@ export class ScanService {
                 break;
 
             case "-a":
-                const username = await GitHelper.getUsername();
-                const email = await GitHelper.getEmail();
+                const username = currentRepoData.userName;
+                const email = currentRepoData.email;
                 cmdParams.push(`"${username} (${email})"`);
                 Logger.logMessageByStatus(MessageStatus.INFO, `User info added: ${username} (${email})`);
                 break;
 
             case "-b":
                 if (selectedFlags.flagValue) {
-                    const currentBranch = await GitHelper.getCurrentBranch();
-                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, currentBranch));
-                    Logger.logMessageByStatus(MessageStatus.INFO, `Branch info added: ${currentBranch}`);
+                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, currentRepoData.currentBranch));
+                    Logger.logInfo(`Branch info added: ${currentRepoData.currentBranch}`);
                 }
                 break;
 
             case "-c":
                 if (selectedFlags.flagValue) {
-                    const commitHash = await GitHelper.getCommitHash();
+                    const commitHash = currentRepoData.commitID;
                     cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, commitHash));
                     Logger.logMessageByStatus(MessageStatus.INFO, `Commit hash added: ${commitHash}`);
                 }
@@ -192,7 +189,7 @@ export class ScanService {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
             );
-            Logger.logMessageByStatus(MessageStatus.INFO, "Scan service finished.");
+            Logger.logMessageByStatus(MessageStatus.INFO, "Watchers for Manifest files are now ready to scan.");
         }
     }
 }
