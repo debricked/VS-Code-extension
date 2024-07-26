@@ -13,8 +13,8 @@ export class DebrickedCommand {
             Logger.logInfo("Started registering commands");
             DebrickedCommand.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
 
-            const baseSubCommands: DebrickedCommandNode[] = DebrickedCommands.BASE_COMMAND.sub_commands || [];
-            const fileSubCommands: DebrickedCommandNode[] = DebrickedCommands.FILES.sub_commands || [];
+            const baseSubCommands: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
+            const fileSubCommands: DebrickedCommandNode[] | undefined = DebrickedCommands.FILES.sub_commands;
 
             context.subscriptions.push(
                 vscode.commands.registerCommand(DebrickedCommands.BASE_COMMAND.command, async () => {
@@ -22,30 +22,32 @@ export class DebrickedCommand {
                 }),
             );
 
-            context.subscriptions.push(
-                vscode.commands.registerCommand(baseSubCommands[0].command, async () => {
-                    DebrickedCommand.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
-                    await BaseCommandService.installCommand();
-                }),
-            );
+            if (baseSubCommands) {
+                context.subscriptions.push(
+                    vscode.commands.registerCommand(baseSubCommands[0].command, async () => {
+                        DebrickedCommand.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+                        await BaseCommandService.installCommand();
+                    }),
+                );
 
-            context.subscriptions.push(
-                vscode.commands.registerCommand(baseSubCommands[1].command, async () => {
-                    await BaseCommandService.updateCommand();
-                }),
-            );
+                context.subscriptions.push(
+                    vscode.commands.registerCommand(baseSubCommands[1].command, async () => {
+                        await BaseCommandService.updateCommand();
+                    }),
+                );
 
-            context.subscriptions.push(
-                vscode.commands.registerCommand(baseSubCommands[2].command, async () => {
-                    await BaseCommandService.help();
-                }),
-            );
+                context.subscriptions.push(
+                    vscode.commands.registerCommand(baseSubCommands[2].command, async () => {
+                        await BaseCommandService.help();
+                    }),
+                );
 
-            context.subscriptions.push(
-                vscode.commands.registerCommand(baseSubCommands[3].command, async () => {
-                    await Logger.openLogFile();
-                }),
-            );
+                context.subscriptions.push(
+                    vscode.commands.registerCommand(baseSubCommands[3].command, async () => {
+                        await Logger.openLogFile();
+                    }),
+                );
+            }
 
             context.subscriptions.push(
                 vscode.commands.registerCommand(DebrickedCommands.SCAN.command, async () => {
@@ -59,11 +61,13 @@ export class DebrickedCommand {
                 }),
             );
 
-            context.subscriptions.push(
-                vscode.commands.registerCommand(fileSubCommands[0].command, async () => {
-                    await FileService.findFilesService();
-                }),
-            );
+            if (fileSubCommands) {
+                context.subscriptions.push(
+                    vscode.commands.registerCommand(fileSubCommands[0].command, async () => {
+                        await FileService.findFilesService();
+                    }),
+                );
+            }
 
             // Add file watcher for all files found from 'debricked files find'
             await ScanService.addWatcherToManifestFiles((await FileService.findFilesService()) || [], context);
