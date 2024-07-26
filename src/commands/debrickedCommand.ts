@@ -1,8 +1,7 @@
 import * as vscode from "vscode";
-import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
+import { DebrickedCommands, Organization } from "../constants/index";
 import { BaseCommandService, ScanService, FileService } from "../services";
-import { Logger, GlobalState, Common, StatusBarMessageHelper } from "../helpers";
-import { DebrickedCommandNode } from "../types";
+import { Logger, GlobalState, Common, ErrorHandler } from "../helpers";
 
 export class DebrickedCommand {
     private static get globalState(): GlobalState {
@@ -13,69 +12,49 @@ export class DebrickedCommand {
             Logger.logInfo("Started registering commands");
             DebrickedCommand.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
 
-            const baseSubCommands: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
-            const fileSubCommands: DebrickedCommandNode[] | undefined = DebrickedCommands.FILES.sub_commands;
+            const baseSubCommands = DebrickedCommands.BASE_COMMAND.sub_commands;
+            const fileSubCommands = DebrickedCommands.FILES.sub_commands;
 
-            context.subscriptions.push(
-                vscode.commands.registerCommand(DebrickedCommands.BASE_COMMAND.command, async () => {
-                    await BaseCommandService.baseCommand();
-                }),
-            );
+            // Register base command
+            this.registerCommand(context, DebrickedCommands.BASE_COMMAND.command, BaseCommandService.baseCommand);
 
+            // Register base sub-commands
             if (baseSubCommands) {
-                context.subscriptions.push(
-                    vscode.commands.registerCommand(baseSubCommands[0].command, async () => {
-                        DebrickedCommand.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
-                        await BaseCommandService.installCommand();
-                    }),
-                );
-
-                context.subscriptions.push(
-                    vscode.commands.registerCommand(baseSubCommands[1].command, async () => {
-                        await BaseCommandService.updateCommand();
-                    }),
-                );
-
-                context.subscriptions.push(
-                    vscode.commands.registerCommand(baseSubCommands[2].command, async () => {
-                        await BaseCommandService.help();
-                    }),
-                );
-
-                context.subscriptions.push(
-                    vscode.commands.registerCommand(baseSubCommands[3].command, async () => {
-                        await Logger.openLogFile();
-                    }),
-                );
+                this.registerCommand(context, baseSubCommands[0].command, async () => {
+                    DebrickedCommand.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
+                    await BaseCommandService.installCommand();
+                });
+                this.registerCommand(context, baseSubCommands[1].command, BaseCommandService.updateCommand);
+                this.registerCommand(context, baseSubCommands[2].command, BaseCommandService.help);
+                this.registerCommand(context, baseSubCommands[3].command, Logger.openLogFile);
             }
 
-            context.subscriptions.push(
-                vscode.commands.registerCommand(DebrickedCommands.SCAN.command, async () => {
-                    await ScanService.scanService();
-                }),
-            );
+            // Register scan command
+            this.registerCommand(context, DebrickedCommands.SCAN.command, ScanService.scanService);
 
-            context.subscriptions.push(
-                vscode.commands.registerCommand(DebrickedCommands.FILES.command, async () => {
-                    await FileService.filesService();
-                }),
-            );
+            // Register files command
+            this.registerCommand(context, DebrickedCommands.FILES.command, FileService.filesService);
 
+            // Register file sub-commands
             if (fileSubCommands) {
-                context.subscriptions.push(
-                    vscode.commands.registerCommand(fileSubCommands[0].command, async () => {
-                        await FileService.findFilesService();
-                    }),
-                );
+                this.registerCommand(context, fileSubCommands[0].command, FileService.findFilesService);
             }
 
             // Add file watcher for all files found from 'debricked files find'
-            await ScanService.addWatcherToManifestFiles((await FileService.findFilesService()) || [], context);
-        } catch (error: any) {
-            StatusBarMessageHelper.showErrorMessage(`${Organization.name} - ${MessageStatus.ERROR}: ${error.message}`);
-            Logger.logError(`Error: ${error.stack}`);
+            const foundFiles = (await FileService.findFilesService()) || [];
+            await ScanService.addWatcherToManifestFiles(foundFiles, context);
+        } catch (error) {
+            ErrorHandler.handleError(error);
         } finally {
-            Logger.logInfo("command register has been completed");
+            Logger.logInfo("Command registration has been completed");
         }
+    }
+
+    private static registerCommand(
+        context: vscode.ExtensionContext,
+        command: string,
+        callback: (...args: any[]) => any,
+    ) {
+        context.subscriptions.push(vscode.commands.registerCommand(command, callback));
     }
 }

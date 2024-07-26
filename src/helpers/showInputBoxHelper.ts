@@ -21,8 +21,9 @@ export class ShowInputBoxHelper {
             inputBoxOptions.value = options.value;
         }
 
-        const input = vscode.window.showInputBox(inputBoxOptions);
-        if (input) {
+        const input = await vscode.window.showInputBox(inputBoxOptions);
+
+        if (input !== undefined) {
             return input;
         }
 

@@ -9,6 +9,7 @@ import {
     InstallHelper,
     Common,
     AuthHelper,
+    ErrorHandler,
 } from "../helpers";
 import * as vscode from "vscode";
 import { GlobalState } from "helpers/globalState";
@@ -55,13 +56,7 @@ export class BaseCommandService {
                     break;
             }
         } catch (error: any) {
-            StatusBarMessageHelper.showErrorMessage(
-                `${Organization.name} - ${DebrickedCommands.BASE_COMMAND.cli_command} ${MessageStatus.ERROR}: ${error.message}`,
-            );
-            StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.BASE_COMMAND.cli_command),
-            );
-            Logger.logMessageByStatus(MessageStatus.ERROR, error.stack);
+            ErrorHandler.handleError(error);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.cli_command),
@@ -97,13 +92,7 @@ export class BaseCommandService {
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.BASE_COMMAND.cli_command),
             );
         } catch (error: any) {
-            StatusBarMessageHelper.showErrorMessage(
-                `${Organization.name} - ${DebrickedCommands.BASE_COMMAND.cli_command} ${MessageStatus.ERROR}: ${error.message}`,
-            );
-            StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.BASE_COMMAND.cli_command),
-            );
-            Logger.logMessageByStatus(MessageStatus.ERROR, error.stack);
+            throw error;
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.cli_command),
@@ -132,13 +121,7 @@ export class BaseCommandService {
                 `${Organization.extensionVersionKey}: ${BaseCommandService.globalState.getGlobalData(Organization.extensionVersionKey, "")}`,
             );
         } catch (error: any) {
-            StatusBarMessageHelper.showErrorMessage(
-                `${Organization.name} - ${DebrickedCommands.BASE_COMMAND.command} ${MessageStatus.ERROR}: ${error.message}`,
-            );
-            StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.BASE_COMMAND.command),
-            );
-            Logger.logMessageByStatus(MessageStatus.ERROR, error.stack);
+            ErrorHandler.handleError(error);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),
@@ -168,13 +151,7 @@ export class BaseCommandService {
                     break;
             }
         } catch (error: any) {
-            StatusBarMessageHelper.showErrorMessage(
-                `${Organization.name} - ${DebrickedCommands.BASE_COMMAND.command} ${MessageStatus.ERROR}: ${error.message}`,
-            );
-            StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.BASE_COMMAND.command),
-            );
-            Logger.logMessageByStatus(MessageStatus.ERROR, error.stack);
+            throw error;
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),

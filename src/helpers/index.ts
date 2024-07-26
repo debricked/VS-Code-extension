@@ -13,6 +13,7 @@ import { ShowInputBoxHelper } from "./showInputBoxHelper";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
 import { GlobalState } from "./globalState";
 import { ApiHelper } from "./apiHelper";
+import { ErrorHandler } from "./errorHandler";
 
 export {
     AuthHelper,
@@ -30,4 +31,5 @@ export {
     DebrickedDataHelper,
     GlobalState,
     ApiHelper,
+    ErrorHandler,
 };

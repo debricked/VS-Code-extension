@@ -2,7 +2,7 @@ import * as path from "path";
 import * as os from "os";
 import { exec } from "child_process";
 import { Messages, MessageStatus, Organization } from "../constants/index";
-import { Logger } from "../helpers";
+import { Logger, StatusBarMessageHelper } from "../helpers";
 import * as vscode from "vscode";
 
 export class InstallHelper {
@@ -50,7 +50,7 @@ export class InstallHelper {
         await vscode.window.withProgress(
             {
                 location: vscode.ProgressLocation.Notification,
-                title: "Debricked",
+                title: Organization.nameCaps,
                 cancellable: false,
             },
             async (progress) => {
@@ -65,7 +65,7 @@ export class InstallHelper {
                     const installOutput = await this.executeCommand(installCommand);
                     Logger.logMessageByStatus(MessageStatus.INFO, `${installOutput}`);
                     Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}`);
-                    vscode.window.showInformationMessage("Debricked: CLI installed successful");
+                    StatusBarMessageHelper.showInformationMessage("CLI installed successfully");
                 } catch (error: any) {
                     vscode.window.showErrorMessage(error.message);
                     Logger.logMessageByStatus(MessageStatus.ERROR, `${Messages.INSTALLATION_ERROR}: ${error.stack}`);

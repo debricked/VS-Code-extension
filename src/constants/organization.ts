@@ -5,6 +5,7 @@ import * as os from "os";
 export class Organization {
     static readonly name = "debricked";
 
+    static readonly nameCaps = "Debricked";
     // Command and OS-specific constants
     static readonly command = Organization.getPlatformSpecificCommand();
     static readonly osPlatform = os.platform();

@@ -14,14 +14,14 @@ export class Logger {
 
     public static initialize(context: vscode.ExtensionContext) {
         const logDir = context.logUri.fsPath;
-        this.logFilePath = path.join(logDir, Organization.logFile);
+        Logger.logFilePath = path.join(logDir, Organization.logFile);
 
         // Ensure the log directory exists
         DebrickedDataHelper.createDir(logDir);
     }
 
     public static async openLogFile() {
-        const logUri = vscode.Uri.file(this.logFilePath);
+        const logUri = vscode.Uri.file(Logger.logFilePath);
         const document = await vscode.workspace.openTextDocument(logUri);
         await vscode.window.showTextDocument(document);
     }

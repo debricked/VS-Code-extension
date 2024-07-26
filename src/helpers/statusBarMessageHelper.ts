@@ -1,3 +1,4 @@
+import { Organization } from "../constants";
 import * as vscode from "vscode";
 
 export class StatusBarMessageHelper {
@@ -11,6 +12,10 @@ export class StatusBarMessageHelper {
     }
 
     public static showErrorMessage(message: string): void {
-        vscode.window.showErrorMessage(message);
+        vscode.window.showErrorMessage(`${Organization.nameCaps}: ` + message);
+    }
+
+    public static showInformationMessage(message: string): void {
+        vscode.window.showInformationMessage(`${Organization.nameCaps}: ` + message);
     }
 }
