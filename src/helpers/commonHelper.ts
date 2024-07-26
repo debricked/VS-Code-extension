@@ -31,8 +31,10 @@ export class Common {
     }
 
     public static replacePlaceholder(originalString: string, placeholderValue: string) {
-        const test = originalString.replace("PLACEHOLDER", placeholderValue);
-        return test;
+        return originalString.replace(
+            "PLACEHOLDER",
+            placeholderValue ? placeholderValue : `${new Date().toISOString()}`,
+        );
     }
 
     public static async setupDebricked(): Promise<void> {

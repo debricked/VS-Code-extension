@@ -1,4 +1,4 @@
-import { MessageStatus, Organization } from "../constants/index";
+import { Messages, MessageStatus, Organization } from "../constants/index";
 import { Command, GlobalState, Logger, ShowInputBoxHelper } from "../helpers";
 
 export class GitHelper {
@@ -10,7 +10,7 @@ export class GitHelper {
     }
 
     public static async getCommitHash(): Promise<string> {
-        return await Command.executeAsyncCommand("git rev-parse HEAD");
+        return (await Command.executeAsyncCommand("git rev-parse HEAD")) || `${new Date().toISOString()}`;
     }
 
     public static async getRemoteUrl(): Promise<string> {
@@ -53,7 +53,7 @@ export class GitHelper {
         return (
             (await Command.executeAsyncCommand("git rev-parse --show-toplevel").then((repoPath) => {
                 return repoPath.split("/").pop() || repoPath.split("\\").pop() || "";
-            })) || "unknown"
+            })) || Messages.UNKNOWN
         );
     }
 
@@ -61,22 +61,19 @@ export class GitHelper {
         const currentRepo = await GitHelper.getUpstream();
         Logger.logMessageByStatus(MessageStatus.INFO, `Current repository: ${currentRepo}`);
         const repoData: any = await GitHelper.globalState.getGlobalData(Organization.REPO_DATA_KEY, {});
-        let selectedRepoName: string;
-
-        if (currentRepo.indexOf(".git") > -1) {
-            selectedRepoName = await GitHelper.getRepositoryName();
-        } else {
-            selectedRepoName = "unknown";
-        }
+        const selectedRepoName: string = await GitHelper.getRepositoryName();
 
         if (selectedRepoName) {
             if (!repoData[selectedRepoName]) {
                 repoData[selectedRepoName] = {};
             }
+            repoData[selectedRepoName].repositoryName = selectedRepoName;
         }
 
         repoData[selectedRepoName].userName = await GitHelper.getUsername();
         repoData[selectedRepoName].email = await GitHelper.getEmail();
+        repoData[selectedRepoName].currentBranch = await GitHelper.getCurrentBranch();
+        repoData[selectedRepoName].commitID = await GitHelper.getCommitHash();
 
         await GitHelper.globalState.setGlobalData(Organization.REPO_DATA_KEY, repoData);
     }
