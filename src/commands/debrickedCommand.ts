@@ -71,7 +71,7 @@ export class DebrickedCommand {
             StatusBarMessageHelper.showErrorMessage(`${Organization.name} - ${MessageStatus.ERROR}: ${error.message}`);
             Logger.logError(`Error: ${error.stack}`);
         } finally {
-            Logger.logError("command register has been completed");
+            Logger.logInfo("command register has been completed");
         }
     }
 }
