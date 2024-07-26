@@ -7,6 +7,7 @@ import {
     Common,
     GlobalState,
     DebrickedDataHelper,
+    ShowInputBoxHelper,
 } from "../helpers";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag } from "../types";
@@ -83,7 +84,7 @@ export class ScanService {
         cmdParams.push(selectedFlags.flag);
         switch (selectedFlags.flag) {
             case "-r":
-                const providedRepo = await vscode.window.showInputBox({
+                const providedRepo = await ShowInputBoxHelper.promptForInput({
                     title: "Enter Repository name",
                     prompt: "Enter repository name",
                     ignoreFocusOut: false,

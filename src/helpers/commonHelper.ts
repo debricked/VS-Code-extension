@@ -1,9 +1,9 @@
-import * as vscode from "vscode";
 import { MessageStatus, Organization } from "../constants/index";
 import * as crypto from "crypto";
 import { Logger } from "./loggerHelper";
 import { GlobalState } from "./globalState";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
+import { ShowInputBoxHelper } from "./showInputBoxHelper";
 
 export class Common {
     private static get globalState(): GlobalState {
@@ -11,7 +11,7 @@ export class Common {
     }
 
     public static async getInput(prompt: string): Promise<string | undefined> {
-        return await vscode.window.showInputBox({ prompt });
+        return await ShowInputBoxHelper.promptForInput({ prompt });
     }
 
     public static generateHashCode(input: string = new Date().toISOString()): string {

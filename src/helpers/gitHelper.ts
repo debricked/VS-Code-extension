@@ -25,17 +25,23 @@ export class GitHelper {
         return await Command.executeAsyncCommand(`git log -n ${n} --pretty=format:"%h - %an, %ar : %s"`);
     }
 
-    public static async getUsername(): Promise<string> {
+    public static async getUsername(): Promise<string | undefined> {
         return (
             (await Command.executeAsyncCommand("git config --get user.name")) ||
-            ShowInputBoxHelper.inputData("Please enter User Name", "unknown-user")
+            ShowInputBoxHelper.promptForInput(
+                { prompt: "Git user name", placeHolder: "Please enter User Name" },
+                "unknown-user",
+            )
         );
     }
 
-    public static async getEmail(): Promise<string> {
+    public static async getEmail(): Promise<string | undefined> {
         return (
             (await Command.executeAsyncCommand("git config --get user.email")) ||
-            ShowInputBoxHelper.inputData("Please enter Email ID", "unknown-email")
+            ShowInputBoxHelper.promptForInput(
+                { prompt: "Git user email", placeHolder: "Please enter Email ID" },
+                "unknown-email",
+            )
         );
     }
 
@@ -72,6 +78,6 @@ export class GitHelper {
         repoData[selectedRepoName].userName = await GitHelper.getUsername();
         repoData[selectedRepoName].email = await GitHelper.getEmail();
 
-        await GitHelper.globalState.setGlobalData(Organization.DEBRICKED_DATA_KEY, repoData);
+        await GitHelper.globalState.setGlobalData(Organization.REPO_DATA_KEY, repoData);
     }
 }

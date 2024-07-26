@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { Messages, Organization } from "../constants/index";
-import { GlobalState, Logger } from "../helpers";
+import { GlobalState, Logger, ShowInputBoxHelper } from "../helpers";
 
 export class AuthHelper {
     private static get globalState(): GlobalState {
@@ -24,10 +24,11 @@ export class AuthHelper {
             if (!token) {
                 // Prompt the user to enter the access token
                 Logger.logInfo("InputBox Opened for tokens");
-                token = await vscode.window.showInputBox({
+
+                token = await ShowInputBoxHelper.promptForInput({
                     prompt: tokenKey === "access" ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
                     ignoreFocusOut: true,
-                    password: true, // To hide the input characters
+                    password: true,
                     title: tokenKey === "access" ? Messages.ACCESS_TOKEN : Messages.BEARER_TOKEN,
                     placeHolder: tokenKey === "access" ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
                 });
