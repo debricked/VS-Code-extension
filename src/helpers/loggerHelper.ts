@@ -60,4 +60,8 @@ export class Logger {
     public static async logError(message: string) {
         await Logger.logMessageByStatus(MessageStatus.ERROR, message);
     }
+
+    public static async logObj(message: any) {
+        await Logger.logMessageByStatus(MessageStatus.WARN, JSON.stringify(message));
+    }
 }

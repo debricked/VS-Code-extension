@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { Terminal } from "../../helpers";
-import { AuthHelper, Logger } from "../../helpers";
+import { Logger } from "../../helpers";
 import { Messages, Organization } from "../../constants";
 import { expect, sinon } from "../setup";
 
@@ -20,7 +20,6 @@ describe("Terminal", () => {
         createTerminalStub = sinon.stub(vscode.window, "createTerminal").returns(mockTerminal);
         sendTextStub = sinon.stub(mockTerminal, "sendText");
         showStub = sinon.stub(mockTerminal, "show");
-        getAccessTokenStub = sinon.stub(AuthHelper, "getAccessToken").resolves("testAccessToken");
         logMessageStub = sinon.stub(Logger, "logMessage");
     });
 

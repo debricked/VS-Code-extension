@@ -7,10 +7,12 @@ import {
     Common,
     GlobalState,
     DebrickedDataHelper,
+    ShowInputBoxHelper,
 } from "../helpers";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag } from "../types";
 import * as vscode from "vscode";
+import path from "path";
 
 export class ScanService {
     private static get globalState(): GlobalState {
@@ -82,7 +84,7 @@ export class ScanService {
         cmdParams.push(selectedFlags.flag);
         switch (selectedFlags.flag) {
             case "-r":
-                const providedRepo = await vscode.window.showInputBox({
+                const providedRepo = await ShowInputBoxHelper.promptForInput({
                     title: "Enter Repository name",
                     prompt: "Enter repository name",
                     ignoreFocusOut: false,
@@ -137,9 +139,60 @@ export class ScanService {
         }
     }
 
-    static async runDebrickedScan(e: vscode.Uri) {
-        Logger.logMessageByStatus(MessageStatus.INFO, `Running Debricked scan on ${e.path}`);
-        ScanService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
-        await ScanService.scanService();
+    static async addWatcherToManifestFiles(filesToScan: string[], context: vscode.ExtensionContext) {
+        try {
+            Logger.logMessageByStatus(MessageStatus.INFO, "Add Watchers To Manifest Files");
+            ScanService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+
+            if (filesToScan && filesToScan.length > 0) {
+                const filesPattern = new RegExp(filesToScan.map((file: any) => `^${file}$`).join("|"));
+
+                vscode.window.onDidChangeActiveTextEditor((editor) => {
+                    if (editor && filesPattern.test(path.basename(editor.document.fileName))) {
+                        vscode.commands.executeCommand("setContext", "debrickedFilesToScan", true);
+                    } else {
+                        vscode.commands.executeCommand("setContext", "debrickedFilesToScan", false);
+                    }
+                });
+
+                filesToScan.forEach((file: any) => {
+                    const watcher = vscode.workspace.createFileSystemWatcher(`**/${file}`);
+
+                    const runScan = async () => {
+                        await this.scanService();
+                    };
+
+                    watcher.onDidChange(runScan);
+                    watcher.onDidCreate(runScan);
+                    watcher.onDidDelete(runScan);
+                    Logger.logMessageByStatus(MessageStatus.INFO, `register watcher on ${file}`);
+                    context.subscriptions.push(watcher);
+                });
+                Logger.logInfo("watchers added successfully");
+            } else {
+                Logger.logInfo("No manifest files found");
+            }
+
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.SCAN.cli_command),
+            );
+
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
+            );
+        } catch (error: any) {
+            StatusBarMessageHelper.showErrorMessage(
+                `${Organization.name} - ${DebrickedCommands.SCAN.cli_command} ${MessageStatus.ERROR}: ${error.message}`,
+            );
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.SCAN.cli_command),
+            );
+            Logger.logMessageByStatus(MessageStatus.ERROR, `Error during adding watchers: ${error.stack}`);
+        } finally {
+            StatusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
+            );
+            Logger.logMessageByStatus(MessageStatus.INFO, "Scan service finished.");
+        }
     }
 }

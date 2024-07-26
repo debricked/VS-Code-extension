@@ -24,14 +24,14 @@ export async function activate(context: vscode.ExtensionContext) {
             globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
             progress.report({
                 message: "Activating VS Code Extension",
-                increment: (progressCount = progressCount + 20),
+                increment: (progressCount += 20),
             });
             await Common.setupDebricked();
             Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
 
             progress.report({
                 message: "Registering Debricked commands",
-                increment: (progressCount = progressCount + 20),
+                increment: (progressCount += 20),
             });
             await DebrickedCommand.commands(context);
             const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
@@ -48,7 +48,7 @@ export async function activate(context: vscode.ExtensionContext) {
                 globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
                 progress.report({
                     message: "Installing Debricked cli",
-                    increment: (progressCount = progressCount + 20),
+                    increment: (progressCount += 20),
                 });
                 await BaseCommandService.installCommand();
             }
@@ -61,7 +61,5 @@ export async function activate(context: vscode.ExtensionContext) {
 export async function deactivate() {
     Logger.logMessageByStatus(MessageStatus.INFO, "Deactivate Debricked VS Code Extension");
     const globalState = GlobalState.getInstance();
-    // for testing environment
-    await globalState.clearAllGlobalData();
-    globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+    await globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
 }

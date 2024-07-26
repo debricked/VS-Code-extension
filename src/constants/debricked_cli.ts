@@ -15,10 +15,26 @@ export class DebrickedCommands {
                 description: "Install Debricked-cli",
             },
             {
-                label: "Add/Update Access Token",
-                command: "debricked.debricked.access_token",
-                cli_command: "access_token",
-                description: "Add/Update Debricked access token",
+                label: "Add/Update Token",
+                command: "debricked.debricked.token",
+                cli_command: "token",
+                description: "Add/Update Debricked tokens",
+                sub_commands: [
+                    {
+                        label: "Access Token",
+                        command: "debricked.debricked.accessToken",
+                        cli_command: "accessToken",
+                        description: "Access Token",
+                        isVisibleInTree: false,
+                    },
+                    {
+                        label: "Bearer Token",
+                        command: "debricked.debricked.BearerToken",
+                        cli_command: "bearerToken",
+                        description: "Bearer Token",
+                        isVisibleInTree: false,
+                    },
+                ],
             },
             {
                 label: "Help",
