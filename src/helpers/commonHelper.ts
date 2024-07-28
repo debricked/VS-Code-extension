@@ -6,50 +6,82 @@ import { DebrickedDataHelper } from "./debrickedDataHelper";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
 
 export class Common {
+    // Singleton instance of GlobalState
     private static get globalState(): GlobalState {
         return GlobalState.getInstance();
     }
 
+    /**
+     * Prompt the user for input with a given prompt message.
+     * @param prompt The message to prompt the user with.
+     * @returns The user's input or undefined if cancelled.
+     */
     public static async getInput(prompt: string): Promise<string | undefined> {
         return await ShowInputBoxHelper.promptForInput({ prompt });
     }
 
+    /**
+     * Generate a SHA-256 hash code from a given input or the current date and time.
+     * @param input The input string to hash. Defaults to the current date and time.
+     * @returns The generated hash code as a hex string.
+     */
     public static generateHashCode(input: string = new Date().toISOString()): string {
         return crypto.createHash("sha256").update(input).digest("hex");
     }
 
+    /**
+     * Check if a user ID exists in the global state. If not, generate and store a new user ID.
+     */
     public static async checkUserId(): Promise<void> {
-        const user_id = await Common.globalState.getGlobalDataByKey(Organization.DEBRICKED_DATA_KEY, "user_id");
-        if (!user_id) {
-            const userHashCode = Common.generateHashCode(new Date().toDateString());
-            const debrickedData: any = await Common.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
-            debrickedData["user_id"] = userHashCode;
-            await Common.globalState.setGlobalData(Organization.DEBRICKED_DATA_KEY, debrickedData);
+        try {
+            const userId = await Common.globalState.getGlobalDataByKey(
+                Organization.debrickedDataKey,
+                Organization.userId,
+            );
+            if (!userId) {
+                const userHashCode = Common.generateHashCode(new Date().toDateString());
+                const debrickedData: any = await Common.globalState.getGlobalData(Organization.debrickedDataKey, {});
+                debrickedData[Organization.userId] = userHashCode;
+                await Common.globalState.setGlobalData(Organization.debrickedDataKey, debrickedData);
 
-            Logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated : ${userHashCode}`);
+                Logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated: ${userHashCode}`);
+            }
+        } catch (error: any) {
+            Logger.logMessageByStatus(MessageStatus.ERROR, `Error checking user ID: ${error.stack}`);
         }
     }
 
-    public static replacePlaceholder(originalString: string, placeholderValue: string) {
-        return originalString.replace(
-            "PLACEHOLDER",
-            placeholderValue ? placeholderValue : `${new Date().toISOString()}`,
-        );
+    /**
+     * Replace the placeholder in a string with a specified value.
+     * @param originalString The original string containing the placeholder.
+     * @param placeholderValue The value to replace the placeholder with.
+     * @returns The updated string with the placeholder replaced.
+     */
+    public static replacePlaceholder(originalString: string, placeholderValue: string): string {
+        return originalString.replace("PLACEHOLDER", placeholderValue || new Date().toISOString());
     }
 
+    /**
+     * Set up the Debricked environment by generating a sequence ID and checking the user ID.
+     */
     public static async setupDebricked(): Promise<void> {
-        Common.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
-        await Common.checkUserId();
-        DebrickedDataHelper.createDir(Organization.reportsFolderPath);
+        try {
+            Common.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
+            await Common.checkUserId();
+            DebrickedDataHelper.createDir(Organization.reportsFolderPath);
+        } catch (error: any) {
+            Logger.logMessageByStatus(MessageStatus.ERROR, `Error setting up Debricked: ${error.stack}`);
+        }
     }
 
-    public static stringToArray(inputString: string, separator: string) {
-        // Split the string by newline character
-        let array = inputString.split(separator);
-
-        // Trim whitespace and asterisks from each element
-        array = array.map((item) => item.trim().replace(/^\* /, ""));
-
-        return array;
+    /**
+     * Convert a string into an array by splitting it by a specified separator.
+     * Trims whitespace and removes asterisks from each element.
+     * @param inputString The input string to convert.
+     * @param separator The separator to split the string by.
+     * @returns The resulting array of strings.
+     */
+    public static stringToArray(inputString: string, separator: string): string[] {
+        return inputString.split(separator).map((item) => item.trim().replace(/^\* /, ""));
     }
 }

@@ -13,7 +13,7 @@ describe("Common", () => {
     let fsWriteFileSyncStub: sinon.SinonStub;
     let fsMkdirSyncStub: sinon.SinonStub;
 
-    const mockPath = path.join(mockWorkspacePath, Organization.debricked_data_file);
+    const mockPath = path.join(mockWorkspacePath, Organization.debrickedDataFile);
 
     before(() => {
         showInputBoxStub = sinon.stub(vscode.window, "showInputBox");

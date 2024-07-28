@@ -43,11 +43,11 @@ describe("Terminal", () => {
         await Terminal.createAndUseTerminal(description, cmdParams, accessTokenRequired);
 
         expect(createTerminalStub.calledOnceWith(description)).to.be.true;
-        expect(sendTextStub.calledOnceWith(`${Organization.debricked_cli} ${cmdParams.join(" ")}`)).to.be.true;
+        expect(sendTextStub.calledOnceWith(`${Organization.debrickedCli} ${cmdParams.join(" ")}`)).to.be.true;
         expect(showStub.calledOnce).to.be.true;
         expect(
             logMessageStub.calledOnceWith(
-                `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: ${Organization.debricked_cli} ${cmdParams.join(" ")}`,
+                `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: ${Organization.debrickedCli} ${cmdParams.join(" ")}`,
             ),
         ).to.be.true;
     });
@@ -60,11 +60,11 @@ describe("Terminal", () => {
         await Terminal.createAndUseTerminal(description, cmdParams, accessTokenRequired);
 
         expect(createTerminalStub.calledOnceWith(description)).to.be.true;
-        expect(sendTextStub.calledOnceWith(`${Organization.debricked_cli} ${cmdParams.join(" ")}`)).to.be.true;
+        expect(sendTextStub.calledOnceWith(`${Organization.debrickedCli} ${cmdParams.join(" ")}`)).to.be.true;
         expect(showStub.calledOnce).to.be.true;
         expect(
             logMessageStub.calledOnceWith(
-                `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: ${Organization.debricked_cli} ${cmdParams.join(" ")}`,
+                `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: ${Organization.debrickedCli} ${cmdParams.join(" ")}`,
             ),
         ).to.be.true;
     });

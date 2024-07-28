@@ -9,7 +9,7 @@ import {
     DebrickedDataHelper,
     ShowInputBoxHelper,
 } from "../helpers";
-import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
+import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import path from "path";
@@ -23,18 +23,18 @@ export class ScanService {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register ScanCommand");
 
             DebrickedDataHelper.createDir(Organization.reportsFolderPath);
-            ScanService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+            ScanService.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
             const cmdParams = [];
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 
             cmdParams.push(command.cli_command);
             const currentRepoData: RepositoryInfo = await ScanService.globalState.getGlobalDataByKey(
-                Organization.REPO_DATA_KEY,
+                Organization.repoDataKey,
                 await GitHelper.getRepositoryName(),
             );
             Logger.logMessageByStatus(MessageStatus.INFO, `Current repository name: ${currentRepoData.repositoryName}`);
 
-            if (currentRepoData?.repositoryName !== Messages.UNKNOWN) {
+            if (currentRepoData?.repositoryName !== MessageStatus.UNKNOWN) {
                 if (command.flags && command.flags.length > 0) {
                     await ScanService.handleFlags(command.flags[1], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[3], cmdParams, currentRepoData);
@@ -139,7 +139,7 @@ export class ScanService {
     static async addWatcherToManifestFiles(filesToScan: string[], context: vscode.ExtensionContext) {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Add Watchers To Manifest Files");
-            ScanService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+            ScanService.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
 
             if (filesToScan && filesToScan.length > 0) {
                 const filesPattern = new RegExp(filesToScan.map((file: any) => `^${file}$`).join("|"));

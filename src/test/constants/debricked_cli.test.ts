@@ -1,7 +1,6 @@
 import { sinon, expect } from "../setup";
 import * as vscode from "vscode";
-import { DebrickedCommands, Organization, ApiEndpoints } from "../../constants";
-import path from "path";
+import { DebrickedCommands, ApiEndpoints } from "../../constants";
 
 describe("Debricked CLI: Test Suite", () => {
     let sandbox: sinon.SinonSandbox;
@@ -60,20 +59,6 @@ describe("Debricked CLI: Test Suite", () => {
         it("should return undefined for a command without flags", () => {
             const flags = DebrickedCommands.getCommandSpecificFlags("help");
             expect(flags).to.be.undefined;
-        });
-    });
-
-    describe("Organization", () => {
-        it("should return the correct organization info", () => {
-            const info = Organization.getOrganizationInfo();
-            expect(info).to.deep.equal({
-                name: "debricked",
-                report: ".debricked/reports",
-                log_file: "debricked.log",
-                workspace: path.join(__dirname, "../../../"),
-                debricked_cli: "debricked",
-                debricked_data_file: "debricked_data.json",
-            });
         });
     });
 

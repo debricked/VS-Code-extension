@@ -1,19 +1,31 @@
 export class Messages {
+    // Access Token Messages
     static readonly ACCESS_TOKEN = "Debricked access token";
+    static readonly ENTER_ACCESS_TOKEN = "Please enter your Debricked access token.";
+    static readonly ACCESS_TOKEN_RQD = "Access token is required.";
+    static readonly ACCESS_TOKEN_SAVED = "Access token has been successfully saved.";
+
+    // Bearer Token Messages
     static readonly BEARER_TOKEN = "Debricked bearer token";
-    static readonly ENTER_ACCESS_TOKEN = "Enter your Debricked access token";
-    static readonly ENTER_BEARER_TOKEN = "Enter your Debricked bearer token";
-    static readonly ACCESS_TOKEN_RQD = "Access token is required";
-    static readonly BEARER_TOKEN_RQD = "Bearer token is required";
-    static readonly ACCESS_TOKEN_SAVED = "Access token has been saved";
-    static readonly BEARER_TOKEN_SAVED = "Bearer token has been saved";
-    static readonly WS_NOT_FOUND = "No workspace folder found";
-    static readonly QUICK_PICK_FLAG = "Select a flag to use (optional)";
-    static readonly QUICK_PICK_SUB_COMMAND = "Select a command to use (optional)";
-    static readonly CMD_EXEC_WITH_ACCESS_TOKEN = "Executing command with access_token";
-    static readonly CMD_EXEC_WITHOUT_ACCESS_TOKEN = "Executing command without access_token";
-    static readonly UNSUPPORTED_OS = "Unsupported operating system";
-    static readonly INSTALLATION_SUCCESS = "Installation script executed successfully";
-    static readonly INSTALLATION_ERROR = "Installation script execution failed";
-    static readonly UNKNOWN = "unknown";
+    static readonly ENTER_BEARER_TOKEN = "Please enter your Debricked bearer token.";
+    static readonly BEARER_TOKEN_RQD = "Bearer token is required.";
+    static readonly BEARER_TOKEN_SAVED = "Bearer token has been successfully saved.";
+
+    // Workspace Messages
+    static readonly WS_NOT_FOUND = "No workspace folder found. Please open a workspace to proceed.";
+
+    // Quick Pick Messages
+    static readonly QUICK_PICK_FLAG = "Select a flag to use (optional).";
+    static readonly QUICK_PICK_SUB_COMMAND = "Select a sub-command to use (optional).";
+
+    // Command Execution Messages
+    static readonly CMD_EXEC_WITH_ACCESS_TOKEN = "Executing command with access token.";
+    static readonly CMD_EXEC_WITHOUT_ACCESS_TOKEN = "Executing command without access token.";
+
+    // Installation Messages
+    static readonly UNSUPPORTED_OS = "Unsupported operating system.";
+    static readonly INSTALLATION_SUCCESS = "Installation script executed successfully.";
+    static readonly INSTALLATION_ERROR = "Installation script execution failed.";
+
+    // Miscellaneous Messages
 }

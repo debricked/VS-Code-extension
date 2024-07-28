@@ -19,7 +19,7 @@ export class FileService {
     static async filesService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register FileCommand");
-            FileService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+            FileService.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
 
             const cmdParams = [];
             const command: DebrickedCommandNode = DebrickedCommands.FILES;
@@ -71,7 +71,7 @@ export class FileService {
     static async findFilesService(): Promise<string[] | undefined> {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register Find File Command");
-            FileService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+            FileService.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
             const cmdParams = [];
             const command: DebrickedCommandNode = DebrickedCommands.FILES;
 
@@ -91,12 +91,10 @@ export class FileService {
 
             Logger.logMessageByStatus(MessageStatus.INFO, `Executing terminal command with parameters: ${cmdParams}`);
 
-            const foundFiles = await Command.executeAsyncCommand(
-                `${Organization.debricked_cli} ${cmdParams.join(" ")}`,
-            );
+            const foundFiles = await Command.executeAsyncCommand(`${Organization.debrickedCli} ${cmdParams.join(" ")}`);
             const foundFilesArray: string[] = Common.stringToArray(foundFiles, "\n");
             await GitHelper.setupGit();
-            const repoData: any = await FileService.globalState.getGlobalData(Organization.REPO_DATA_KEY, {});
+            const repoData: any = await FileService.globalState.getGlobalData(Organization.repoDataKey, {});
             const selectedRepoName = await GitHelper.getRepositoryName();
 
             if (selectedRepoName && !repoData[selectedRepoName]) {
@@ -105,7 +103,7 @@ export class FileService {
 
             repoData[selectedRepoName].filesToScan = foundFilesArray;
 
-            await FileService.globalState.setGlobalData(Organization.REPO_DATA_KEY, repoData);
+            await FileService.globalState.setGlobalData(Organization.repoDataKey, repoData);
             Logger.logMessageByStatus(MessageStatus.INFO, `Found ${foundFilesArray.length} Files: ${foundFilesArray}`);
             return foundFilesArray;
         } catch (error: any) {
@@ -126,7 +124,7 @@ export class FileService {
     }
 
     static async getFilesToScan() {
-        const debrickedData: any = await FileService.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
+        const debrickedData: any = await FileService.globalState.getGlobalData(Organization.debrickedDataKey, {});
         const repositoryName = await GitHelper.getRepositoryName();
         if (repositoryName) {
             return debrickedData[repositoryName]?.filesToScan;
