@@ -1,8 +1,12 @@
-export class MessageStatus {
-    static readonly START = "start";
-    static readonly COMPLETE = "complete";
-    static readonly ERROR = "error";
-    static readonly FINISHED = "finished";
-    static readonly INFO = "info";
-    static readonly WARN = "warning";
+export enum MessageStatus {
+    START = "start",
+    COMPLETE = "complete",
+    ERROR = "error",
+    FINISHED = "finished",
+    INFO = "info",
+    WARN = "warning",
+    DEBUG = "debug",
+    PENDING = "pending",
+    SUCCESS = "success",
+    UNKNOWN = "unknown",
 }

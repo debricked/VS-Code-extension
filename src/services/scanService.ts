@@ -9,7 +9,7 @@ import {
     DebrickedDataHelper,
     ShowInputBoxHelper,
 } from "../helpers";
-import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
+import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import path from "path";
@@ -34,7 +34,7 @@ export class ScanService {
             );
             Logger.logMessageByStatus(MessageStatus.INFO, `Current repository name: ${currentRepoData.repositoryName}`);
 
-            if (currentRepoData?.repositoryName !== Messages.UNKNOWN) {
+            if (currentRepoData?.repositoryName !== MessageStatus.UNKNOWN) {
                 if (command.flags && command.flags.length > 0) {
                     await ScanService.handleFlags(command.flags[1], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[3], cmdParams, currentRepoData);

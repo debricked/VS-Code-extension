@@ -1,4 +1,4 @@
-import { Messages, MessageStatus, Organization } from "../constants/index";
+import { MessageStatus, Organization } from "../constants/index";
 import { Command, GlobalState, Logger, ShowInputBoxHelper } from "../helpers";
 
 export class GitHelper {
@@ -53,7 +53,7 @@ export class GitHelper {
         return (
             (await Command.executeAsyncCommand("git rev-parse --show-toplevel").then((repoPath) => {
                 return repoPath.split("/").pop() || repoPath.split("\\").pop() || "";
-            })) || Messages.UNKNOWN
+            })) || MessageStatus.UNKNOWN
         );
     }
 
