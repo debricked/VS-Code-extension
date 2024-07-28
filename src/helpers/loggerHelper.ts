@@ -32,7 +32,7 @@ export class Logger {
 
     private static async writeLog(message: string) {
         const timestamp = new Date().toISOString();
-        const userId = await Logger.globalState.getGlobalDataByKey(Organization.debrickedDataKey, "user_id");
+        const userId = await Logger.globalState.getGlobalDataByKey(Organization.debrickedDataKey, Organization.userId);
         const sequenceId = Logger.globalState.getGlobalData(Organization.seqIdKey)
             ? `[seq_id:${Logger.globalState.getGlobalData(Organization.seqIdKey)}]`
             : "";

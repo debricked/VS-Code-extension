@@ -50,6 +50,7 @@ export class Organization {
     static readonly accessTokenKey = "accessToken";
     static readonly repoDataKey = "repoData";
     static readonly bearerTokenKey = "bearerToken";
+    static readonly userId = "userId";
 
     // Messages
     static readonly UNSUPPORTED_OS = "Unsupported operating system";

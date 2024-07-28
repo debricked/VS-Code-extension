@@ -19,11 +19,11 @@ export class Common {
     }
 
     public static async checkUserId(): Promise<void> {
-        const user_id = await Common.globalState.getGlobalDataByKey(Organization.debrickedDataKey, "user_id");
+        const user_id = await Common.globalState.getGlobalDataByKey(Organization.debrickedDataKey, Organization.userId);
         if (!user_id) {
             const userHashCode = Common.generateHashCode(new Date().toDateString());
             const debrickedData: any = await Common.globalState.getGlobalData(Organization.debrickedDataKey, {});
-            debrickedData["user_id"] = userHashCode;
+            debrickedData[Organization.userId] = userHashCode;
             await Common.globalState.setGlobalData(Organization.debrickedDataKey, debrickedData);
 
             Logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated : ${userHashCode}`);
