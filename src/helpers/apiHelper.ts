@@ -12,7 +12,7 @@ export class ApiHelper {
     ): Promise<AxiosResponse<any>> {
         try {
             // Get the bearer token
-            const token = await AuthHelper.getToken(false, "bearer");
+            const token = await AuthHelper.getToken(true, "bearer");
             Logger.logDebug(`Fetched Token: ${token}`); // Log the token for debugging
 
             // Define the URL with query parameters
