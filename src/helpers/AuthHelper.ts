@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { Messages, Organization } from "../constants/index";
-import { GlobalState, Logger, ShowInputBoxHelper } from "../helpers";
+import { GlobalState, Logger, ShowInputBoxHelper } from ".";
 
 export class AuthHelper {
     private static get globalState(): GlobalState {

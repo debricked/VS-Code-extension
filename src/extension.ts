@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Common, Logger } from "./helpers";
+import { ApiHelper, Common, Logger } from "./helpers";
 import { DebrickedCommand } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
@@ -49,6 +49,8 @@ export async function activate(context: vscode.ExtensionContext) {
                 });
                 await BaseCommandService.installCommand();
             }
+
+            fetchRepositories();
             progress.report({ message: "Debricked extension is ready to use", increment: 100 - progressCount });
         },
     );
@@ -59,4 +61,13 @@ export async function deactivate() {
     Logger.logMessageByStatus(MessageStatus.INFO, "Deactivate Debricked VS Code Extension");
     const globalState = GlobalState.getInstance();
     await globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
+}
+
+async function fetchRepositories() {
+    try {
+        const response = await ApiHelper.getRepositories(1, 25, "asc");
+        Logger.logDebug(response.data);
+    } catch (error: any) {
+        Logger.logError(`Failed to fetch repositories: ${error.stack}`);
+    }
 }

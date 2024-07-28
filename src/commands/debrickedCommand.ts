@@ -11,7 +11,7 @@ export class DebrickedCommand {
     public static async commands(context: vscode.ExtensionContext) {
         try {
             Logger.logInfo("Started registering commands");
-            DebrickedCommand.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+            DebrickedCommand.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
 
             const baseSubCommands: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
             const fileSubCommands: DebrickedCommandNode[] | undefined = DebrickedCommands.FILES.sub_commands;
@@ -25,7 +25,7 @@ export class DebrickedCommand {
             if (baseSubCommands) {
                 context.subscriptions.push(
                     vscode.commands.registerCommand(baseSubCommands[0].command, async () => {
-                        DebrickedCommand.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+                        DebrickedCommand.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
                         await BaseCommandService.installCommand();
                     }),
                 );

@@ -1,4 +1,4 @@
-import { AuthHelper } from "./AuthHelper";
+import { AuthHelper } from "./authHelper";
 import { StatusBarMessageHelper } from "./statusBarMessageHelper";
 import { Terminal } from "./terminalHelper";
 import { QuickPick } from "./showQuickPickHelper";
@@ -12,6 +12,7 @@ import { GitHelper } from "./gitHelper";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
 import { GlobalState } from "./globalState";
+import { ApiHelper } from "./apiHelper";
 
 export {
     AuthHelper,
@@ -28,4 +29,5 @@ export {
     ShowInputBoxHelper,
     DebrickedDataHelper,
     GlobalState,
+    ApiHelper,
 };
