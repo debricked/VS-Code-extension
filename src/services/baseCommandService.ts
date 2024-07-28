@@ -20,7 +20,7 @@ export class BaseCommandService {
     static async baseCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register BaseCommand");
-            BaseCommandService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+            BaseCommandService.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
             const subCommand: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
 
             let selectedSubCommand: any;
@@ -72,7 +72,7 @@ export class BaseCommandService {
     static async help() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register HelpCommand");
-            BaseCommandService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+            BaseCommandService.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
             const cmdParams = [];
             const subCommand: any = DebrickedCommands.BASE_COMMAND;
 
@@ -114,22 +114,22 @@ export class BaseCommandService {
     static async installCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
-            BaseCommandService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+            BaseCommandService.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
 
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
             const installer = new InstallHelper();
             Logger.logMessageByStatus(
                 MessageStatus.INFO,
-                `${Organization.IS_FIRST_ACTIVATION_KEY}: ${BaseCommandService.globalState.getGlobalData(Organization.IS_FIRST_ACTIVATION_KEY, "")} - ${Organization.EXTENSION_VERSION_KEY}: ${currentVersion}`,
+                `${Organization.isFirstActivationKey}: ${BaseCommandService.globalState.getGlobalData(Organization.isFirstActivationKey, "")} - ${Organization.extensionVersionKey}: ${currentVersion}`,
             );
 
             await installer.runInstallScript();
-            BaseCommandService.globalState.setGlobalData(Organization.IS_FIRST_ACTIVATION_KEY, false);
-            BaseCommandService.globalState.setGlobalData(Organization.EXTENSION_VERSION_KEY, currentVersion);
+            BaseCommandService.globalState.setGlobalData(Organization.isFirstActivationKey, false);
+            BaseCommandService.globalState.setGlobalData(Organization.extensionVersionKey, currentVersion);
 
             Logger.logMessageByStatus(
                 MessageStatus.INFO,
-                `${Organization.EXTENSION_VERSION_KEY}: ${BaseCommandService.globalState.getGlobalData(Organization.EXTENSION_VERSION_KEY, "")}`,
+                `${Organization.extensionVersionKey}: ${BaseCommandService.globalState.getGlobalData(Organization.extensionVersionKey, "")}`,
             );
         } catch (error: any) {
             StatusBarMessageHelper.showErrorMessage(
@@ -149,7 +149,7 @@ export class BaseCommandService {
     static async updateCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register UpdateCommand");
-            BaseCommandService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+            BaseCommandService.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
             let subCommand: DebrickedCommandNode[] | undefined;
             if (DebrickedCommands.BASE_COMMAND.sub_commands) {
                 subCommand = DebrickedCommands.BASE_COMMAND.sub_commands[1].sub_commands;
@@ -183,7 +183,7 @@ export class BaseCommandService {
     }
 
     static async getCurrentExtensionVersion(): Promise<string> {
-        const extension = vscode.extensions.getExtension(`${Organization.name}.${Organization.extension_name}`);
-        return extension ? extension.packageJSON.version : Organization.base_version;
+        const extension = vscode.extensions.getExtension(`${Organization.name}.${Organization.extensionName}`);
+        return extension ? extension.packageJSON.version : Organization.baseVersion;
     }
 }

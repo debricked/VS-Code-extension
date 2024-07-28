@@ -29,7 +29,7 @@ export class Command {
 
         return new Promise((resolve, reject) => {
             execFile(
-                Organization.debricked_cli,
+                Organization.debrickedCli,
                 cmdParams,
                 (error: any, stdout: string | PromiseLike<string>, stderr: string | undefined) => {
                     if (error) {

@@ -14,7 +14,7 @@ export class AuthHelper {
     static async getToken(useDefaultToken: boolean = true, tokenKey: "access" | "bearer"): Promise<string | undefined> {
         try {
             let token: string | undefined;
-            const TOKEN_KEY = tokenKey === "access" ? Organization.ACCESS_TOKEN_KEY : Organization.BEARER_TOKEN_KEY;
+            const TOKEN_KEY = tokenKey === "access" ? Organization.accessTokenKey : Organization.bearerTokenKey;
             const defaultAccessToken: any = await AuthHelper.globalState.getSecretData(TOKEN_KEY);
 
             if (useDefaultToken) {

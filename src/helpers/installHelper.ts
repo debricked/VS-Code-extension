@@ -12,20 +12,20 @@ export class InstallHelper {
     constructor() {
         this.platform = os.platform();
         Logger.logMessageByStatus(MessageStatus.INFO, `Debricked running on: ${this.platform}`);
-        this.scriptDir = path.join(__dirname, "..", Organization.debricked_installer);
+        this.scriptDir = path.join(__dirname, "..", Organization.debrickedInstaller);
     }
 
     private getScriptPath(): { install: string; command: string } {
         switch (this.platform) {
-            case Organization.os_win32:
+            case Organization.osWin32:
                 return {
-                    install: path.join(this.scriptDir, Organization.install_bat),
+                    install: path.join(this.scriptDir, Organization.installBat),
                     command: "", // No command prefix needed for .bat files
                 };
-            case Organization.os_linux:
-            case Organization.os_darwin:
+            case Organization.osLinux:
+            case Organization.osDarwin:
                 return {
-                    install: path.join(this.scriptDir, Organization.install_sh),
+                    install: path.join(this.scriptDir, Organization.installSh),
                     command: Organization.bash,
                 };
             default:
@@ -61,7 +61,7 @@ export class InstallHelper {
                     });
                     Logger.logMessageByStatus(MessageStatus.INFO, `Starting installation...`);
                     const installCommand =
-                        this.platform === Organization.os_win32 ? `"${install}"` : `${command} "${install}"`;
+                        this.platform === Organization.osWin32 ? `"${install}"` : `${command} "${install}"`;
                     const installOutput = await this.executeCommand(installCommand);
                     Logger.logMessageByStatus(MessageStatus.INFO, `${installOutput}`);
                     Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}`);

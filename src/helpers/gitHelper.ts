@@ -60,7 +60,7 @@ export class GitHelper {
     public static async setupGit(): Promise<void> {
         const currentRepo = await GitHelper.getUpstream();
         Logger.logMessageByStatus(MessageStatus.INFO, `Current repository: ${currentRepo}`);
-        const repoData: any = await GitHelper.globalState.getGlobalData(Organization.REPO_DATA_KEY, {});
+        const repoData: any = await GitHelper.globalState.getGlobalData(Organization.repoDataKey, {});
         const selectedRepoName: string = await GitHelper.getRepositoryName();
 
         if (selectedRepoName) {
@@ -75,6 +75,6 @@ export class GitHelper {
         repoData[selectedRepoName].currentBranch = await GitHelper.getCurrentBranch();
         repoData[selectedRepoName].commitID = await GitHelper.getCommitHash();
 
-        await GitHelper.globalState.setGlobalData(Organization.REPO_DATA_KEY, repoData);
+        await GitHelper.globalState.setGlobalData(Organization.repoDataKey, repoData);
     }
 }

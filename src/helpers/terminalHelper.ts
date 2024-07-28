@@ -9,7 +9,7 @@ export class Terminal {
         accessTokenRequired: boolean = false,
         useDefaultAccessToken: boolean = true,
     ): Promise<vscode.Terminal> {
-        let command: string = `${Organization.debricked_cli}`;
+        let command: string = `${Organization.debrickedCli}`;
         if (accessTokenRequired) {
             const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
             const accessToken = await AuthHelper.getToken(useDefaultAccessToken, "access");

@@ -19,12 +19,12 @@ export class Common {
     }
 
     public static async checkUserId(): Promise<void> {
-        const user_id = await Common.globalState.getGlobalDataByKey(Organization.DEBRICKED_DATA_KEY, "user_id");
+        const user_id = await Common.globalState.getGlobalDataByKey(Organization.debrickedDataKey, "user_id");
         if (!user_id) {
             const userHashCode = Common.generateHashCode(new Date().toDateString());
-            const debrickedData: any = await Common.globalState.getGlobalData(Organization.DEBRICKED_DATA_KEY, {});
+            const debrickedData: any = await Common.globalState.getGlobalData(Organization.debrickedDataKey, {});
             debrickedData["user_id"] = userHashCode;
-            await Common.globalState.setGlobalData(Organization.DEBRICKED_DATA_KEY, debrickedData);
+            await Common.globalState.setGlobalData(Organization.debrickedDataKey, debrickedData);
 
             Logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated : ${userHashCode}`);
         }
@@ -38,7 +38,7 @@ export class Common {
     }
 
     public static async setupDebricked(): Promise<void> {
-        Common.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+        Common.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
         await Common.checkUserId();
         DebrickedDataHelper.createDir(Organization.reportsFolderPath);
     }

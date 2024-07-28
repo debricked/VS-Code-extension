@@ -23,13 +23,13 @@ export class ScanService {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register ScanCommand");
 
             DebrickedDataHelper.createDir(Organization.reportsFolderPath);
-            ScanService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+            ScanService.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
             const cmdParams = [];
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 
             cmdParams.push(command.cli_command);
             const currentRepoData: RepositoryInfo = await ScanService.globalState.getGlobalDataByKey(
-                Organization.REPO_DATA_KEY,
+                Organization.repoDataKey,
                 await GitHelper.getRepositoryName(),
             );
             Logger.logMessageByStatus(MessageStatus.INFO, `Current repository name: ${currentRepoData.repositoryName}`);
@@ -139,7 +139,7 @@ export class ScanService {
     static async addWatcherToManifestFiles(filesToScan: string[], context: vscode.ExtensionContext) {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Add Watchers To Manifest Files");
-            ScanService.globalState.setGlobalData(Organization.SEQ_ID_KEY, Common.generateHashCode());
+            ScanService.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
 
             if (filesToScan && filesToScan.length > 0) {
                 const filesPattern = new RegExp(filesToScan.map((file: any) => `^${file}$`).join("|"));
