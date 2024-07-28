@@ -140,7 +140,7 @@ export class BaseCommandService {
 
             let selectedSubCommand: any;
             if (subCommand) {
-                selectedSubCommand = await QuickPick.showQuickPick(subCommand, Messages.QUICK_PICK_FLAG);
+                selectedSubCommand = await QuickPick.showQuickPick(subCommand, Messages.QUICK_PICK_TOKEN);
             }
             switch (selectedSubCommand?.cli_command) {
                 case "accessToken":

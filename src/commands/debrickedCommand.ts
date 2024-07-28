@@ -16,28 +16,28 @@ export class DebrickedCommand {
             const fileSubCommands = DebrickedCommands.FILES.sub_commands;
 
             // Register base command
-            this.registerCommand(context, DebrickedCommands.BASE_COMMAND.command, BaseCommandService.baseCommand);
+            DebrickedCommand.registerCommand(context, DebrickedCommands.BASE_COMMAND.command, BaseCommandService.baseCommand);
 
             // Register base sub-commands
             if (baseSubCommands) {
-                this.registerCommand(context, baseSubCommands[0].command, async () => {
+                DebrickedCommand.registerCommand(context, baseSubCommands[0].command, async () => {
                     DebrickedCommand.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
                     await BaseCommandService.installCommand();
                 });
-                this.registerCommand(context, baseSubCommands[1].command, BaseCommandService.updateCommand);
-                this.registerCommand(context, baseSubCommands[2].command, BaseCommandService.help);
-                this.registerCommand(context, baseSubCommands[3].command, Logger.openLogFile);
+                DebrickedCommand.registerCommand(context, baseSubCommands[1].command, BaseCommandService.updateCommand);
+                DebrickedCommand.registerCommand(context, baseSubCommands[2].command, BaseCommandService.help);
+                DebrickedCommand.registerCommand(context, baseSubCommands[3].command, Logger.openLogFile);
             }
 
             // Register scan command
-            this.registerCommand(context, DebrickedCommands.SCAN.command, ScanService.scanService);
+            DebrickedCommand.registerCommand(context, DebrickedCommands.SCAN.command, ScanService.scanService);
 
             // Register files command
-            this.registerCommand(context, DebrickedCommands.FILES.command, FileService.filesService);
+            DebrickedCommand.registerCommand(context, DebrickedCommands.FILES.command, FileService.filesService);
 
             // Register file sub-commands
             if (fileSubCommands) {
-                this.registerCommand(context, fileSubCommands[0].command, FileService.findFilesService);
+                DebrickedCommand.registerCommand(context, fileSubCommands[0].command, FileService.findFilesService);
             }
 
             // Add file watcher for all files found from 'debricked files find'

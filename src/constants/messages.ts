@@ -16,6 +16,7 @@ export class Messages {
 
     // Quick Pick Messages
     static readonly QUICK_PICK_FLAG = "Select a flag to use (optional).";
+    static readonly QUICK_PICK_TOKEN = "Select a token to update";
     static readonly QUICK_PICK_SUB_COMMAND = "Select a sub-command to use (optional).";
 
     // Command Execution Messages
