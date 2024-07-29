@@ -4,8 +4,8 @@ import * as os from "os";
 
 export class Organization {
     static readonly name = "debricked";
-    static readonly baseUrl = "https://debricked.com";
     static readonly apiVersion = "1.0";
+    static readonly baseUrl = `https://debricked.com/api/${Organization.apiVersion}/`;
 
     static readonly nameCaps = "Debricked";
     // Command and OS-specific constants

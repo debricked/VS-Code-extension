@@ -1,5 +1,5 @@
 import { Messages, Organization } from "../constants/index";
-import { GlobalState, Logger, ShowInputBoxHelper, StatusBarMessageHelper } from ".";
+import { ErrorHandler, GlobalState, Logger, ShowInputBoxHelper, StatusBarMessageHelper } from ".";
 
 export class AuthHelper {
     private static get globalState(): GlobalState {
@@ -44,8 +44,7 @@ export class AuthHelper {
 
             return token;
         } catch (error: any) {
-            await StatusBarMessageHelper.showErrorMessage(error.message);
-            Logger.logError("Token input was empty or some other error occurred");
+            ErrorHandler.handleError(error);
             return undefined;
         }
     }

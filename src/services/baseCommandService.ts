@@ -92,7 +92,7 @@ export class BaseCommandService {
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.BASE_COMMAND.cli_command),
             );
         } catch (error: any) {
-            throw error;
+            ErrorHandler.handleError(error);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.cli_command),
@@ -151,7 +151,7 @@ export class BaseCommandService {
                     break;
             }
         } catch (error: any) {
-            throw error;
+            ErrorHandler.handleError(error);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),

@@ -1,10 +1,11 @@
 import * as vscode from "vscode";
-import { ApiHelper, Common, Logger } from "./helpers";
+import { ApiHelper, Common, ErrorHandler, Logger } from "./helpers";
 import { DebrickedCommand } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
 import { BaseCommandService } from "services";
-import { GlobalState } from "helpers/globalState";
+import { GlobalState } from "./helpers";
+import { RequestParam } from "./types";
 
 export async function activate(context: vscode.ExtensionContext) {
     GlobalState.initialize(context);
@@ -66,9 +67,15 @@ export async function deactivate() {
 
 async function fetchRepositories() {
     try {
-        const repositories = await ApiHelper.fetchRepositories();
+        const requestParam: RequestParam = {
+            page: 1,
+            rowsPerPage: 25,
+            endpoint: "open/repository-settings/repositories",
+        };
+
+        const repositories = await ApiHelper.fetch(requestParam);
         Logger.logObj(repositories);
     } catch (error: any) {
-        Logger.logError(`Failed to fetch repositories: ${error.stack}`);
+        ErrorHandler.handleError(error);
     }
 }

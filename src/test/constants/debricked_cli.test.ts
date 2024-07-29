@@ -1,6 +1,6 @@
 import { sinon, expect } from "../setup";
 import * as vscode from "vscode";
-import { DebrickedCommands, ApiEndpoints } from "../../constants";
+import { DebrickedCommands } from "../../constants";
 
 describe("Debricked CLI: Test Suite", () => {
     let sandbox: sinon.SinonSandbox;
@@ -59,12 +59,6 @@ describe("Debricked CLI: Test Suite", () => {
         it("should return undefined for a command without flags", () => {
             const flags = DebrickedCommands.getCommandSpecificFlags("help");
             expect(flags).to.be.undefined;
-        });
-    });
-
-    describe("ApiEndpoints", () => {
-        it("should return the correct base URL", () => {
-            expect(ApiEndpoints.getBaseUrl()).to.equal("https://staging.debricked.com");
         });
     });
 });
