@@ -39,7 +39,7 @@ export class GlobalState {
 
     public getGlobalDataByKey(globalKey: string, key: string) {
         const storedValue = this.context.globalState.get<string>(globalKey);
-        if (storedValue !== undefined) {
+        if (storedValue) {
             try {
                 const data = JSON.parse(storedValue);
                 return data[key];

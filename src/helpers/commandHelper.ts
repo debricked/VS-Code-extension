@@ -75,7 +75,7 @@ export class Command {
 
             const { stdout, stderr } = await execAsync(command, { cwd });
             if (stderr) {
-                Logger.logMessageByStatus(MessageStatus.ERROR, `Git command error: ${stderr}`);
+                Logger.logMessageByStatus(MessageStatus.ERROR, `command error: ${stderr}`);
             }
             return stdout.trim();
         } catch (error: any) {
