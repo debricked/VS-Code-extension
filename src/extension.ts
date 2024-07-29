@@ -66,8 +66,8 @@ export async function deactivate() {
 
 async function fetchRepositories() {
     try {
-        const response = await ApiHelper.getRepositories(1, 25, "asc");
-        Logger.logDebug(response.data);
+        const repositories = await ApiHelper.fetchRepositories();
+        Logger.logObj(repositories);
     } catch (error: any) {
         Logger.logError(`Failed to fetch repositories: ${error.stack}`);
     }

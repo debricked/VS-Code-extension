@@ -4,6 +4,8 @@ import * as os from "os";
 
 export class Organization {
     static readonly name = "debricked";
+    static readonly baseUrl = "https://debricked.com";
+    static readonly apiVersion = "1.0";
 
     static readonly nameCaps = "Debricked";
     // Command and OS-specific constants
@@ -48,8 +50,10 @@ export class Organization {
     // Keys for storing data
     static readonly debrickedDataKey = "debrickedData";
     static readonly seqIdKey = "sequenceID";
+    static readonly access = "access";
     static readonly accessTokenKey = "accessToken";
     static readonly repoDataKey = "repoData";
+    static readonly bearer = "bearer";
     static readonly bearerTokenKey = "bearerToken";
     static readonly userId = "userId";
 
