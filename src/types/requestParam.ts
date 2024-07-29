@@ -1,5 +1,5 @@
 export interface RequestParam {
-    page: number;
-    rowsPerPage: number;
+    page?: number;
+    rowsPerPage?: number;
     endpoint: string;
 }
