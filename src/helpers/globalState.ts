@@ -25,29 +25,18 @@ export class GlobalState {
         return this.context.globalState.update(key, JSON.stringify(data));
     }
 
-    public getGlobalData<T>(key: string, defaultValue?: T): T | undefined {
+    public getGlobalData(key: string, defaultValue?: any, attribute?: string) {
         const storedValue = this.context.globalState.get<string>(key);
         if (storedValue !== undefined) {
             try {
-                return JSON.parse(storedValue) as T;
+                const data = JSON.parse(storedValue);
+
+                return attribute ? data[attribute] : data;
             } catch (error) {
                 Logger.logMessageByStatus(MessageStatus.ERROR, `Error parsing stored value for key ${key}: ${error}`);
             }
         }
         return defaultValue;
-    }
-
-    public getGlobalDataByKey(globalKey: string, key: string) {
-        const storedValue = this.context.globalState.get<string>(globalKey);
-        if (storedValue) {
-            try {
-                const data = JSON.parse(storedValue);
-                return data[key];
-            } catch (error) {
-                Logger.logMessageByStatus(MessageStatus.ERROR, `Error parsing stored value for key ${key}: ${error}`);
-            }
-        }
-        return storedValue;
     }
 
     public clearGlobalData(...keys: string[]): Thenable<void>[] {

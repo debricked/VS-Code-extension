@@ -52,7 +52,6 @@ export class Organization {
     static readonly seqIdKey = "sequenceID";
     static readonly access = "access";
     static readonly accessTokenKey = "accessToken";
-    static readonly repoDataKey = "repoData";
     static readonly bearer = "bearer";
     static readonly bearerTokenKey = "bearerToken";
     static readonly userId = "userId";

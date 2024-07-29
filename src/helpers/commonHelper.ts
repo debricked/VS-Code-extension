@@ -35,8 +35,9 @@ export class Common {
      */
     public static async checkUserId(): Promise<void> {
         try {
-            const userId = await Common.globalState.getGlobalDataByKey(
+            const userId = await Common.globalState.getGlobalData(
                 Organization.debrickedDataKey,
+                "",
                 Organization.userId,
             );
             if (!userId) {

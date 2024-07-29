@@ -10,7 +10,7 @@ export class Command {
     ): Promise<string> {
         if (accessTokenRequired) {
             const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
-            const accessToken = await AuthHelper.getToken(true, "access");
+            const accessToken = await AuthHelper.getToken(true, Organization.access);
 
             if (accessToken) {
                 cmdParams.push(flags[0].flag);
@@ -57,7 +57,7 @@ export class Command {
 
             if (accessTokenRequired) {
                 const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
-                const accessToken = await AuthHelper.getToken(true, "access");
+                const accessToken = await AuthHelper.getToken(true, Organization.access);
 
                 if (accessToken) {
                     command = `${command} ${flags[0].flag} ${accessToken}`;

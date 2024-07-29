@@ -13,7 +13,8 @@ export class AuthHelper {
     static async getToken(useDefaultToken: boolean = true, tokenKey: "access" | "bearer"): Promise<string | undefined> {
         try {
             let token: string | undefined;
-            const TOKEN_KEY = tokenKey === "access" ? Organization.accessTokenKey : Organization.bearerTokenKey;
+            const TOKEN_KEY =
+                tokenKey === Organization.access ? Organization.accessTokenKey : Organization.bearerTokenKey;
             const defaultAccessToken: any = await AuthHelper.globalState.getSecretData(TOKEN_KEY);
 
             if (useDefaultToken) {
@@ -25,19 +26,23 @@ export class AuthHelper {
                 Logger.logInfo("InputBox Opened for tokens");
 
                 token = await ShowInputBoxHelper.promptForInput({
-                    prompt: tokenKey === "access" ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
+                    prompt:
+                        tokenKey === Organization.access ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
                     ignoreFocusOut: true,
                     password: true,
-                    title: tokenKey === "access" ? Messages.ACCESS_TOKEN : Messages.BEARER_TOKEN,
-                    placeHolder: tokenKey === "access" ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
+                    title: tokenKey === Organization.access ? Messages.ACCESS_TOKEN : Messages.BEARER_TOKEN,
+                    placeHolder:
+                        tokenKey === Organization.access ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
                 });
 
                 if (token) {
                     await AuthHelper.globalState.setSecretData(TOKEN_KEY, token);
-                    const message = tokenKey === "access" ? Messages.ACCESS_TOKEN_SAVED : Messages.BEARER_TOKEN_SAVED;
+                    const message =
+                        tokenKey === Organization.access ? Messages.ACCESS_TOKEN_SAVED : Messages.BEARER_TOKEN_SAVED;
                     StatusBarMessageHelper.showInformationMessage(message);
                 } else {
-                    const message = tokenKey === "access" ? Messages.ACCESS_TOKEN_RQD : Messages.BEARER_TOKEN_RQD;
+                    const message =
+                        tokenKey === Organization.access ? Messages.ACCESS_TOKEN_RQD : Messages.BEARER_TOKEN_RQD;
                     throw new Error(message);
                 }
             }
