@@ -12,9 +12,6 @@ import {
 } from "../helpers";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
-import * as vscode from "vscode";
-import path from "path";
-
 export class ScanService {
     private static get globalState(): GlobalState {
         return GlobalState.getInstance();
@@ -126,57 +123,6 @@ export class ScanService {
             default:
                 Logger.logMessageByStatus(MessageStatus.WARN, `Unrecognized flag: ${selectedFlags.flag}`);
                 break;
-        }
-    }
-
-    static async addWatcherToManifestFiles(filesToScan: string[], context: vscode.ExtensionContext) {
-        try {
-            Logger.logMessageByStatus(MessageStatus.INFO, "Add Watchers To Manifest Files");
-            ScanService.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
-
-            if (filesToScan && filesToScan.length > 0) {
-                const filesPattern = new RegExp(filesToScan.map((file: any) => `^${file}$`).join("|"));
-
-                vscode.window.onDidChangeActiveTextEditor((editor) => {
-                    if (editor && filesPattern.test(path.basename(editor.document.fileName))) {
-                        vscode.commands.executeCommand("setContext", "debrickedFilesToScan", true);
-                    } else {
-                        vscode.commands.executeCommand("setContext", "debrickedFilesToScan", false);
-                    }
-                });
-
-                filesToScan.forEach((file: any) => {
-                    const watcher = vscode.workspace.createFileSystemWatcher(`**/${file}`);
-
-                    const runScan = async () => {
-                        await this.scanService();
-                    };
-
-                    watcher.onDidChange(runScan);
-                    watcher.onDidCreate(runScan);
-                    watcher.onDidDelete(runScan);
-                    Logger.logMessageByStatus(MessageStatus.INFO, `register watcher on ${file}`);
-                    context.subscriptions.push(watcher);
-                });
-                Logger.logInfo("watchers added successfully");
-            } else {
-                Logger.logInfo("No manifest files found");
-            }
-
-            StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.SCAN.cli_command),
-            );
-
-            StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
-            );
-        } catch (error: any) {
-            ErrorHandler.handleError(error);
-        } finally {
-            StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
-            );
-            Logger.logMessageByStatus(MessageStatus.INFO, "Watchers for Manifest files are now ready to scan.");
         }
     }
 }

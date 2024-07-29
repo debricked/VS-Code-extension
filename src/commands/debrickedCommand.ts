@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { DebrickedCommands, Organization } from "../constants/index";
 import { BaseCommandService, ScanService, FileService } from "../services";
 import { Logger, GlobalState, Common, ErrorHandler } from "../helpers";
+import { ManifestWatcher } from "helpers/manifestWatcher";
 
 export class DebrickedCommand {
     private static get globalState(): GlobalState {
@@ -41,8 +42,7 @@ export class DebrickedCommand {
             }
 
             // Add file watcher for all files found from 'debricked files find'
-            const foundFiles = (await FileService.findFilesService()) || [];
-            await ScanService.addWatcherToManifestFiles(foundFiles, context);
+            await ManifestWatcher.getInstance().setupWatchers(context);
         } catch (error) {
             ErrorHandler.handleError(error);
         } finally {
