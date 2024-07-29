@@ -1,5 +1,5 @@
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
-import { AuthHelper, Logger } from "../helpers";
+import { AuthHelper, ErrorHandler, Logger } from "../helpers";
 import { execFile, exec } from "child_process";
 import * as vscode from "vscode";
 import { promisify } from "util";
@@ -79,7 +79,7 @@ export class Command {
             }
             return stdout.trim();
         } catch (error: any) {
-            Logger.logMessageByStatus(MessageStatus.ERROR, `Error executing Git command: ${error.stack}`);
+            ErrorHandler.handleError(error);
             return "";
         }
     }

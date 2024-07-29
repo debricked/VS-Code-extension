@@ -4,6 +4,7 @@ import { Logger } from "./loggerHelper";
 import { GlobalState } from "./globalState";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
+import { ErrorHandler } from "./errorHandler";
 
 export class Common {
     // Singleton instance of GlobalState
@@ -47,7 +48,7 @@ export class Common {
                 Logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated: ${userHashCode}`);
             }
         } catch (error: any) {
-            Logger.logMessageByStatus(MessageStatus.ERROR, `Error checking user ID: ${error.stack}`);
+            ErrorHandler.handleError(error);
         }
     }
 
@@ -70,7 +71,7 @@ export class Common {
             await Common.checkUserId();
             DebrickedDataHelper.createDir(Organization.reportsFolderPath);
         } catch (error: any) {
-            Logger.logMessageByStatus(MessageStatus.ERROR, `Error setting up Debricked: ${error.stack}`);
+            ErrorHandler.handleError(error);
         }
     }
 

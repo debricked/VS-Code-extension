@@ -2,7 +2,7 @@ import * as path from "path";
 import * as os from "os";
 import { exec } from "child_process";
 import { Messages, MessageStatus, Organization } from "../constants/index";
-import { Logger, StatusBarMessageHelper } from "../helpers";
+import { ErrorHandler, Logger, StatusBarMessageHelper } from "../helpers";
 import * as vscode from "vscode";
 
 export class InstallHelper {
@@ -67,8 +67,7 @@ export class InstallHelper {
                     Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}`);
                     StatusBarMessageHelper.showInformationMessage("CLI installed successfully");
                 } catch (error: any) {
-                    vscode.window.showErrorMessage(error.message);
-                    Logger.logMessageByStatus(MessageStatus.ERROR, `${Messages.INSTALLATION_ERROR}: ${error.stack}`);
+                    ErrorHandler.handleError(error);
                     process.exit(1);
                 }
             },
