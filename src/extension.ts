@@ -25,6 +25,8 @@ export async function activate(context: vscode.ExtensionContext) {
             GlobalState.initialize(context);
 
             const globalState = GlobalState.getInstance();
+            // For dev - Clears the globalData - uncomment to clear the globalData
+            // await globalState.clearAllGlobalData();
             globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
             progress.report({
                 message: "Activating VS Code Extension",
@@ -42,10 +44,9 @@ export async function activate(context: vscode.ExtensionContext) {
             vscode.window.registerTreeDataProvider(Organization.debrickedCommand, debCommandsProvider);
 
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
-            const storedVersion = globalState.getGlobalData(Organization.extensionVersionKey, Organization.baseVersion);
-            const isFirstActivation = globalState.getGlobalData(Organization.isFirstActivationKey, true);
+            const debrickedData: any = globalState.getGlobalData(Organization.debrickedDataKey, {});
 
-            if (currentVersion !== storedVersion || isFirstActivation) {
+            if (currentVersion !== debrickedData.extensionVersion || debrickedData.isFirstActivation) {
                 globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
                 progress.report({
                     message: "Installing Debricked cli",

@@ -12,7 +12,7 @@ export class Terminal {
         let command: string = `${Organization.debrickedCli}`;
         if (accessTokenRequired) {
             const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
-            const accessToken = await AuthHelper.getToken(useDefaultAccessToken, "access");
+            const accessToken = await AuthHelper.getToken(useDefaultAccessToken, Organization.access);
 
             if (accessToken) {
                 Logger.logMessageByStatus(

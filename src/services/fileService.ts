@@ -80,11 +80,13 @@ export class FileService {
 
                     progress.report({ message: "🚀Finding Files..." });
 
-            const foundFiles = await Command.executeAsyncCommand(`${Organization.debrickedCli} ${cmdParams.join(" ")}`);
-            const foundFilesArray: string[] = Common.stringToArray(foundFiles, "\n");
-            await GitHelper.setupGit();
-            const repoData: any = await FileService.globalState.getGlobalData(Organization.repoDataKey, {});
-            const selectedRepoName = await GitHelper.getRepositoryName();
+                    const foundFiles = await Command.executeAsyncCommand(
+                        `${Organization.debrickedCli} ${cmdParams.join(" ")}`,
+                    );
+                    const foundFilesArray: string[] = Common.stringToArray(foundFiles, "\n");
+                    await GitHelper.setupGit();
+                    const selectedRepoName = await GitHelper.getRepositoryName();
+                    const repoData: any = await FileService.globalState.getGlobalData(selectedRepoName, {});
 
                     if (selectedRepoName && !repoData[selectedRepoName]) {
                         repoData[selectedRepoName] = {};
@@ -92,8 +94,11 @@ export class FileService {
 
                     repoData[selectedRepoName].filesToScan = foundFilesArray;
                     progress.report({ message: "🏁 Found Files" });
-                    await FileService.globalState.setGlobalData(Organization.repoDataKey, repoData);
-                    Logger.logMessageByStatus(MessageStatus.INFO, `Found ${foundFilesArray.length} Files: ${foundFilesArray}`);
+                    await FileService.globalState.setGlobalData(selectedRepoName, repoData);
+                    Logger.logMessageByStatus(
+                        MessageStatus.INFO,
+                        `Found ${foundFilesArray.length} Files: ${foundFilesArray}`,
+                    );
                     return foundFilesArray;
                 } catch (error: any) {
                     ErrorHandler.handleError(error);

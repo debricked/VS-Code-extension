@@ -113,12 +113,17 @@ export class BaseCommandService {
             );
 
             await installer.runInstallScript();
-            BaseCommandService.globalState.setGlobalData(Organization.isFirstActivationKey, false);
-            BaseCommandService.globalState.setGlobalData(Organization.extensionVersionKey, currentVersion);
+            const debrickedData: any = await BaseCommandService.globalState.getGlobalData(
+                Organization.debrickedDataKey,
+                {},
+            );
+            debrickedData[Organization.isFirstActivationKey] = false;
+            debrickedData[Organization.extensionVersionKey] = currentVersion;
 
+            BaseCommandService.globalState.setGlobalData(Organization.debrickedDataKey, debrickedData);
             Logger.logMessageByStatus(
                 MessageStatus.INFO,
-                `${Organization.extensionVersionKey}: ${BaseCommandService.globalState.getGlobalData(Organization.extensionVersionKey, "")}`,
+                `${Organization.extensionVersionKey}: ${debrickedData[Organization.extensionVersionKey]}`,
             );
         } catch (error: any) {
             ErrorHandler.handleError(error);
@@ -144,10 +149,10 @@ export class BaseCommandService {
             }
             switch (selectedSubCommand?.cli_command) {
                 case "accessToken":
-                    AuthHelper.getToken(false, "access");
+                    AuthHelper.getToken(false, Organization.access);
                     break;
                 case "bearerToken":
-                    AuthHelper.getToken(false, "bearer");
+                    AuthHelper.getToken(false, Organization.bearer);
                     break;
             }
         } catch (error: any) {

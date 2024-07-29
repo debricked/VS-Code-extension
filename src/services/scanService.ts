@@ -29,9 +29,9 @@ export class ScanService {
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 
             cmdParams.push(command.cli_command);
-            const currentRepoData: RepositoryInfo = await ScanService.globalState.getGlobalDataByKey(
-                Organization.repoDataKey,
+            const currentRepoData: RepositoryInfo = await ScanService.globalState.getGlobalData(
                 await GitHelper.getRepositoryName(),
+                {},
             );
             Logger.logMessageByStatus(MessageStatus.INFO, `Current repository name: ${currentRepoData.repositoryName}`);
 
