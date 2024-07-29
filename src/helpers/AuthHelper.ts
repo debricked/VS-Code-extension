@@ -1,6 +1,5 @@
-import * as vscode from "vscode";
 import { Messages, Organization } from "../constants/index";
-import { GlobalState, Logger, ShowInputBoxHelper } from ".";
+import { GlobalState, Logger, ShowInputBoxHelper, StatusBarMessageHelper } from ".";
 
 export class AuthHelper {
     private static get globalState(): GlobalState {
@@ -36,7 +35,7 @@ export class AuthHelper {
                 if (token) {
                     await AuthHelper.globalState.setSecretData(TOKEN_KEY, token);
                     const message = tokenKey === "access" ? Messages.ACCESS_TOKEN_SAVED : Messages.BEARER_TOKEN_SAVED;
-                    vscode.window.showInformationMessage(message);
+                    StatusBarMessageHelper.showInformationMessage(message);
                 } else {
                     const message = tokenKey === "access" ? Messages.ACCESS_TOKEN_RQD : Messages.BEARER_TOKEN_RQD;
                     throw new Error(message);
@@ -45,7 +44,7 @@ export class AuthHelper {
 
             return token;
         } catch (error: any) {
-            await vscode.window.showErrorMessage(error.message);
+            await StatusBarMessageHelper.showErrorMessage(error.message);
             Logger.logError("Token input was empty or some other error occurred");
             return undefined;
         }

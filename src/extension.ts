@@ -11,7 +11,7 @@ export async function activate(context: vscode.ExtensionContext) {
     await vscode.window.withProgress(
         {
             location: vscode.ProgressLocation.Notification,
-            title: "Debricked",
+            title: Organization.nameCaps,
             cancellable: false,
         },
         async (progress) => {
@@ -50,8 +50,9 @@ export async function activate(context: vscode.ExtensionContext) {
                 await BaseCommandService.installCommand();
             }
 
-            fetchRepositories();
+            await fetchRepositories();
             progress.report({ message: "Debricked extension is ready to use", increment: 100 - progressCount });
+            await new Promise((resolve) => setTimeout(resolve, 1000)); // added for showing the last progress info
         },
     );
 }

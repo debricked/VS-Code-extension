@@ -8,6 +8,7 @@ import {
     GlobalState,
     DebrickedDataHelper,
     ShowInputBoxHelper,
+    ErrorHandler,
 } from "../helpers";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
@@ -62,13 +63,7 @@ export class ScanService {
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
             );
         } catch (error: any) {
-            StatusBarMessageHelper.showErrorMessage(
-                `${Organization.name} - ${DebrickedCommands.SCAN.cli_command} ${MessageStatus.ERROR}: ${error.message}`,
-            );
-            StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.SCAN.cli_command),
-            );
-            Logger.logMessageByStatus(MessageStatus.ERROR, `Error during scan service: ${error.stack}`);
+            ErrorHandler.handleError(error);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
@@ -178,13 +173,7 @@ export class ScanService {
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
             );
         } catch (error: any) {
-            StatusBarMessageHelper.showErrorMessage(
-                `${Organization.name} - ${DebrickedCommands.SCAN.cli_command} ${MessageStatus.ERROR}: ${error.message}`,
-            );
-            StatusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.ERROR, DebrickedCommands.SCAN.cli_command),
-            );
-            Logger.logMessageByStatus(MessageStatus.ERROR, `Error during adding watchers: ${error.stack}`);
+            ErrorHandler.handleError(error);
         } finally {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
