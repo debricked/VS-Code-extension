@@ -30,4 +30,20 @@ export class ErrorHandler {
     private static showUserErrorMessage(errorMessage: string) {
         StatusBarMessageHelper.showErrorMessage(`Error: ${errorMessage}`);
     }
+
+    public static setupGlobalErrorHandlers() {
+        process.on("uncaughtException", (error: Error) => {
+            Logger.logError(`Uncaught Exception: ${error}`);
+            this.handleError(error);
+            // Optionally, shut down the process if the error is critical
+            // process.exit(1);
+        });
+
+        process.on("unhandledRejection", (reason: any, promise: Promise<any>) => {
+            Logger.logError(`Unhandled Rejection at: ${promise} reason: ${reason}`);
+            this.handleError(reason);
+            // Optionally, shut down the process if the error is critical
+            // process.exit(1);
+        });
+    }
 }

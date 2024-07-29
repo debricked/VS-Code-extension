@@ -8,6 +8,9 @@ import { GlobalState } from "./helpers";
 import { RequestParam } from "./types";
 
 export async function activate(context: vscode.ExtensionContext) {
+    // Set up global error handlers
+    ErrorHandler.setupGlobalErrorHandlers();
+
     GlobalState.initialize(context);
     await vscode.window.withProgress(
         {
