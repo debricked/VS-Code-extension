@@ -69,7 +69,7 @@ export class FileService {
                     if (command.sub_commands && command.sub_commands.length > 0) {
                         selectedSubCommand = command.sub_commands[0];
                         if (selectedSubCommand && selectedSubCommand.cli_command) {
-                            cmdParams.push(selectedSubCommand.cli_command);
+                            cmdParams.push(selectedSubCommand.cli_command, "-j");
                         }
                     }
 
@@ -80,19 +80,22 @@ export class FileService {
 
                     progress.report({ message: "🚀Finding Files..." });
 
-                    const foundFiles = await Command.executeAsyncCommand(
-                        `${Organization.debrickedCli} ${cmdParams.join(" ")}`,
+                    const foundFiles = JSON.parse(
+                        await Command.executeAsyncCommand(`${Organization.debrickedCli} ${cmdParams.join(" ")}`),
                     );
-                    const foundFilesArray: string[] = Common.stringToArray(foundFiles, "\n");
+                    const foundFilesArray: string[] = foundFiles
+                        .map((item: any) => item.manifestFile)
+                        .filter((file: any) => file !== "");
+
                     await GitHelper.setupGit();
                     const selectedRepoName = await GitHelper.getRepositoryName();
-                    const repoData: any = await FileService.globalState.getGlobalData(selectedRepoName, {});
+                    let repoData: any = await FileService.globalState.getGlobalData(selectedRepoName, {});
 
-                    if (selectedRepoName && !repoData[selectedRepoName]) {
-                        repoData[selectedRepoName] = {};
+                    if (!repoData) {
+                        repoData = {};
                     }
 
-                    repoData[selectedRepoName].filesToScan = foundFilesArray;
+                    repoData.filesToScan = foundFilesArray;
                     progress.report({ message: "🏁 Found Files" });
                     await FileService.globalState.setGlobalData(selectedRepoName, repoData);
                     Logger.logMessageByStatus(
