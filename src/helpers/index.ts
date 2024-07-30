@@ -14,6 +14,7 @@ import { DebrickedDataHelper } from "./debrickedDataHelper";
 import { GlobalState } from "./globalState";
 import { ApiHelper } from "./apiHelper";
 import { ErrorHandler } from "./errorHandler";
+import { ApiClient } from "./apiClient";
 
 export {
     AuthHelper,
@@ -32,4 +33,5 @@ export {
     GlobalState,
     ApiHelper,
     ErrorHandler,
+    ApiClient,
 };

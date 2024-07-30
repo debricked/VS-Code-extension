@@ -17,12 +17,15 @@ export class DebrickedCommand {
             const fileSubCommands = DebrickedCommands.FILES.sub_commands;
 
             // Register base command
-            DebrickedCommand.registerCommand(context, DebrickedCommands.BASE_COMMAND.command, BaseCommandService.baseCommand);
+            DebrickedCommand.registerCommand(
+                context,
+                DebrickedCommands.BASE_COMMAND.command,
+                BaseCommandService.baseCommand,
+            );
 
             // Register base sub-commands
             if (baseSubCommands) {
                 DebrickedCommand.registerCommand(context, baseSubCommands[0].command, async () => {
-                    DebrickedCommand.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
                     await BaseCommandService.installCommand();
                 });
                 DebrickedCommand.registerCommand(context, baseSubCommands[1].command, BaseCommandService.updateCommand);

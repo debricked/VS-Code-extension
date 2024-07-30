@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { MessageStatus, Organization, DebrickedCommands } from "../constants";
+import { MessageStatus, DebrickedCommands } from "../constants";
 import { ScanService, FileService } from "services";
-import { Common, ErrorHandler, Logger, StatusMessage, StatusBarMessageHelper, GlobalState } from "../helpers";
+import { ErrorHandler, Logger, StatusMessage, StatusBarMessageHelper } from "../helpers";
 
 export class ManifestWatcher {
     private static instance: ManifestWatcher;
@@ -10,9 +10,6 @@ export class ManifestWatcher {
     private manifestWatchers: vscode.FileSystemWatcher[] = [];
 
     private constructor() {}
-    private static get globalState(): GlobalState {
-        return GlobalState.getInstance();
-    }
 
     public static getInstance(): ManifestWatcher {
         if (!ManifestWatcher.instance) {
@@ -24,7 +21,6 @@ export class ManifestWatcher {
     public async setupWatchers(context: vscode.ExtensionContext): Promise<void> {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Setting up Manifest File Watchers");
-            ManifestWatcher.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
 
             // Setup global watcher if not already set
             if (!this.globalWatcher) {

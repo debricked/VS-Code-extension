@@ -1,23 +1,12 @@
-import axios from "axios";
-import { AuthHelper } from "./authHelper";
-import { Organization } from "../constants/index";
+import { ApiClient } from "./apiClient";
 import { RequestParam } from "../types";
-import { ErrorHandler } from "./errorHandler";
 import { Logger } from "./loggerHelper";
+import { Organization } from "../constants/index";
 
 export class ApiHelper {
-    private static async getHeaders(): Promise<{ [key: string]: string }> {
-        const token = await AuthHelper.getToken(true, Organization.bearer);
-        if (token) {
-            return {
-                accept: "*/*",
-                Authorization: token,
-            };
-        }
-        return {};
-    }
+    public static async get(requestParam: RequestParam): Promise<any> {
+        const apiClient = new ApiClient();
 
-    public static async fetch(requestParam: RequestParam): Promise<any> {
         const { endpoint, page, rowsPerPage } = requestParam;
         let url = `${Organization.baseUrl}${endpoint}`;
 
@@ -34,12 +23,10 @@ export class ApiHelper {
         }
 
         try {
-            Logger.logInfo(`request URL: ${url}`);
-            const headers = await this.getHeaders();
-            const response = await axios.get(url, { headers });
-            return response.data;
+            Logger.logInfo(`Request URL: ${url}`);
+            const response = await apiClient.get<any>(url);
+            return response;
         } catch (error: any) {
-            ErrorHandler.handleError(error);
             throw error;
         }
     }
