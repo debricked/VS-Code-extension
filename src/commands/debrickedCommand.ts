@@ -1,18 +1,17 @@
 import * as vscode from "vscode";
-import { DebrickedCommands, Organization } from "../constants/index";
+import { DebrickedCommands } from "../constants/index";
 import { BaseCommandService, ScanService, FileService } from "../services";
-import { Logger, GlobalState, Common, ErrorHandler } from "../helpers";
+import { Logger, ErrorHandler } from "../helpers";
 import { ManifestWatcher } from "helpers/manifestWatcher";
+import { GlobalStore } from "helpers/globalStore";
 
 export class DebrickedCommand {
-    private static get globalState(): GlobalState {
-        return GlobalState.getInstance();
-    }
     public static async commands(context: vscode.ExtensionContext) {
         try {
             Logger.logInfo("Started registering commands");
-            DebrickedCommand.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
+            const globalStore = GlobalStore.getInstance();
 
+            globalStore.setSequenceID();
             const baseSubCommands = DebrickedCommands.BASE_COMMAND.sub_commands;
             const fileSubCommands = DebrickedCommands.FILES.sub_commands;
 
