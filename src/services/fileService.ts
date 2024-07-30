@@ -3,10 +3,10 @@ import {
     Logger,
     QuickPick,
     Command,
-    Common,
     GitHelper,
     GlobalState,
     ErrorHandler,
+    GlobalStore,
 } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode } from "../types";
@@ -16,11 +16,12 @@ export class FileService {
     private static get globalState(): GlobalState {
         return GlobalState.getInstance();
     }
+    private static globalStore = GlobalStore.getInstance();
 
     static async filesService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register FileCommand");
-            FileService.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
+            FileService.globalStore.setSequenceID();
 
             const command = DebrickedCommands.FILES;
 
@@ -59,7 +60,7 @@ export class FileService {
             async (progress) => {
                 try {
                     Logger.logMessageByStatus(MessageStatus.INFO, "Register Find File Command");
-                    FileService.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
+                    FileService.globalStore.setSequenceID();
                     const cmdParams = [];
                     const command: DebrickedCommandNode = DebrickedCommands.FILES;
 
@@ -105,7 +106,7 @@ export class FileService {
                     return foundFilesArray;
                 } catch (error: any) {
                     ErrorHandler.handleError(error);
-                    return undefined;
+                    throw error;
                 } finally {
                     Logger.logMessageByStatus(MessageStatus.INFO, "Files service finished.");
                     await new Promise((resolve) => setTimeout(resolve, 1000));

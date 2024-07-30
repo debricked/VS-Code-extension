@@ -49,7 +49,6 @@ export class Organization {
 
     // Keys for storing data
     static readonly debrickedDataKey = "debrickedData";
-    static readonly seqIdKey = "sequenceID";
     static readonly access = "access";
     static readonly accessTokenKey = "accessToken";
     static readonly bearer = "bearer";

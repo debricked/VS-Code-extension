@@ -5,6 +5,7 @@ import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
 import { BaseCommandService } from "services";
 import { RequestParam } from "./types";
+import { GlobalStore } from "helpers/globalStore";
 
 export async function activate(context: vscode.ExtensionContext) {
     // Set up global error handlers
@@ -24,9 +25,10 @@ export async function activate(context: vscode.ExtensionContext) {
             GlobalState.initialize(context);
 
             const globalState = GlobalState.getInstance();
+            const globalStore = GlobalStore.getInstance();
             // For dev - Clears the globalData - uncomment to clear the globalData
             // await globalState.clearAllGlobalData();
-            globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
+            globalStore.setSequenceID();
             progress.report({
                 message: "Activating VS Code Extension",
                 increment: (progressCount += 20),
@@ -63,8 +65,8 @@ export async function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export async function deactivate() {
     Logger.logMessageByStatus(MessageStatus.INFO, "Deactivate Debricked VS Code Extension");
-    const globalState = GlobalState.getInstance();
-    await globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
+    const globalStore = GlobalStore.getInstance();
+    globalStore.setSequenceID();
 }
 
 async function fetchRepositories() {

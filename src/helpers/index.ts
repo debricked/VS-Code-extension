@@ -15,6 +15,7 @@ import { GlobalState } from "./globalState";
 import { ApiHelper } from "./apiHelper";
 import { ErrorHandler } from "./errorHandler";
 import { ApiClient } from "./apiClient";
+import { GlobalStore } from "./globalStore";
 
 export {
     AuthHelper,
@@ -34,4 +35,5 @@ export {
     ApiHelper,
     ErrorHandler,
     ApiClient,
+    GlobalStore,
 };

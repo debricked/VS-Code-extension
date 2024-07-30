@@ -1,5 +1,5 @@
 import { Messages, Organization } from "../constants/index";
-import { ErrorHandler, GlobalState, Logger, ShowInputBoxHelper, StatusBarMessageHelper } from ".";
+import { GlobalState, Logger, ShowInputBoxHelper, StatusBarMessageHelper } from ".";
 
 export class AuthHelper {
     private static get globalState(): GlobalState {
@@ -49,8 +49,7 @@ export class AuthHelper {
 
             return token;
         } catch (error: any) {
-            ErrorHandler.handleError(error);
-            return undefined;
+            throw error;
         }
     }
 }

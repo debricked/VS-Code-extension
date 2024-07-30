@@ -6,6 +6,7 @@ import { ErrorHandler, Logger, StatusMessage, StatusBarMessageHelper } from "../
 
 export class ManifestWatcher {
     private static instance: ManifestWatcher;
+    private static files: string[] = [];
     private globalWatcher: vscode.FileSystemWatcher | null = null;
     private manifestWatchers: vscode.FileSystemWatcher[] = [];
 
@@ -28,7 +29,11 @@ export class ManifestWatcher {
             }
 
             const filesToScan = (await FileService.findFilesService()) || [];
-            await this.updateManifestWatchers(filesToScan, context);
+            let diffScan: string[] = [];
+            diffScan = filesToScan.filter((file) => !ManifestWatcher.files.includes(file));
+            ManifestWatcher.files = filesToScan;
+
+            await this.updateManifestWatchers(diffScan, context);
 
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
@@ -53,7 +58,10 @@ export class ManifestWatcher {
 
     private async updateManifestWatchers(filesToScan: string[], context: vscode.ExtensionContext): Promise<void> {
         // Dispose old watchers
-        this.manifestWatchers.forEach((watcher) => watcher.dispose());
+        this.manifestWatchers.forEach((watcher) => {
+            Logger.logInfo("Deleted the watchers ");
+            watcher.dispose();
+        });
         this.manifestWatchers = [];
 
         if (filesToScan.length > 0) {
@@ -74,15 +82,16 @@ export class ManifestWatcher {
                 };
 
                 watcher.onDidChange(runScan);
-                watcher.onDidCreate(runScan);
-                watcher.onDidDelete(runScan);
+                watcher.onDidDelete(async () => {
+                    this.manifestWatchers.push(watcher);
+                    await this.setupWatchers(context);
+                });
                 Logger.logMessageByStatus(MessageStatus.INFO, `Register watcher on ${file}`);
                 context.subscriptions.push(watcher);
-                this.manifestWatchers.push(watcher);
             });
             Logger.logInfo("Watchers added successfully");
         } else {
-            Logger.logInfo("No manifest files found");
+            Logger.logInfo("No new manifest files found");
         }
     }
 }
