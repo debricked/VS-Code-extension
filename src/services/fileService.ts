@@ -106,7 +106,7 @@ export class FileService {
                     return foundFilesArray;
                 } catch (error: any) {
                     ErrorHandler.handleError(error);
-                    return undefined;
+                    throw error;
                 } finally {
                     Logger.logMessageByStatus(MessageStatus.INFO, "Files service finished.");
                     await new Promise((resolve) => setTimeout(resolve, 1000));
