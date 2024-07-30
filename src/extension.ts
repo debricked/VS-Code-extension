@@ -1,10 +1,9 @@
 import * as vscode from "vscode";
-import { ApiHelper, Common, ErrorHandler, Logger } from "./helpers";
+import { ApiHelper, Common, ErrorHandler, GlobalState, Logger } from "./helpers";
 import { DebrickedCommand } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
 import { BaseCommandService } from "services";
-import { GlobalState } from "./helpers";
 import { RequestParam } from "./types";
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -47,7 +46,6 @@ export async function activate(context: vscode.ExtensionContext) {
             const debrickedData: any = globalState.getGlobalData(Organization.debrickedDataKey, {});
 
             if (currentVersion !== debrickedData.extensionVersion || debrickedData.isFirstActivation) {
-                globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
                 progress.report({
                     message: "Installing Debricked cli",
                     increment: (progressCount += 20),
@@ -77,7 +75,7 @@ async function fetchRepositories() {
             endpoint: "open/repository-settings/repositories",
         };
 
-        const repositories = await ApiHelper.fetch(requestParam);
+        const repositories = await ApiHelper.get(requestParam);
         Logger.logObj(repositories);
     } catch (error: any) {
         ErrorHandler.handleError(error);

@@ -68,7 +68,6 @@ export class Common {
      */
     public static async setupDebricked(): Promise<void> {
         try {
-            Common.globalState.setGlobalData(Organization.seqIdKey, Common.generateHashCode());
             await Common.checkUserId();
             DebrickedDataHelper.createDir(Organization.reportsFolderPath);
         } catch (error: any) {
