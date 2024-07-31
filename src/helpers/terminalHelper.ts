@@ -1,5 +1,5 @@
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
-import { AuthHelper, Logger } from ".";
+import { AuthHelper, Logger } from "../helpers";
 import * as vscode from "vscode";
 
 export class Terminal {

@@ -1,4 +1,4 @@
-import { Common } from ".";
+import { Common } from "./commonHelper";
 
 export class GlobalStore {
     private static instance: GlobalStore;

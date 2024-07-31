@@ -1,7 +1,7 @@
 import { MessageStatus } from "../constants/index";
 import path from "path";
 import * as fs from "fs";
-import { Logger } from ".";
+import { Logger } from "./loggerHelper";
 
 export class DebrickedDataHelper {
     public static createFile(filePath: string): void {

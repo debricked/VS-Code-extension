@@ -1,5 +1,6 @@
+import { ApiClient } from "./apiClient";
 import { RequestParam } from "../types";
-import { ApiClient, Logger } from ".";
+import { Logger } from "./loggerHelper";
 import { Organization } from "../constants/index";
 
 export class ApiHelper {

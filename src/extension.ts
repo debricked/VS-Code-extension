@@ -1,10 +1,11 @@
 import * as vscode from "vscode";
-import { ApiHelper, Common, ErrorHandler, GlobalState, Logger, GlobalStore } from "./helpers";
-import { DebrickedCommand, ManifestWatcher } from "./commands";
+import { ApiHelper, Common, ErrorHandler, GlobalState, Logger } from "./helpers";
+import { DebrickedCommand } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
-import { BaseCommandService } from "./services";
+import { BaseCommandService } from "services";
 import { RequestParam } from "./types";
+import { GlobalStore } from "helpers/globalStore";
 
 export async function activate(context: vscode.ExtensionContext) {
     // Set up global error handlers
@@ -39,6 +40,9 @@ export async function activate(context: vscode.ExtensionContext) {
                 message: "Registering Debricked commands",
                 increment: (progressCount += 20),
             });
+            await DebrickedCommand.commands(context);
+            const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
+            vscode.window.registerTreeDataProvider(Organization.debrickedCommand, debCommandsProvider);
 
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
             const debrickedData: any = globalState.getGlobalData(Organization.debrickedDataKey, {});
@@ -51,15 +55,7 @@ export async function activate(context: vscode.ExtensionContext) {
                 await BaseCommandService.installCommand();
             }
 
-            await DebrickedCommand.commands(context);
-            const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
-            vscode.window.registerTreeDataProvider(Organization.debrickedCommand, debCommandsProvider);
-
-            // Add file watcher for all files found from 'debricked files find'
-            await ManifestWatcher.getInstance().setupWatchers(context);
-
             await fetchRepositories();
-
             progress.report({ message: "Debricked extension is ready to use", increment: 100 - progressCount });
             await new Promise((resolve) => setTimeout(resolve, 1000)); // added for showing the last progress info
         },
