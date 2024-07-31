@@ -1,10 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Organization, MessageStatus } from "../constants/index";
-import { DebrickedDataHelper } from "./debrickedDataHelper";
-import { GlobalState } from "./globalState";
+import { DebrickedDataHelper, GlobalState, GlobalStore } from ".";
 import * as vscode from "vscode";
-import { GlobalStore } from "./globalStore";
 
 export class Logger {
     private static logDirPath = path.join(Organization.debrickedInstalledDir, Organization.debrickedFolder);

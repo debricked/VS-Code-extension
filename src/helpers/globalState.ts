@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Logger } from "./loggerHelper";
+import { Logger } from ".";
 import { MessageStatus } from "../constants";
 
 export class GlobalState {

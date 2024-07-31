@@ -1,10 +1,6 @@
 import { MessageStatus, Organization } from "../constants/index";
 import * as crypto from "crypto";
-import { Logger } from "./loggerHelper";
-import { GlobalState } from "./globalState";
-import { DebrickedDataHelper } from "./debrickedDataHelper";
-import { ShowInputBoxHelper } from "./showInputBoxHelper";
-import { ErrorHandler } from "./errorHandler";
+import { DebrickedDataHelper, ErrorHandler, GlobalState, Logger, ShowInputBoxHelper } from ".";
 
 export class Common {
     // Singleton instance of GlobalState
