@@ -1,5 +1,5 @@
 import { DebrickedCommandNode, Flag } from "../types";
-import { Organization } from "./organization";
+import { Organization } from ".";
 
 export class DebrickedCommands {
     static readonly BASE_COMMAND: DebrickedCommandNode = {

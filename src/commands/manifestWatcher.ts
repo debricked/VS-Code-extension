@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { MessageStatus, DebrickedCommands } from "../constants";
 import { ScanService, FileService } from "../services";
-import { ErrorHandler, Logger, StatusMessage, StatusBarMessageHelper } from ".";
+import { ErrorHandler, Logger, StatusMessage, StatusBarMessageHelper } from "../helpers";
 
 export class ManifestWatcher {
     private static instance: ManifestWatcher;
