@@ -1,5 +1,4 @@
-import { Logger } from "./loggerHelper";
-import { StatusBarMessageHelper } from "./statusBarMessageHelper";
+import { Logger, StatusBarMessageHelper } from ".";
 
 export class ErrorHandler {
     public static handleError(error: unknown) {

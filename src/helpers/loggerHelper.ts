@@ -1,8 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Organization, MessageStatus } from "../constants/index";
-import { DebrickedDataHelper } from "./debrickedDataHelper";
-import { GlobalState } from "./globalState";
+import { DebrickedDataHelper, GlobalState } from ".";
 import * as vscode from "vscode";
 import { GlobalStore } from "./globalStore";
 

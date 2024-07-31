@@ -1,7 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import { AuthHelper } from "./authHelper";
-import { ErrorHandler } from "./errorHandler";
-import { Logger } from "./loggerHelper";
+import { AuthHelper, ErrorHandler, Logger } from ".";
 import { Organization } from "../constants/index";
 
 export class ApiClient {

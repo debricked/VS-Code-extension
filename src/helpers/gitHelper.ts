@@ -1,5 +1,5 @@
 import { MessageStatus } from "../constants/index";
-import { Command, GlobalState, Logger, ShowInputBoxHelper } from "../helpers";
+import { Command, GlobalState, Logger, ShowInputBoxHelper } from ".";
 
 export class GitHelper {
     private static get globalState(): GlobalState {
