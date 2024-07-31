@@ -2,7 +2,7 @@ import * as path from "path";
 import * as os from "os";
 import { exec } from "child_process";
 import { Messages, MessageStatus, Organization } from "../constants/index";
-import { ErrorHandler, Logger, StatusBarMessageHelper } from ".";
+import { ErrorHandler, Logger, StatusBarMessageHelper } from "../helpers";
 import * as vscode from "vscode";
 
 export class InstallHelper {

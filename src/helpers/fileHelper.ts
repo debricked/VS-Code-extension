@@ -2,7 +2,8 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import { MessageStatus, Organization } from "../constants/index";
-import { DebrickedDataHelper, Logger } from ".";
+import { Logger } from "./loggerHelper";
+import { DebrickedDataHelper } from "./debrickedDataHelper";
 
 export class FileHelper {
     /**
