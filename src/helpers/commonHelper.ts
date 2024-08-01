@@ -2,7 +2,7 @@ import { MessageStatus, Organization } from "../constants/index";
 import * as crypto from "crypto";
 import { Logger } from "./loggerHelper";
 import { GlobalState } from "./globalState";
-import { DebrickedDataHelper } from "./debrickedDataHelper";
+import { debrickedDataHelper } from ".";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
 import { ErrorHandler } from "./errorHandler";
 
@@ -69,7 +69,7 @@ export class Common {
     public static async setupDebricked(): Promise<void> {
         try {
             await Common.checkUserId();
-            DebrickedDataHelper.createDir(Organization.reportsFolderPath);
+            debrickedDataHelper.createDir(Organization.reportsFolderPath);
         } catch (error: any) {
             ErrorHandler.handleError(error);
         }

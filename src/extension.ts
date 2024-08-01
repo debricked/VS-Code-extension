@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { ApiHelper, Common, ErrorHandler, GlobalState, Logger } from "./helpers";
-import { DebrickedCommand } from "./commands";
+import { DebrickedCommand, ManifestWatcher } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
 import { BaseCommandService } from "services";
@@ -56,6 +56,9 @@ export async function activate(context: vscode.ExtensionContext) {
             }
 
             await fetchRepositories();
+            // Add file watcher for all files found from 'debricked files find'
+            await ManifestWatcher.getInstance().setupWatchers(context);
+            
             progress.report({ message: "Debricked extension is ready to use", increment: 100 - progressCount });
             await new Promise((resolve) => setTimeout(resolve, 1000)); // added for showing the last progress info
         },

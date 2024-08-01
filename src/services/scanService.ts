@@ -6,7 +6,7 @@ import {
     GitHelper,
     Common,
     GlobalState,
-    DebrickedDataHelper,
+    debrickedDataHelper,
     ShowInputBoxHelper,
     ErrorHandler,
     GlobalStore,
@@ -23,7 +23,7 @@ export class ScanService {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register ScanCommand");
 
-            DebrickedDataHelper.createDir(Organization.reportsFolderPath);
+            debrickedDataHelper.createDir(Organization.reportsFolderPath);
             ScanService.globalStore.setSequenceID();
             const cmdParams = [];
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
