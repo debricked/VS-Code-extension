@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Organization, MessageStatus } from "../constants/index";
-import { DebrickedDataHelper } from "./debrickedDataHelper";
+import { debrickedDataHelper } from ".";
 import { GlobalState } from "./globalState";
 import * as vscode from "vscode";
 import { GlobalStore } from "./globalStore";
@@ -19,7 +19,7 @@ export class Logger {
         Logger.logFilePath = path.join(logDir, Organization.logFile);
 
         // Ensure the log directory exists
-        DebrickedDataHelper.createDir(logDir);
+        debrickedDataHelper.createDir(logDir);
     }
 
     public static async openLogFile() {

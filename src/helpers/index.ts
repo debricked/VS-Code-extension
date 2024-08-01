@@ -17,6 +17,7 @@ import { ErrorHandler } from "./errorHandler";
 import { ApiClient } from "./apiClient";
 import { GlobalStore } from "./globalStore";
 
+const debrickedDataHelper = new DebrickedDataHelper(Logger);
 export {
     AuthHelper,
     StatusBarMessageHelper,
@@ -30,7 +31,7 @@ export {
     InstallHelper,
     GitHelper,
     ShowInputBoxHelper,
-    DebrickedDataHelper,
+    debrickedDataHelper,
     GlobalState,
     ApiHelper,
     ErrorHandler,
