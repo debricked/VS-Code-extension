@@ -17,7 +17,10 @@ import { ErrorHandler } from "./errorHandler";
 import { ApiClient } from "./apiClient";
 import { GlobalStore } from "./globalStore";
 
+const commonHelper = new Common();
 const debrickedDataHelper = new DebrickedDataHelper(Logger);
+const globalStore = GlobalStore.getInstance(commonHelper);
+
 export {
     AuthHelper,
     StatusBarMessageHelper,
@@ -36,5 +39,6 @@ export {
     ApiHelper,
     ErrorHandler,
     ApiClient,
-    GlobalStore,
+    globalStore,
+    commonHelper,
 };

@@ -2,21 +2,29 @@ import { Common } from "./commonHelper";
 
 export class GlobalStore {
     private static instance: GlobalStore;
-    private static seqId: string;
-    private constructor() {}
+    private sequenceID: string | undefined;
 
-    public static getInstance() {
+    private constructor(private commonHelper: Common) {}
+
+    public static getInstance(commonHelper: Common): GlobalStore {
         if (!GlobalStore.instance) {
-            GlobalStore.instance = new GlobalStore();
+            GlobalStore.instance = new GlobalStore(commonHelper);
         }
         return GlobalStore.instance;
     }
 
-    public setSequenceID() {
-        GlobalStore.seqId = Common.generateHashCode();
+    /**
+     * Set a new sequence ID.
+     */
+    public setSequenceID(): void {
+        this.sequenceID = this.commonHelper.generateHashCode();
     }
 
-    public getSequenceID() {
-        return GlobalStore.seqId;
+    /**
+     * Get the current sequence ID.
+     * @returns The current sequence ID.
+     */
+    public getSequenceID(): string | undefined {
+        return this.sequenceID;
     }
 }

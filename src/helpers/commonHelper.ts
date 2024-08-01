@@ -26,14 +26,14 @@ export class Common {
      * @param input The input string to hash. Defaults to the current date and time.
      * @returns The generated hash code as a hex string.
      */
-    public static generateHashCode(input: string = new Date().toISOString()): string {
+    public generateHashCode(input: string = new Date().toISOString()): string {
         return crypto.createHash("sha256").update(input).digest("hex");
     }
 
     /**
      * Check if a user ID exists in the global state. If not, generate and store a new user ID.
      */
-    public static async checkUserId(): Promise<void> {
+    public async checkUserId(): Promise<void> {
         try {
             const userId = await Common.globalState.getGlobalData(
                 Organization.debrickedDataKey,
@@ -41,7 +41,7 @@ export class Common {
                 Organization.userId,
             );
             if (!userId) {
-                const userHashCode = Common.generateHashCode(new Date().toDateString());
+                const userHashCode = this.generateHashCode(new Date().toDateString());
                 const debrickedData: any = await Common.globalState.getGlobalData(Organization.debrickedDataKey, {});
                 debrickedData[Organization.userId] = userHashCode;
                 await Common.globalState.setGlobalData(Organization.debrickedDataKey, debrickedData);
@@ -66,9 +66,9 @@ export class Common {
     /**
      * Set up the Debricked environment by generating a sequence ID and checking the user ID.
      */
-    public static async setupDebricked(): Promise<void> {
+    public async setupDebricked(): Promise<void> {
         try {
-            await Common.checkUserId();
+            await this.checkUserId();
             debrickedDataHelper.createDir(Organization.reportsFolderPath);
         } catch (error: any) {
             ErrorHandler.handleError(error);

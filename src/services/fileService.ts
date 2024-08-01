@@ -6,7 +6,7 @@ import {
     GitHelper,
     GlobalState,
     ErrorHandler,
-    GlobalStore,
+    globalStore,
 } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode } from "../types";
@@ -16,12 +16,11 @@ export class FileService {
     private static get globalState(): GlobalState {
         return GlobalState.getInstance();
     }
-    private static globalStore = GlobalStore.getInstance();
 
     static async filesService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register FileCommand");
-            FileService.globalStore.setSequenceID();
+            globalStore.setSequenceID();
 
             const command = DebrickedCommands.FILES;
 
@@ -60,7 +59,7 @@ export class FileService {
             async (progress) => {
                 try {
                     Logger.logMessageByStatus(MessageStatus.INFO, "Register Find File Command");
-                    FileService.globalStore.setSequenceID();
+                    globalStore.setSequenceID();
                     const cmdParams = [];
                     const command: DebrickedCommandNode = DebrickedCommands.FILES;
 

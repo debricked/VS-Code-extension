@@ -9,7 +9,7 @@ import {
     InstallHelper,
     AuthHelper,
     ErrorHandler,
-    GlobalStore,
+    globalStore,
 } from "../helpers";
 import * as vscode from "vscode";
 import { GlobalState } from "helpers/globalState";
@@ -17,12 +17,11 @@ export class BaseCommandService {
     private static get globalState(): GlobalState {
         return GlobalState.getInstance();
     }
-    private static globalStore = GlobalStore.getInstance();
 
     static async baseCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register BaseCommand");
-            BaseCommandService.globalStore.setSequenceID();
+            globalStore.setSequenceID();
             const subCommand: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
 
             let selectedSubCommand: any;
@@ -68,7 +67,7 @@ export class BaseCommandService {
     static async help() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register HelpCommand");
-            BaseCommandService.globalStore.setSequenceID();
+            globalStore.setSequenceID();
             const cmdParams = [];
             const subCommand: any = DebrickedCommands.BASE_COMMAND;
 
@@ -104,7 +103,7 @@ export class BaseCommandService {
     static async installCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
-            BaseCommandService.globalStore.setSequenceID();
+            globalStore.setSequenceID();
 
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
             const installer = new InstallHelper();
@@ -138,7 +137,7 @@ export class BaseCommandService {
     static async updateCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register UpdateCommand");
-            BaseCommandService.globalStore.setSequenceID();
+            globalStore.setSequenceID();
             let subCommand: DebrickedCommandNode[] | undefined;
             if (DebrickedCommands.BASE_COMMAND.sub_commands) {
                 subCommand = DebrickedCommands.BASE_COMMAND.sub_commands[1].sub_commands;

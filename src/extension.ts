@@ -1,11 +1,10 @@
 import * as vscode from "vscode";
-import { ApiHelper, Common, ErrorHandler, GlobalState, Logger } from "./helpers";
+import { ApiHelper, ErrorHandler, GlobalState, Logger, globalStore, commonHelper } from "./helpers";
 import { DebrickedCommand, ManifestWatcher } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
 import { BaseCommandService } from "services";
 import { RequestParam } from "./types";
-import { GlobalStore } from "helpers/globalStore";
 
 export async function activate(context: vscode.ExtensionContext) {
     // Set up global error handlers
@@ -25,7 +24,6 @@ export async function activate(context: vscode.ExtensionContext) {
             GlobalState.initialize(context);
 
             const globalState = GlobalState.getInstance();
-            const globalStore = GlobalStore.getInstance();
             // For dev - Clears the globalData - uncomment to clear the globalData
             // await globalState.clearAllGlobalData();
             globalStore.setSequenceID();
@@ -33,7 +31,7 @@ export async function activate(context: vscode.ExtensionContext) {
                 message: "Activating VS Code Extension",
                 increment: (progressCount += 20),
             });
-            await Common.setupDebricked();
+            await commonHelper.setupDebricked();
             Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
 
             progress.report({
@@ -58,7 +56,7 @@ export async function activate(context: vscode.ExtensionContext) {
             await fetchRepositories();
             // Add file watcher for all files found from 'debricked files find'
             await ManifestWatcher.getInstance().setupWatchers(context);
-            
+
             progress.report({ message: "Debricked extension is ready to use", increment: 100 - progressCount });
             await new Promise((resolve) => setTimeout(resolve, 1000)); // added for showing the last progress info
         },
@@ -68,7 +66,6 @@ export async function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export async function deactivate() {
     Logger.logMessageByStatus(MessageStatus.INFO, "Deactivate Debricked VS Code Extension");
-    const globalStore = GlobalStore.getInstance();
     globalStore.setSequenceID();
 }
 

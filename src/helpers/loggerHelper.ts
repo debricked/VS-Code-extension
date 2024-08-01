@@ -1,10 +1,9 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Organization, MessageStatus } from "../constants/index";
-import { debrickedDataHelper } from ".";
+import { debrickedDataHelper, globalStore } from ".";
 import { GlobalState } from "./globalState";
 import * as vscode from "vscode";
-import { GlobalStore } from "./globalStore";
 
 export class Logger {
     private static logDirPath = path.join(Organization.debrickedInstalledDir, Organization.debrickedFolder);
@@ -12,7 +11,6 @@ export class Logger {
     private static get globalState(): GlobalState {
         return GlobalState.getInstance();
     }
-    private static globalStore = GlobalStore.getInstance();
 
     public static initialize(context: vscode.ExtensionContext) {
         const logDir = context.logUri.fsPath;
@@ -35,7 +33,7 @@ export class Logger {
     private static async writeLog(message: string) {
         const timestamp = new Date().toISOString();
         const userId = await Logger.globalState.getGlobalData(Organization.debrickedDataKey, "", Organization.userId);
-        const sequenceId = Logger.globalStore.getSequenceID() ? `[seq_id:${Logger.globalStore.getSequenceID()}]` : "";
+        const sequenceId = globalStore.getSequenceID() ? `[seq_id:${globalStore.getSequenceID()}]` : "";
 
         const logEntry = `[${timestamp}] [user_id:${userId}] ${sequenceId} ${message}\n`;
         fs.appendFileSync(Logger.logFilePath, logEntry, "utf-8");

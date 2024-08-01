@@ -9,7 +9,7 @@ import {
     debrickedDataHelper,
     ShowInputBoxHelper,
     ErrorHandler,
-    GlobalStore,
+    globalStore,
 } from "../helpers";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
@@ -17,14 +17,13 @@ export class ScanService {
     private static get globalState(): GlobalState {
         return GlobalState.getInstance();
     }
-    private static globalStore = GlobalStore.getInstance();
 
     static async scanService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register ScanCommand");
 
             debrickedDataHelper.createDir(Organization.reportsFolderPath);
-            ScanService.globalStore.setSequenceID();
+            globalStore.setSequenceID();
             const cmdParams = [];
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 
