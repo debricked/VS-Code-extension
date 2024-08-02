@@ -27,6 +27,7 @@ export class DebrickedCommand {
                 DebrickedCommand.registerCommand(context, baseSubCommands[1].command, BaseCommandService.updateCommand);
                 DebrickedCommand.registerCommand(context, baseSubCommands[2].command, BaseCommandService.help);
                 DebrickedCommand.registerCommand(context, baseSubCommands[3].command, Logger.openLogFile);
+                DebrickedCommand.registerCommand(context, baseSubCommands[4].command, BaseCommandService.login);
             }
 
             // Register scan command

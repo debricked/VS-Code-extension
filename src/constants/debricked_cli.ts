@@ -48,6 +48,12 @@ export class DebrickedCommands {
                 cli_command: "log",
                 description: "Debricked logs",
             },
+            {
+                label: "Login",
+                command: "debricked.debricked.login",
+                cli_command: "login",
+                description: "Debricked login",
+            },
         ],
         flags: [
             {

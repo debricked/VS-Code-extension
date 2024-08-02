@@ -42,21 +42,24 @@ export class AuthHelper {
                         tokenKey === Organization.access ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
                 });
 
-                if (token) {
-                    await this.globalState.getInstance().setSecretData(TOKEN_KEY, token);
-                    const message =
-                        tokenKey === Organization.access ? Messages.ACCESS_TOKEN_SAVED : Messages.BEARER_TOKEN_SAVED;
-                    this.statusBarMessageHelper.showInformationMessage(message);
-                } else {
-                    const message =
-                        tokenKey === Organization.access ? Messages.ACCESS_TOKEN_RQD : Messages.BEARER_TOKEN_RQD;
-                    throw new Error(message);
-                }
+                this.setToken(tokenKey, token, TOKEN_KEY);
             }
 
             return token;
         } catch (error: any) {
             throw error;
+        }
+    }
+
+    async setToken(tokenKey: "access" | "bearer", token: string | undefined, TOKEN_KEY: string): Promise<void> {
+        if (token) {
+            await this.globalState.getInstance().setSecretData(TOKEN_KEY, token);
+            const message =
+                tokenKey === Organization.access ? Messages.ACCESS_TOKEN_SAVED : Messages.BEARER_TOKEN_SAVED;
+            this.statusBarMessageHelper.showInformationMessage(message);
+        } else {
+            const message = tokenKey === Organization.access ? Messages.ACCESS_TOKEN_RQD : Messages.BEARER_TOKEN_RQD;
+            throw new Error(message);
         }
     }
 }

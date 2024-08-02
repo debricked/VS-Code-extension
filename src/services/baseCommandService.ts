@@ -10,6 +10,8 @@ import {
     authHelper,
     errorHandler,
     globalStore,
+    commandHelper,
+    showInputBoxHelper,
 } from "../helpers";
 import * as vscode from "vscode";
 import { GlobalState } from "helpers/globalState";
@@ -44,6 +46,10 @@ export class BaseCommandService {
 
                 case "log":
                     Logger.openLogFile();
+                    break;
+
+                case "login":
+                    BaseCommandService.login();
                     break;
 
                 default:
@@ -128,6 +134,58 @@ export class BaseCommandService {
                 MessageStatus.INFO,
                 `${Organization.extensionVersionKey}: ${debrickedData[Organization.extensionVersionKey]}`,
             );
+        } catch (error: any) {
+            errorHandler.handleError(error);
+        } finally {
+            statusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),
+            );
+        }
+    }
+
+    static async login(updateCredentials: boolean = false) {
+        try {
+            Logger.logInfo("Register login");
+            globalStore.setSequenceID();
+
+            const debrickedData: any = await BaseCommandService.globalState.getGlobalData(
+                Organization.debrickedDataKey,
+                {},
+            );
+
+            if (updateCredentials) {
+                debrickedData["debricked_username"] = await showInputBoxHelper.promptForInput(
+                    {
+                        prompt: "Enter debricked user name",
+                        placeHolder: "Please enter debricked User Name",
+                    },
+                    undefined,
+                );
+                debrickedData["debricked_password"] = await showInputBoxHelper.promptForInput(
+                    {
+                        prompt: "Enter debricked password",
+                        placeHolder: "Please enter debricked password",
+                        password: true,
+                    },
+                    undefined,
+                );
+
+                BaseCommandService.globalState.setGlobalData(Organization.debrickedDataKey, debrickedData);
+            }
+            const bearerToken = JSON.parse(
+                await commandHelper.executeAsyncCommand(
+                    `curl -X POST https://debricked.com/api/login_check -d _username=${debrickedData["debricked_username"]} -d _password=${debrickedData["debricked_password"]}`,
+                ),
+            );
+
+            if (bearerToken && bearerToken.code === 401) {
+                throw new Error(bearerToken.message);
+            } else {
+                const newBearerToken = `Bearer ${bearerToken.token}`;
+                await authHelper.setToken(Organization.bearer, newBearerToken, Organization.bearerTokenKey);
+
+                Logger.logInfo(`Token generated successfully`);
+            }
         } catch (error: any) {
             errorHandler.handleError(error);
         } finally {

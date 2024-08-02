@@ -53,6 +53,12 @@ export async function activate(context: vscode.ExtensionContext) {
                 await BaseCommandService.installCommand();
             }
 
+            if (debrickedData.isFirstActivation === undefined || debrickedData.isFirstActivation) {
+                await BaseCommandService.login(true);
+            } else {
+                await BaseCommandService.login(false);
+            }
+
             await fetchRepositories();
             // Add file watcher for all files found from 'debricked files find'
             await ManifestWatcher.getInstance().setupWatchers(context);
