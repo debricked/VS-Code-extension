@@ -1,8 +1,10 @@
 import { Common } from "./commonHelper";
+import * as vscode from "vscode";
 
 export class GlobalStore {
     private static instance: GlobalStore;
     private sequenceID: string | undefined;
+    private context: vscode.ExtensionContext | undefined;
 
     private constructor(private commonHelper: Common) {}
 
@@ -26,5 +28,20 @@ export class GlobalStore {
      */
     public getSequenceID(): string | undefined {
         return this.sequenceID;
+    }
+
+    /**
+     * Set a new context.
+     */
+    public setContext(context: vscode.ExtensionContext): void {
+        this.context = context;
+    }
+
+    /**
+     * Get the current context.
+     * @returns The current context.
+     */
+    public getContext(): vscode.ExtensionContext | undefined {
+        return this.context;
     }
 }

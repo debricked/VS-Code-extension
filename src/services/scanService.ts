@@ -1,5 +1,5 @@
 import {
-    StatusBarMessageHelper,
+    statusBarMessageHelper,
     StatusMessage,
     Logger,
     terminal,
@@ -8,7 +8,7 @@ import {
     GlobalState,
     debrickedDataHelper,
     showInputBoxHelper,
-    ErrorHandler,
+    errorHandler,
     globalStore,
 } from "../helpers";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
@@ -49,20 +49,20 @@ export class ScanService {
                 }
             }
 
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.SCAN.cli_command),
             );
 
             Logger.logMessageByStatus(MessageStatus.INFO, `Executing terminal command with parameters: ${cmdParams}`);
             terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, true);
 
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
             );
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         } finally {
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
             );
             Logger.logMessageByStatus(MessageStatus.INFO, "Scan service finished.");

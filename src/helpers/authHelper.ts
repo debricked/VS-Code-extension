@@ -1,11 +1,17 @@
 import { Messages, Organization } from "../constants/index";
-import { GlobalState, Logger, StatusBarMessageHelper } from ".";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
+import { StatusBarMessageHelper } from "./statusBarMessageHelper";
+import { Logger } from "./loggerHelper";
+import { GlobalState } from "./globalState";
 
 export class AuthHelper {
-    private static get globalState(): GlobalState {
-        return GlobalState.getInstance();
-    }
+    constructor(
+        private showInputBoxHelper: ShowInputBoxHelper,
+        private statusBarMessageHelper: StatusBarMessageHelper,
+        private logger: typeof Logger,
+        private globalState: typeof GlobalState,
+    ) {}
+
     /**
      * Get access token
      * @param void
@@ -16,7 +22,7 @@ export class AuthHelper {
             let token: string | undefined;
             const TOKEN_KEY =
                 tokenKey === Organization.access ? Organization.accessTokenKey : Organization.bearerTokenKey;
-            const defaultAccessToken: any = await AuthHelper.globalState.getSecretData(TOKEN_KEY);
+            const defaultAccessToken: any = await this.globalState.getInstance().getSecretData(TOKEN_KEY);
 
             if (useDefaultToken) {
                 token = defaultAccessToken;
@@ -24,10 +30,9 @@ export class AuthHelper {
 
             if (!token) {
                 // Prompt the user to enter the access token
-                Logger.logInfo("InputBox Opened for tokens");
-                const showInputBoxHelper = new ShowInputBoxHelper();
+                this.logger.logInfo("InputBox Opened for tokens");
 
-                token = await showInputBoxHelper.promptForInput({
+                token = await this.showInputBoxHelper.promptForInput({
                     prompt:
                         tokenKey === Organization.access ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
                     ignoreFocusOut: true,
@@ -38,10 +43,10 @@ export class AuthHelper {
                 });
 
                 if (token) {
-                    await AuthHelper.globalState.setSecretData(TOKEN_KEY, token);
+                    await this.globalState.getInstance().setSecretData(TOKEN_KEY, token);
                     const message =
                         tokenKey === Organization.access ? Messages.ACCESS_TOKEN_SAVED : Messages.BEARER_TOKEN_SAVED;
-                    StatusBarMessageHelper.showInformationMessage(message);
+                    this.statusBarMessageHelper.showInformationMessage(message);
                 } else {
                     const message =
                         tokenKey === Organization.access ? Messages.ACCESS_TOKEN_RQD : Messages.BEARER_TOKEN_RQD;

@@ -2,24 +2,26 @@ import { MessageStatus, Organization } from "../constants/index";
 import * as crypto from "crypto";
 import { Logger } from "./loggerHelper";
 import { GlobalState } from "./globalState";
-import { debrickedDataHelper } from ".";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
 import { ErrorHandler } from "./errorHandler";
+import { DebrickedDataHelper } from "./debrickedDataHelper";
 
 export class Common {
-    // Singleton instance of GlobalState
-    private static get globalState(): GlobalState {
-        return GlobalState.getInstance();
-    }
+    constructor(
+        private errorHandler: ErrorHandler,
+        private debrickedDataHelper: DebrickedDataHelper,
+        private logger: typeof Logger,
+        private showInputBoxHelper: ShowInputBoxHelper,
+        private globalState: typeof GlobalState,
+    ) {}
 
     /**
      * Prompt the user for input with a given prompt message.
      * @param prompt The message to prompt the user with.
      * @returns The user's input or undefined if cancelled.
      */
-    public static async getInput(prompt: string): Promise<string | undefined> {
-        const showInputBoxHelper = new ShowInputBoxHelper();
-        return await showInputBoxHelper.promptForInput({ prompt });
+    public async getInput(prompt: string): Promise<string | undefined> {
+        return await this.showInputBoxHelper.promptForInput({ prompt });
     }
 
     /**
@@ -36,21 +38,21 @@ export class Common {
      */
     public async checkUserId(): Promise<void> {
         try {
-            const userId = await Common.globalState.getGlobalData(
-                Organization.debrickedDataKey,
-                "",
-                Organization.userId,
-            );
+            const userId = await this.globalState
+                .getInstance()
+                .getGlobalData(Organization.debrickedDataKey, "", Organization.userId);
             if (!userId) {
                 const userHashCode = this.generateHashCode(new Date().toDateString());
-                const debrickedData: any = await Common.globalState.getGlobalData(Organization.debrickedDataKey, {});
+                const debrickedData: any = await this.globalState
+                    .getInstance()
+                    .getGlobalData(Organization.debrickedDataKey, {});
                 debrickedData[Organization.userId] = userHashCode;
-                await Common.globalState.setGlobalData(Organization.debrickedDataKey, debrickedData);
+                await this.globalState.getInstance().setGlobalData(Organization.debrickedDataKey, debrickedData);
 
-                Logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated: ${userHashCode}`);
+                this.logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated: ${userHashCode}`);
             }
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            this.errorHandler.handleError(error);
         }
     }
 
@@ -70,9 +72,9 @@ export class Common {
     public async setupDebricked(): Promise<void> {
         try {
             await this.checkUserId();
-            debrickedDataHelper.createDir(Organization.reportsFolderPath);
+            this.debrickedDataHelper.createDir(Organization.reportsFolderPath);
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            this.errorHandler.handleError(error);
         }
     }
 

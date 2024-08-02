@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { DebrickedCommands } from "../constants/index";
 import { BaseCommandService, ScanService, FileService } from "../services";
-import { Logger, ErrorHandler, globalStore } from "../helpers";
+import { Logger, errorHandler, globalStore } from "../helpers";
 
 export class DebrickedCommand {
     public static async commands(context: vscode.ExtensionContext) {
@@ -40,7 +40,7 @@ export class DebrickedCommand {
                 DebrickedCommand.registerCommand(context, fileSubCommands[0].command, FileService.findFilesService);
             }
         } catch (error) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         } finally {
             Logger.logInfo("Command registration has been completed");
         }

@@ -1,14 +1,14 @@
 import { DebrickedCommandNode } from "../types";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import {
-    StatusBarMessageHelper,
+    statusBarMessageHelper,
     terminal,
     StatusMessage,
     Logger,
     QuickPick,
-    InstallHelper,
+    installHelper,
     authHelper,
-    ErrorHandler,
+    errorHandler,
     globalStore,
 } from "../helpers";
 import * as vscode from "vscode";
@@ -47,11 +47,11 @@ export class BaseCommandService {
                     break;
 
                 default:
-                    StatusBarMessageHelper.setStatusBarMessage(
+                    statusBarMessageHelper.setStatusBarMessage(
                         StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.BASE_COMMAND.cli_command),
                     );
                     terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description);
-                    StatusBarMessageHelper.setStatusBarMessage(
+                    statusBarMessageHelper.setStatusBarMessage(
                         StatusMessage.getStatusMessage(
                             MessageStatus.COMPLETE,
                             DebrickedCommands.BASE_COMMAND.cli_command,
@@ -60,9 +60,9 @@ export class BaseCommandService {
                     break;
             }
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         } finally {
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.cli_command),
             );
         }
@@ -88,17 +88,17 @@ export class BaseCommandService {
                 }
             }
 
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.BASE_COMMAND.cli_command),
             );
             terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, accessTokenRequired);
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.BASE_COMMAND.cli_command),
             );
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         } finally {
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.cli_command),
             );
         }
@@ -110,13 +110,12 @@ export class BaseCommandService {
             globalStore.setSequenceID();
 
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
-            const installer = new InstallHelper();
             Logger.logMessageByStatus(
                 MessageStatus.INFO,
                 `${Organization.isFirstActivationKey}: ${BaseCommandService.globalState.getGlobalData(Organization.isFirstActivationKey, "")} - ${Organization.extensionVersionKey}: ${currentVersion}`,
             );
 
-            await installer.runInstallScript();
+            await installHelper.runInstallScript();
             const debrickedData: any = await BaseCommandService.globalState.getGlobalData(
                 Organization.debrickedDataKey,
                 {},
@@ -130,9 +129,9 @@ export class BaseCommandService {
                 `${Organization.extensionVersionKey}: ${debrickedData[Organization.extensionVersionKey]}`,
             );
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         } finally {
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),
             );
         }
@@ -160,9 +159,9 @@ export class BaseCommandService {
                     break;
             }
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         } finally {
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),
             );
         }

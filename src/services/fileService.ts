@@ -1,11 +1,11 @@
 import {
-    StatusBarMessageHelper,
+    statusBarMessageHelper,
     Logger,
     QuickPick,
     commandHelper,
     gitHelper,
     GlobalState,
-    ErrorHandler,
+    errorHandler,
     globalStore,
 } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
@@ -25,7 +25,7 @@ export class FileService {
             const command = DebrickedCommands.FILES;
 
             if (!command.sub_commands || command.sub_commands.length === 0) {
-                StatusBarMessageHelper.showInformationMessage("No sub-commands available for Files service");
+                statusBarMessageHelper.showInformationMessage("No sub-commands available for Files service");
                 return;
             }
             const selectedSubCommand = await QuickPick.showQuickPick(
@@ -45,7 +45,7 @@ export class FileService {
                     throw new Error(`Unsupported sub-command: ${selectedSubCommand.cli_command}`);
             }
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         }
     }
 
@@ -104,7 +104,7 @@ export class FileService {
                     );
                     return foundFilesArray;
                 } catch (error: any) {
-                    ErrorHandler.handleError(error);
+                    errorHandler.handleError(error);
                     throw error;
                 } finally {
                     Logger.logMessageByStatus(MessageStatus.INFO, "Files service finished.");

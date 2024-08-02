@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { apiHelper, ErrorHandler, GlobalState, Logger, globalStore, commonHelper } from "./helpers";
+import { apiHelper, errorHandler, GlobalState, Logger, globalStore, commonHelper } from "./helpers";
 import { DebrickedCommand, ManifestWatcher } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
@@ -8,7 +8,7 @@ import { RequestParam } from "./types";
 
 export async function activate(context: vscode.ExtensionContext) {
     // Set up global error handlers
-    ErrorHandler.setupGlobalErrorHandlers();
+    errorHandler.setupGlobalErrorHandlers();
 
     GlobalState.initialize(context);
     await vscode.window.withProgress(
@@ -80,6 +80,6 @@ async function fetchRepositories() {
         const repositories = await apiHelper.get(requestParam);
         Logger.logObj(repositories);
     } catch (error: any) {
-        ErrorHandler.handleError(error);
+        errorHandler.handleError(error);
     }
 }

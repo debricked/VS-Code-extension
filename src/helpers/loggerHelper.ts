@@ -32,7 +32,7 @@ export class Logger {
 
     private static async writeLog(message: string) {
         const timestamp = new Date().toISOString();
-        const userId = await Logger.globalState.getGlobalData(Organization.debrickedDataKey, "", Organization.userId);
+        const userId = await this.globalState.getGlobalData(Organization.debrickedDataKey, "", Organization.userId);
         const sequenceId = globalStore.getSequenceID() ? `[seq_id:${globalStore.getSequenceID()}]` : "";
 
         const logEntry = `[${timestamp}] [user_id:${userId}] ${sequenceId} ${message}\n`;
@@ -40,30 +40,30 @@ export class Logger {
     }
 
     public static async logMessage(message: string) {
-        await Logger.writeLog(message);
+        await this.writeLog(message);
     }
 
     public static async logMessageByStatus(status: string, message: string) {
-        await Logger.writeLog(`[${status}] ${message}`);
+        await this.writeLog(`[${status}] ${message}`);
     }
 
     public static async logInfo(message: string) {
-        await Logger.logMessageByStatus(MessageStatus.INFO, message);
+        await this.logMessageByStatus(MessageStatus.INFO, message);
     }
 
     public static async logWarn(message: string) {
-        await Logger.logMessageByStatus(MessageStatus.WARN, message);
+        await this.logMessageByStatus(MessageStatus.WARN, message);
     }
 
     public static async logError(message: string) {
-        await Logger.logMessageByStatus(MessageStatus.ERROR, message);
+        await this.logMessageByStatus(MessageStatus.ERROR, message);
     }
 
     public static async logObj(message: any) {
-        await Logger.logMessageByStatus(MessageStatus.WARN, JSON.stringify(message));
+        await this.logMessageByStatus(MessageStatus.WARN, JSON.stringify(message));
     }
 
     public static async logDebug(message: any) {
-        await Logger.logMessageByStatus(MessageStatus.DEBUG, JSON.stringify(message));
+        await this.logMessageByStatus(MessageStatus.DEBUG, JSON.stringify(message));
     }
 }

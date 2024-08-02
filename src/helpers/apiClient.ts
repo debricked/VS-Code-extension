@@ -7,7 +7,11 @@ import { Organization } from "../constants/index";
 export class ApiClient {
     private axiosInstance: AxiosInstance;
 
-    constructor(authHelper: AuthHelper) {
+    constructor(
+        authHelper: AuthHelper,
+        private errorHandler: ErrorHandler,
+        private logger: typeof Logger,
+    ) {
         this.axiosInstance = axios.create();
 
         this.axiosInstance.interceptors.request.use(
@@ -20,22 +24,22 @@ export class ApiClient {
                         Authorization: token,
                     };
                 }
-                Logger.logInfo(`Request: ${config.method?.toUpperCase()} ${config.url}`);
+                this.logger.logInfo(`Request: ${config.method?.toUpperCase()} ${config.url}`);
                 return config as InternalAxiosRequestConfig;
             },
             (error) => {
-                ErrorHandler.handleError(error);
+                this.errorHandler.handleError(error);
                 return Promise.reject(error);
             },
         );
 
         this.axiosInstance.interceptors.response.use(
             (response: AxiosResponse) => {
-                Logger.logInfo(`Response: ${response.status} ${response.statusText}`);
+                this.logger.logInfo(`Response: ${response.status} ${response.statusText}`);
                 return response;
             },
             (error) => {
-                ErrorHandler.handleError(error);
+                this.errorHandler.handleError(error);
                 return Promise.reject(error);
             },
         );

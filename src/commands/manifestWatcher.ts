@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { MessageStatus, DebrickedCommands } from "../constants";
 import { ScanService, FileService } from "services";
-import { ErrorHandler, Logger, StatusMessage, StatusBarMessageHelper } from "../helpers";
+import { errorHandler, Logger, StatusMessage, statusBarMessageHelper } from "../helpers";
 
 export class ManifestWatcher {
     private static instance: ManifestWatcher;
@@ -35,13 +35,13 @@ export class ManifestWatcher {
 
             await this.updateManifestWatchers(diffScan, context);
 
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
             );
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         } finally {
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
             );
             Logger.logMessageByStatus(MessageStatus.INFO, "Watchers for Manifest files are now ready to scan.");

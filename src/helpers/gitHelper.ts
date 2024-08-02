@@ -9,11 +9,9 @@ export class GitHelper {
         private command: Command,
         private logger: typeof Logger,
         private showInputBoxHelper: ShowInputBoxHelper,
+        private globalState: typeof GlobalState,
     ) {}
 
-    private static get globalState(): GlobalState {
-        return GlobalState.getInstance();
-    }
     public async getCurrentBranch() {
         return await this.command.executeAsyncCommand("git branch --show-current");
     }
@@ -70,7 +68,7 @@ export class GitHelper {
         const currentRepo = await this.getUpstream();
         this.logger.logMessageByStatus(MessageStatus.INFO, `Current repository: ${currentRepo}`);
         const selectedRepoName: string = await this.getRepositoryName();
-        let repoData: any = await GitHelper.globalState.getGlobalData(selectedRepoName, {});
+        let repoData: any = await this.globalState.getInstance().getGlobalData(selectedRepoName, {});
 
         if (selectedRepoName) {
             if (!repoData) {
@@ -84,6 +82,6 @@ export class GitHelper {
         repoData.currentBranch = await this.getCurrentBranch();
         repoData.commitID = await this.getCommitHash();
 
-        await GitHelper.globalState.setGlobalData(selectedRepoName, repoData);
+        await this.globalState.getInstance().setGlobalData(selectedRepoName, repoData);
     }
 }
