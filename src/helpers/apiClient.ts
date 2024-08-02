@@ -7,12 +7,12 @@ import { Organization } from "../constants/index";
 export class ApiClient {
     private axiosInstance: AxiosInstance;
 
-    constructor() {
+    constructor(authHelper: AuthHelper) {
         this.axiosInstance = axios.create();
 
         this.axiosInstance.interceptors.request.use(
             async (config: AxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
-                const token = await AuthHelper.getToken(true, Organization.bearer);
+                const token = await authHelper.getToken(true, Organization.bearer);
                 if (token) {
                     config.headers = {
                         ...config.headers,

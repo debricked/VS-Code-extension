@@ -2,12 +2,12 @@ import {
     StatusBarMessageHelper,
     StatusMessage,
     Logger,
-    Terminal,
-    GitHelper,
+    terminal,
+    gitHelper,
     Common,
     GlobalState,
     debrickedDataHelper,
-    ShowInputBoxHelper,
+    showInputBoxHelper,
     ErrorHandler,
     globalStore,
 } from "../helpers";
@@ -28,7 +28,7 @@ export class ScanService {
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 
             cmdParams.push(command.cli_command);
-            const selectedRepoName = await GitHelper.getRepositoryName();
+            const selectedRepoName = await gitHelper.getRepositoryName();
             const currentRepoData: RepositoryInfo = await ScanService.globalState.getGlobalData(selectedRepoName, {});
             Logger.logMessageByStatus(MessageStatus.INFO, `Current repository name: ${currentRepoData.repositoryName}`);
 
@@ -54,7 +54,7 @@ export class ScanService {
             );
 
             Logger.logMessageByStatus(MessageStatus.INFO, `Executing terminal command with parameters: ${cmdParams}`);
-            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, true);
+            terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, true);
 
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
@@ -74,7 +74,7 @@ export class ScanService {
         cmdParams.push(selectedFlags.flag);
         switch (selectedFlags.flag) {
             case "-r":
-                const providedRepo = await ShowInputBoxHelper.promptForInput({
+                const providedRepo = await showInputBoxHelper.promptForInput({
                     title: "Enter Repository name",
                     prompt: "Enter repository name",
                     ignoreFocusOut: false,

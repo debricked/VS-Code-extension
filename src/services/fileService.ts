@@ -2,8 +2,8 @@ import {
     StatusBarMessageHelper,
     Logger,
     QuickPick,
-    Command,
-    GitHelper,
+    commandHelper,
+    gitHelper,
     GlobalState,
     ErrorHandler,
     globalStore,
@@ -81,14 +81,14 @@ export class FileService {
                     progress.report({ message: "🚀Finding Files..." });
 
                     const foundFiles = JSON.parse(
-                        await Command.executeAsyncCommand(`${Organization.debrickedCli} ${cmdParams.join(" ")}`),
+                        await commandHelper.executeAsyncCommand(`${Organization.debrickedCli} ${cmdParams.join(" ")}`),
                     );
                     const foundFilesArray: string[] = foundFiles
                         .map((item: any) => item.manifestFile)
                         .filter((file: any) => file !== "");
 
-                    await GitHelper.setupGit();
-                    const selectedRepoName = await GitHelper.getRepositoryName();
+                    await gitHelper.setupGit();
+                    const selectedRepoName = await gitHelper.getRepositoryName();
                     let repoData: any = await FileService.globalState.getGlobalData(selectedRepoName, {});
 
                     if (!repoData) {
@@ -116,7 +116,7 @@ export class FileService {
 
     static async getFilesToScan() {
         const debrickedData: any = await FileService.globalState.getGlobalData(Organization.debrickedDataKey, {});
-        const repositoryName = await GitHelper.getRepositoryName();
+        const repositoryName = await gitHelper.getRepositoryName();
         if (repositoryName) {
             return debrickedData[repositoryName]?.filesToScan;
         } else {

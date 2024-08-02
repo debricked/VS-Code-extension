@@ -1,9 +1,16 @@
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
-import { AuthHelper, Logger } from "../helpers";
+import { AuthHelper } from "./authHelper";
+import { Logger } from "./loggerHelper";
+
 import * as vscode from "vscode";
 
 export class Terminal {
-    public static async createAndUseTerminal(
+    constructor(
+        private authHelper: AuthHelper,
+        private logger: typeof Logger,
+    ) {}
+
+    public async createAndUseTerminal(
         description: string,
         cmdParams: string[] = [],
         accessTokenRequired: boolean = false,
@@ -12,10 +19,10 @@ export class Terminal {
         let command: string = `${Organization.debrickedCli}`;
         if (accessTokenRequired) {
             const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
-            const accessToken = await AuthHelper.getToken(useDefaultAccessToken, Organization.access);
+            const accessToken = await this.authHelper.getToken(useDefaultAccessToken, Organization.access);
 
             if (accessToken) {
-                Logger.logMessageByStatus(
+                this.logger.logMessageByStatus(
                     MessageStatus.INFO,
                     `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: "${command} ${cmdParams.join(" ")}"`,
                 );
@@ -23,7 +30,10 @@ export class Terminal {
                 cmdParams.push(accessToken);
             }
         } else {
-            Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: "${command}"`);
+            this.logger.logMessageByStatus(
+                MessageStatus.INFO,
+                `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: "${command}"`,
+            );
         }
         command = `${command} ${cmdParams.join(" ")}`;
 

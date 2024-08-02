@@ -2,12 +2,12 @@ import { DebrickedCommandNode } from "../types";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import {
     StatusBarMessageHelper,
-    Terminal,
+    terminal,
     StatusMessage,
     Logger,
     QuickPick,
     InstallHelper,
-    AuthHelper,
+    authHelper,
     ErrorHandler,
     globalStore,
 } from "../helpers";
@@ -42,11 +42,15 @@ export class BaseCommandService {
                     BaseCommandService.help();
                     break;
 
+                case "log":
+                    Logger.openLogFile();
+                    break;
+
                 default:
                     StatusBarMessageHelper.setStatusBarMessage(
                         StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.BASE_COMMAND.cli_command),
                     );
-                    Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description);
+                    terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description);
                     StatusBarMessageHelper.setStatusBarMessage(
                         StatusMessage.getStatusMessage(
                             MessageStatus.COMPLETE,
@@ -87,7 +91,7 @@ export class BaseCommandService {
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.BASE_COMMAND.cli_command),
             );
-            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, accessTokenRequired);
+            terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, accessTokenRequired);
             StatusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.BASE_COMMAND.cli_command),
             );
@@ -149,10 +153,10 @@ export class BaseCommandService {
             }
             switch (selectedSubCommand?.cli_command) {
                 case "accessToken":
-                    AuthHelper.getToken(false, Organization.access);
+                    authHelper.getToken(false, Organization.access);
                     break;
                 case "bearerToken":
-                    AuthHelper.getToken(false, Organization.bearer);
+                    authHelper.getToken(false, Organization.bearer);
                     break;
             }
         } catch (error: any) {

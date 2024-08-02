@@ -18,7 +18,8 @@ export class Common {
      * @returns The user's input or undefined if cancelled.
      */
     public static async getInput(prompt: string): Promise<string | undefined> {
-        return await ShowInputBoxHelper.promptForInput({ prompt });
+        const showInputBoxHelper = new ShowInputBoxHelper();
+        return await showInputBoxHelper.promptForInput({ prompt });
     }
 
     /**

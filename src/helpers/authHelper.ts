@@ -1,5 +1,6 @@
 import { Messages, Organization } from "../constants/index";
-import { GlobalState, Logger, ShowInputBoxHelper, StatusBarMessageHelper } from ".";
+import { GlobalState, Logger, StatusBarMessageHelper } from ".";
+import { ShowInputBoxHelper } from "./showInputBoxHelper";
 
 export class AuthHelper {
     private static get globalState(): GlobalState {
@@ -10,7 +11,7 @@ export class AuthHelper {
      * @param void
      * @returns Promise<string | undefined>
      */
-    static async getToken(useDefaultToken: boolean = true, tokenKey: "access" | "bearer"): Promise<string | undefined> {
+    async getToken(useDefaultToken: boolean = true, tokenKey: "access" | "bearer"): Promise<string | undefined> {
         try {
             let token: string | undefined;
             const TOKEN_KEY =
@@ -24,8 +25,9 @@ export class AuthHelper {
             if (!token) {
                 // Prompt the user to enter the access token
                 Logger.logInfo("InputBox Opened for tokens");
+                const showInputBoxHelper = new ShowInputBoxHelper();
 
-                token = await ShowInputBoxHelper.promptForInput({
+                token = await showInputBoxHelper.promptForInput({
                     prompt:
                         tokenKey === Organization.access ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
                     ignoreFocusOut: true,

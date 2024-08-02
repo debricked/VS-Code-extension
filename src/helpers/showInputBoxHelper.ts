@@ -2,7 +2,9 @@ import { InputBoxOptions } from "../types";
 import * as vscode from "vscode";
 
 export class ShowInputBoxHelper {
-    public static async promptForInput(options: InputBoxOptions, defaultValue?: string): Promise<string | undefined> {
+    constructor() {}
+
+    public async promptForInput(options: InputBoxOptions, defaultValue?: string): Promise<string | undefined> {
         const inputBoxOptions: vscode.InputBoxOptions = {
             prompt: options.prompt,
             ignoreFocusOut: options.ignoreFocusOut ?? true,

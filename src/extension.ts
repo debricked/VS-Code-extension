@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { ApiHelper, ErrorHandler, GlobalState, Logger, globalStore, commonHelper } from "./helpers";
+import { apiHelper, ErrorHandler, GlobalState, Logger, globalStore, commonHelper } from "./helpers";
 import { DebrickedCommand, ManifestWatcher } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
@@ -77,7 +77,7 @@ async function fetchRepositories() {
             endpoint: "open/repository-settings/repositories",
         };
 
-        const repositories = await ApiHelper.get(requestParam);
+        const repositories = await apiHelper.get(requestParam);
         Logger.logObj(repositories);
     } catch (error: any) {
         ErrorHandler.handleError(error);

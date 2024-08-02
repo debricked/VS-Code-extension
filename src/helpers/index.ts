@@ -17,28 +17,37 @@ import { ErrorHandler } from "./errorHandler";
 import { ApiClient } from "./apiClient";
 import { GlobalStore } from "./globalStore";
 
+const authHelper = new AuthHelper();
 const commonHelper = new Common();
+const commandHelper = new Command();
+const showInputBoxHelper = new ShowInputBoxHelper();
 const debrickedDataHelper = new DebrickedDataHelper(Logger);
 const globalStore = GlobalStore.getInstance(commonHelper);
 
+const gitHelper = new GitHelper(commandHelper, Logger, showInputBoxHelper);
+const terminal = new Terminal(authHelper, Logger);
+const apiClient = new ApiClient(authHelper);
+const apiHelper = new ApiHelper(apiClient, Logger);
+
 export {
-    AuthHelper,
+    authHelper,
     StatusBarMessageHelper,
-    Terminal,
+    terminal,
     QuickPick,
     StatusMessage,
     Logger,
     Common,
+    commonHelper,
     Command,
+    commandHelper,
     FileHelper,
     InstallHelper,
-    GitHelper,
-    ShowInputBoxHelper,
+    gitHelper,
+    showInputBoxHelper,
     debrickedDataHelper,
     GlobalState,
-    ApiHelper,
+    apiHelper,
     ErrorHandler,
-    ApiClient,
+    apiClient,
     globalStore,
-    commonHelper,
 };

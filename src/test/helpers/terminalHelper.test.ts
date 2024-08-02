@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Terminal } from "../../helpers";
+import { terminal } from "../../helpers";
 import { Logger } from "../../helpers";
 import { Messages, Organization } from "../../constants";
 import { expect, sinon } from "../setup";
@@ -40,7 +40,7 @@ describe("Terminal", () => {
         const cmdParams = ["-v"];
         const accessTokenRequired = false;
 
-        await Terminal.createAndUseTerminal(description, cmdParams, accessTokenRequired);
+        await terminal.createAndUseTerminal(description, cmdParams, accessTokenRequired);
 
         expect(createTerminalStub.calledOnceWith(description)).to.be.true;
         expect(sendTextStub.calledOnceWith(`${Organization.debrickedCli} ${cmdParams.join(" ")}`)).to.be.true;
@@ -57,7 +57,7 @@ describe("Terminal", () => {
         const cmdParams = ["-t", "access_token"];
         const accessTokenRequired = true;
 
-        await Terminal.createAndUseTerminal(description, cmdParams, accessTokenRequired);
+        await terminal.createAndUseTerminal(description, cmdParams, accessTokenRequired);
 
         expect(createTerminalStub.calledOnceWith(description)).to.be.true;
         expect(sendTextStub.calledOnceWith(`${Organization.debrickedCli} ${cmdParams.join(" ")}`)).to.be.true;

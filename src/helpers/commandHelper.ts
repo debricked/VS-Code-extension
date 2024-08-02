@@ -1,5 +1,5 @@
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
-import { AuthHelper, ErrorHandler, Logger } from "../helpers";
+import { authHelper, ErrorHandler, Logger } from "../helpers";
 import { execFile, exec } from "child_process";
 import * as vscode from "vscode";
 import { promisify } from "util";
@@ -12,7 +12,7 @@ export class Command {
         try {
             if (accessTokenRequired) {
                 const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
-                const accessToken = await AuthHelper.getToken(true, Organization.access);
+                const accessToken = await authHelper.getToken(true, Organization.access);
 
                 if (accessToken) {
                     cmdParams.push(flags[0].flag);
@@ -47,7 +47,7 @@ export class Command {
         }
     }
 
-    public static async executeAsyncCommand(command: string, accessTokenRequired: boolean = false): Promise<string> {
+    public async executeAsyncCommand(command: string, accessTokenRequired: boolean = false): Promise<string> {
         try {
             const execAsync = promisify(exec);
 
@@ -60,7 +60,7 @@ export class Command {
 
             if (accessTokenRequired) {
                 const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
-                const accessToken = await AuthHelper.getToken(true, Organization.access);
+                const accessToken = await authHelper.getToken(true, Organization.access);
 
                 if (accessToken) {
                     command = `${command} ${flags[0].flag} ${accessToken}`;
