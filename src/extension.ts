@@ -31,7 +31,7 @@ export async function activate(context: vscode.ExtensionContext) {
                 message: "Activating VS Code Extension",
                 increment: (progressCount += 20),
             });
-            await commonHelper.setupDebricked();
+            await commonHelper.setupDebricked(context);
             Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
 
             progress.report({

@@ -3,7 +3,6 @@ import * as path from "path";
 import { Organization, MessageStatus } from "../constants/index";
 import { GlobalState } from "./globalState";
 import * as vscode from "vscode";
-import { DebrickedDataHelper } from "./debrickedDataHelper";
 import { GlobalStore } from "./globalStore";
 
 export class Logger {
@@ -11,12 +10,8 @@ export class Logger {
     private static logFilePath: string;
 
     public static initialize(context: vscode.ExtensionContext) {
-        const debrickedDataHelper = new DebrickedDataHelper(Logger);
         const logDir = context.logUri.fsPath;
         Logger.logFilePath = path.join(logDir, Organization.logFile);
-
-        // Ensure the log directory exists
-        debrickedDataHelper.createDir(logDir);
     }
 
     public static async openLogFile() {

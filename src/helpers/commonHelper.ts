@@ -4,6 +4,7 @@ import { Logger } from "./loggerHelper";
 import { GlobalState } from "./globalState";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
+import * as vscode from "vscode";
 
 export class Common {
     constructor(
@@ -67,10 +68,11 @@ export class Common {
     /**
      * Set up the Debricked environment by generating a sequence ID and checking the user ID.
      */
-    public async setupDebricked(): Promise<void> {
+    public async setupDebricked(context: vscode.ExtensionContext): Promise<void> {
         try {
             await this.checkUserId();
             this.debrickedDataHelper.createDir(Organization.reportsFolderPath);
+            this.debrickedDataHelper.createDir(context.logUri.fsPath);
         } catch (error: any) {
             throw error;
         }
