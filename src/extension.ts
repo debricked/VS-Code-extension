@@ -26,7 +26,7 @@ export async function activate(context: vscode.ExtensionContext) {
             const globalState = GlobalState.getInstance();
             // For dev - Clears the globalData - uncomment to clear the globalData
             // await globalState.clearAllGlobalData();
-            globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
             progress.report({
                 message: "Activating VS Code Extension",
                 increment: (progressCount += 20),
@@ -72,7 +72,7 @@ export async function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export async function deactivate() {
     Logger.logMessageByStatus(MessageStatus.INFO, "Deactivate Debricked VS Code Extension");
-    globalStore.setSequenceID();
+    globalStore.setSequenceID(commonHelper.generateHashCode());
 }
 
 async function fetchRepositories() {

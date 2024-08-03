@@ -12,6 +12,7 @@ import {
     globalStore,
     commandHelper,
     showInputBoxHelper,
+    commonHelper,
 } from "../helpers";
 import * as vscode from "vscode";
 import { GlobalState } from "helpers/globalState";
@@ -23,7 +24,7 @@ export class BaseCommandService {
     static async baseCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register BaseCommand");
-            globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
             const subCommand: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
 
             let selectedSubCommand: any;
@@ -77,7 +78,7 @@ export class BaseCommandService {
     static async help() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register HelpCommand");
-            globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
             const cmdParams = [];
             const subCommand: any = DebrickedCommands.BASE_COMMAND;
 
@@ -113,7 +114,7 @@ export class BaseCommandService {
     static async installCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
-            globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
 
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
             Logger.logMessageByStatus(
@@ -146,7 +147,7 @@ export class BaseCommandService {
     static async login(updateCredentials: boolean = false) {
         try {
             Logger.logInfo("Register login");
-            globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
 
             const debrickedData: any = await BaseCommandService.globalState.getGlobalData(
                 Organization.debrickedDataKey,
@@ -198,7 +199,7 @@ export class BaseCommandService {
     static async updateCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register UpdateCommand");
-            globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
             let subCommand: DebrickedCommandNode[] | undefined;
             if (DebrickedCommands.BASE_COMMAND.sub_commands) {
                 subCommand = DebrickedCommands.BASE_COMMAND.sub_commands[1].sub_commands;

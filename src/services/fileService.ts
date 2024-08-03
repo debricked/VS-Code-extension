@@ -7,6 +7,7 @@ import {
     GlobalState,
     errorHandler,
     globalStore,
+    commonHelper,
 } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode } from "../types";
@@ -20,7 +21,7 @@ export class FileService {
     static async filesService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register FileCommand");
-            globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
 
             const command = DebrickedCommands.FILES;
 
@@ -59,7 +60,7 @@ export class FileService {
             async (progress) => {
                 try {
                     Logger.logMessageByStatus(MessageStatus.INFO, "Register Find File Command");
-                    globalStore.setSequenceID();
+                    globalStore.setSequenceID(commonHelper.generateHashCode());
                     const cmdParams = [];
                     const command: DebrickedCommandNode = DebrickedCommands.FILES;
 

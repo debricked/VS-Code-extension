@@ -20,12 +20,12 @@ import { GlobalStore } from "./globalStore";
 const statusBarMessageHelper = new StatusBarMessageHelper();
 const showInputBoxHelper = new ShowInputBoxHelper();
 const debrickedDataHelper = new DebrickedDataHelper(Logger);
+const globalStore = GlobalStore.getInstance();
 
 const authHelper = new AuthHelper(showInputBoxHelper, statusBarMessageHelper, Logger, GlobalState);
 const errorHandler = new ErrorHandler(statusBarMessageHelper, Logger);
 const commandHelper = new Command(errorHandler, authHelper, Logger);
 const commonHelper = new Common(errorHandler, debrickedDataHelper, Logger, showInputBoxHelper, GlobalState);
-const globalStore = GlobalStore.getInstance(commonHelper);
 const gitHelper = new GitHelper(commandHelper, Logger, showInputBoxHelper, GlobalState);
 const terminal = new Terminal(authHelper, Logger);
 const apiClient = new ApiClient(authHelper, errorHandler, Logger);

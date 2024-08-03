@@ -1,6 +1,4 @@
 import * as vscode from "vscode";
-import { Logger } from ".";
-import { MessageStatus } from "../constants";
 
 export class GlobalState {
     private static instance: GlobalState;
@@ -33,7 +31,7 @@ export class GlobalState {
 
                 return attribute ? data[attribute] : data;
             } catch (error) {
-                Logger.logMessageByStatus(MessageStatus.ERROR, `Error parsing stored value for key ${key}: ${error}`);
+                throw new Error(`Error parsing stored value for key ${key}: ${error}`);
             }
         }
         return defaultValue;
@@ -59,7 +57,7 @@ export class GlobalState {
             try {
                 return JSON.parse(storedValue) as T;
             } catch (error) {
-                Logger.logMessageByStatus(MessageStatus.ERROR, `Error parsing stored value for key ${key}: ${error}`);
+                throw new Error(`Error parsing stored value for key ${key}: ${error}`);
             }
         }
         return storedValue;

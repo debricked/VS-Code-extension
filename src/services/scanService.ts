@@ -10,6 +10,7 @@ import {
     showInputBoxHelper,
     errorHandler,
     globalStore,
+    commonHelper,
 } from "../helpers";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
@@ -23,7 +24,7 @@ export class ScanService {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register ScanCommand");
 
             debrickedDataHelper.createDir(Organization.reportsFolderPath);
-            globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
             const cmdParams = [];
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 

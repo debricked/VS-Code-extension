@@ -1,16 +1,12 @@
-import { Common } from "./commonHelper";
-import * as vscode from "vscode";
-
 export class GlobalStore {
     private static instance: GlobalStore;
     private sequenceID: string | undefined;
-    private context: vscode.ExtensionContext | undefined;
 
-    private constructor(private commonHelper: Common) {}
+    private constructor() {}
 
-    public static getInstance(commonHelper: Common): GlobalStore {
+    public static getInstance(): GlobalStore {
         if (!GlobalStore.instance) {
-            GlobalStore.instance = new GlobalStore(commonHelper);
+            GlobalStore.instance = new GlobalStore();
         }
         return GlobalStore.instance;
     }
@@ -18,8 +14,8 @@ export class GlobalStore {
     /**
      * Set a new sequence ID.
      */
-    public setSequenceID(): void {
-        this.sequenceID = this.commonHelper.generateHashCode();
+    public setSequenceID(sequenceID: string): void {
+        this.sequenceID = sequenceID;
     }
 
     /**
@@ -28,20 +24,5 @@ export class GlobalStore {
      */
     public getSequenceID(): string | undefined {
         return this.sequenceID;
-    }
-
-    /**
-     * Set a new context.
-     */
-    public setContext(context: vscode.ExtensionContext): void {
-        this.context = context;
-    }
-
-    /**
-     * Get the current context.
-     * @returns The current context.
-     */
-    public getContext(): vscode.ExtensionContext | undefined {
-        return this.context;
     }
 }
