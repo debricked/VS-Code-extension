@@ -5,14 +5,12 @@ import { Messages, MessageStatus, Organization } from "../constants/index";
 import * as vscode from "vscode";
 import { StatusBarMessageHelper } from "./statusBarMessageHelper";
 import { Logger } from "./loggerHelper";
-import { ErrorHandler } from "./errorHandler";
 
 export class InstallHelper {
     private platform: string;
     private scriptDir: string;
 
     constructor(
-        private errorHandler: ErrorHandler,
         private logger: typeof Logger,
         private statusBarMessageHelper: StatusBarMessageHelper,
     ) {
@@ -73,8 +71,7 @@ export class InstallHelper {
                     this.logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}`);
                     this.statusBarMessageHelper.showInformationMessage("CLI installed successfully");
                 } catch (error: any) {
-                    this.errorHandler.handleError(error);
-                    process.exit(1);
+                    throw error;
                 }
             },
         );

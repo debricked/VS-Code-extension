@@ -2,13 +2,11 @@ import { DebrickedCommands, Messages, MessageStatus, Organization } from "../con
 import { execFile, exec } from "child_process";
 import * as vscode from "vscode";
 import { promisify } from "util";
-import { ErrorHandler } from "./errorHandler";
 import { AuthHelper } from "./authHelper";
 import { Logger } from "./loggerHelper";
 
 export class Command {
     constructor(
-        private errorHandler: ErrorHandler,
         private authHelper: AuthHelper,
         private logger: typeof Logger,
     ) {}
@@ -46,7 +44,6 @@ export class Command {
                 });
             });
         } catch (error: any) {
-            this.errorHandler.handleError(error);
             throw error;
         }
     }
@@ -88,7 +85,6 @@ export class Command {
             this.logger.logMessageByStatus(MessageStatus.FINISHED, stdout);
             return stdout.trim();
         } catch (error: any) {
-            this.errorHandler.handleError(error);
             throw error;
         }
     }

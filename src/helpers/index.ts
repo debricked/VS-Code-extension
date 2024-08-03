@@ -24,13 +24,13 @@ const globalStore = GlobalStore.getInstance();
 
 const authHelper = new AuthHelper(showInputBoxHelper, statusBarMessageHelper, Logger, GlobalState);
 const errorHandler = new ErrorHandler(statusBarMessageHelper, Logger);
-const commandHelper = new Command(errorHandler, authHelper, Logger);
-const commonHelper = new Common(errorHandler, debrickedDataHelper, Logger, showInputBoxHelper, GlobalState);
+const commandHelper = new Command(authHelper, Logger);
+const commonHelper = new Common(debrickedDataHelper, Logger, showInputBoxHelper, GlobalState);
 const gitHelper = new GitHelper(commandHelper, Logger, showInputBoxHelper, GlobalState);
 const terminal = new Terminal(authHelper, Logger);
 const apiClient = new ApiClient(authHelper, errorHandler, Logger);
 const apiHelper = new ApiHelper(apiClient, Logger);
-const installHelper = new InstallHelper(errorHandler, Logger, statusBarMessageHelper);
+const installHelper = new InstallHelper(Logger, statusBarMessageHelper);
 const fileHelper = new FileHelper(debrickedDataHelper, Logger);
 
 export {

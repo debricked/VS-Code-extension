@@ -3,12 +3,10 @@ import * as crypto from "crypto";
 import { Logger } from "./loggerHelper";
 import { GlobalState } from "./globalState";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
-import { ErrorHandler } from "./errorHandler";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
 
 export class Common {
     constructor(
-        private errorHandler: ErrorHandler,
         private debrickedDataHelper: DebrickedDataHelper,
         private logger: typeof Logger,
         private showInputBoxHelper: ShowInputBoxHelper,
@@ -52,7 +50,7 @@ export class Common {
                 this.logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated: ${userHashCode}`);
             }
         } catch (error: any) {
-            this.errorHandler.handleError(error);
+            throw error;
         }
     }
 
@@ -74,7 +72,7 @@ export class Common {
             await this.checkUserId();
             this.debrickedDataHelper.createDir(Organization.reportsFolderPath);
         } catch (error: any) {
-            this.errorHandler.handleError(error);
+            throw error;
         }
     }
 
