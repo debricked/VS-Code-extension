@@ -30,17 +30,15 @@ class IndexHelper {
      */
     public async setupDebricked(context: vscode.ExtensionContext): Promise<void> {
         try {
-            // Set up global error handlers
-            errorHandler.setupGlobalErrorHandlers();
             GlobalState.initialize(context);
-
-            await this.commonHelper.checkUserId();
             this.debrickedDataHelper.createDir(Organization.reportsFolderPath);
             this.debrickedDataHelper.createDir(context.logUri.fsPath);
-
             Logger.initialize(context);
-
+            // Set up global error handlers
+            errorHandler.setupGlobalErrorHandlers();
             globalStore.setGlobalStateInstance(GlobalState.getInstance());
+
+            await this.commonHelper.checkUserId();
         } catch (error: any) {
             throw error;
         }
@@ -55,7 +53,7 @@ const globalStore = GlobalStore.getInstance();
 const authHelper = new AuthHelper(showInputBoxHelper, statusBarMessageHelper, Logger, GlobalState);
 const errorHandler = new ErrorHandler(statusBarMessageHelper, Logger);
 const commandHelper = new Command(authHelper, Logger);
-const commonHelper = new Common(Logger, showInputBoxHelper, GlobalState);
+const commonHelper = new Common(Logger, showInputBoxHelper, globalStore);
 const gitHelper = new GitHelper(commandHelper, Logger, showInputBoxHelper, GlobalState);
 const terminal = new Terminal(authHelper, Logger);
 const apiClient = new ApiClient(authHelper, errorHandler, Logger);

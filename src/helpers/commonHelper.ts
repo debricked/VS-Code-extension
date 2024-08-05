@@ -1,14 +1,14 @@
 import { MessageStatus, Organization } from "../constants/index";
 import * as crypto from "crypto";
 import { Logger } from "./loggerHelper";
-import { GlobalState } from "./globalState";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
+import { GlobalStore } from "./globalStore";
 
 export class Common {
     constructor(
         private logger: typeof Logger,
         private showInputBoxHelper: ShowInputBoxHelper,
-        private globalState: typeof GlobalState,
+        private globalStore: GlobalStore,
     ) {}
 
     /**
@@ -34,19 +34,19 @@ export class Common {
      */
     public async checkUserId(): Promise<void> {
         try {
-            const userId = await this.globalState
-                .getInstance()
-                .getGlobalData(Organization.debrickedDataKey, "", Organization.userId);
+            const globalState = this.globalStore.getGlobalStateInstance();
+            let userId = await globalState?.getGlobalData(Organization.debrickedDataKey, "", Organization.userId);
             if (!userId) {
-                const userHashCode = this.generateHashCode(new Date().toDateString());
-                const debrickedData: any = await this.globalState
-                    .getInstance()
-                    .getGlobalData(Organization.debrickedDataKey, {});
-                debrickedData[Organization.userId] = userHashCode;
-                await this.globalState.getInstance().setGlobalData(Organization.debrickedDataKey, debrickedData);
+                userId = this.generateHashCode(new Date().toDateString());
+                const debrickedData: any = await globalState?.getGlobalData(Organization.debrickedDataKey, {});
+                debrickedData[Organization.userId] = userId;
+                await globalState?.setGlobalData(Organization.debrickedDataKey, debrickedData);
 
-                this.logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated: ${userHashCode}`);
+                this.logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated: ${userId}`);
+            } else {
+                this.logger.logMessageByStatus(MessageStatus.INFO, `Existing user_id: ${userId}`);
             }
+            this.globalStore.setUserId(userId);
         } catch (error: any) {
             throw error;
         }
