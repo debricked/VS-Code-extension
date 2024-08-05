@@ -1,36 +1,33 @@
 import {
-    StatusBarMessageHelper,
+    statusBarMessageHelper,
     StatusMessage,
     Logger,
-    Terminal,
-    GitHelper,
-    Common,
-    GlobalState,
+    terminal,
+    gitHelper,
     debrickedDataHelper,
-    ShowInputBoxHelper,
-    ErrorHandler,
-    GlobalStore,
+    showInputBoxHelper,
+    errorHandler,
+    globalStore,
+    commonHelper,
 } from "../helpers";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
-export class ScanService {
-    private static get globalState(): GlobalState {
-        return GlobalState.getInstance();
-    }
-    private static globalStore = GlobalStore.getInstance();
 
+export class ScanService {
     static async scanService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register ScanCommand");
 
             debrickedDataHelper.createDir(Organization.reportsFolderPath);
-            ScanService.globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
             const cmdParams = [];
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 
             cmdParams.push(command.cli_command);
-            const selectedRepoName = await GitHelper.getRepositoryName();
-            const currentRepoData: RepositoryInfo = await ScanService.globalState.getGlobalData(selectedRepoName, {});
+            const selectedRepoName = await gitHelper.getRepositoryName();
+            const currentRepoData: RepositoryInfo = await globalStore
+                .getGlobalStateInstance()
+                ?.getGlobalData(selectedRepoName, {});
             Logger.logMessageByStatus(MessageStatus.INFO, `Current repository name: ${currentRepoData.repositoryName}`);
 
             if (currentRepoData?.repositoryName !== MessageStatus.UNKNOWN) {
@@ -50,20 +47,20 @@ export class ScanService {
                 }
             }
 
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.SCAN.cli_command),
             );
 
             Logger.logMessageByStatus(MessageStatus.INFO, `Executing terminal command with parameters: ${cmdParams}`);
-            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, true);
+            terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, true);
 
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
             );
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         } finally {
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
             );
             Logger.logMessageByStatus(MessageStatus.INFO, "Scan service finished.");
@@ -75,7 +72,7 @@ export class ScanService {
         cmdParams.push(selectedFlags.flag);
         switch (selectedFlags.flag) {
             case "-r":
-                const providedRepo = await ShowInputBoxHelper.promptForInput({
+                const providedRepo = await showInputBoxHelper.promptForInput({
                     title: "Enter Repository name",
                     prompt: "Enter repository name",
                     ignoreFocusOut: false,
@@ -110,7 +107,9 @@ export class ScanService {
 
             case "-b":
                 if (selectedFlags.flagValue) {
-                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, currentRepoData.currentBranch));
+                    cmdParams.push(
+                        commonHelper.replacePlaceholder(selectedFlags.flagValue, currentRepoData.currentBranch),
+                    );
                     Logger.logInfo(`Branch info added: ${currentRepoData.currentBranch}`);
                 }
                 break;
@@ -118,7 +117,7 @@ export class ScanService {
             case "-c":
                 if (selectedFlags.flagValue) {
                     const commitHash = currentRepoData.commitID;
-                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, commitHash));
+                    cmdParams.push(commonHelper.replacePlaceholder(selectedFlags.flagValue, commitHash));
                     Logger.logMessageByStatus(MessageStatus.INFO, `Commit hash added: ${commitHash}`);
                 }
                 break;

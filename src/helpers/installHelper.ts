@@ -2,16 +2,20 @@ import * as path from "path";
 import * as os from "os";
 import { exec } from "child_process";
 import { Messages, MessageStatus, Organization } from "../constants/index";
-import { ErrorHandler, Logger, StatusBarMessageHelper } from "../helpers";
 import * as vscode from "vscode";
+import { StatusBarMessageHelper } from "./statusBarMessageHelper";
+import { Logger } from "./loggerHelper";
 
 export class InstallHelper {
     private platform: string;
     private scriptDir: string;
 
-    constructor() {
+    constructor(
+        private logger: typeof Logger,
+        private statusBarMessageHelper: StatusBarMessageHelper,
+    ) {
         this.platform = os.platform();
-        Logger.logMessageByStatus(MessageStatus.INFO, `Debricked running on: ${this.platform}`);
+        this.logger.logMessageByStatus(MessageStatus.INFO, `Debricked running on: ${this.platform}`);
         this.scriptDir = path.join(__dirname, "..", Organization.debrickedInstaller);
     }
 
@@ -29,7 +33,7 @@ export class InstallHelper {
                     command: Organization.bash,
                 };
             default:
-                Logger.logMessageByStatus(MessageStatus.ERROR, `${Messages.UNSUPPORTED_OS}: ${this.platform}`);
+                this.logger.logMessageByStatus(MessageStatus.ERROR, `${Messages.UNSUPPORTED_OS}: ${this.platform}`);
                 throw new Error(Messages.UNSUPPORTED_OS);
         }
     }
@@ -59,16 +63,15 @@ export class InstallHelper {
                     progress.report({
                         message: "Installing the Debricked CLI",
                     });
-                    Logger.logMessageByStatus(MessageStatus.INFO, `Starting installation...`);
+                    this.logger.logMessageByStatus(MessageStatus.INFO, `Starting installation...`);
                     const installCommand =
                         this.platform === Organization.osWin32 ? `"${install}"` : `${command} "${install}"`;
                     const installOutput = await this.executeCommand(installCommand);
-                    Logger.logMessageByStatus(MessageStatus.INFO, `${installOutput}`);
-                    Logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}`);
-                    StatusBarMessageHelper.showInformationMessage("CLI installed successfully");
+                    this.logger.logMessageByStatus(MessageStatus.INFO, `${installOutput}`);
+                    this.logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}`);
+                    this.statusBarMessageHelper.showInformationMessage("CLI installed successfully");
                 } catch (error: any) {
-                    ErrorHandler.handleError(error);
-                    process.exit(1);
+                    throw error;
                 }
             },
         );

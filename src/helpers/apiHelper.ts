@@ -4,9 +4,12 @@ import { Logger } from "./loggerHelper";
 import { Organization } from "../constants/index";
 
 export class ApiHelper {
-    public static async get(requestParam: RequestParam): Promise<any> {
-        const apiClient = new ApiClient();
+    constructor(
+        private apiClient: ApiClient,
+        private logger: typeof Logger,
+    ) {}
 
+    public async get(requestParam: RequestParam): Promise<any> {
         const { endpoint, page, rowsPerPage } = requestParam;
         let url = `${Organization.baseUrl}${endpoint}`;
 
@@ -23,8 +26,8 @@ export class ApiHelper {
         }
 
         try {
-            Logger.logInfo(`Request URL: ${url}`);
-            const response = await apiClient.get<any>(url);
+            this.logger.logInfo(`Request URL: ${url}`);
+            const response = await this.apiClient.get<any>(url);
             return response;
         } catch (error: any) {
             throw error;

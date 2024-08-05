@@ -2,7 +2,11 @@ import { Logger } from "./loggerHelper";
 import { StatusBarMessageHelper } from "./statusBarMessageHelper";
 
 export class ErrorHandler {
-    public static handleError(error: unknown) {
+    constructor(
+        private statusBarMessageHelper: StatusBarMessageHelper,
+        private logger: typeof Logger,
+    ) {}
+    public handleError(error: unknown) {
         const errorMessage = this.extractErrorMessage(error);
         const errorStack = error instanceof Error ? error.stack : "";
 
@@ -10,7 +14,7 @@ export class ErrorHandler {
         this.showUserErrorMessage(errorMessage);
     }
 
-    private static extractErrorMessage(error: unknown): string {
+    private extractErrorMessage(error: unknown): string {
         if (error instanceof Error) {
             return error.message;
         } else if (typeof error === "string") {
@@ -20,27 +24,27 @@ export class ErrorHandler {
         }
     }
 
-    private static logError(errorMessage: string, errorStack?: string) {
-        Logger.logError(`Error: ${errorMessage}`);
+    private logError(errorMessage: string, errorStack?: string) {
+        this.logger.logError(`Error: ${errorMessage}`);
         if (errorStack) {
-            Logger.logError(`Stack Trace: ${errorStack}`);
+            this.logger.logError(`Stack Trace: ${errorStack}`);
         }
     }
 
-    private static showUserErrorMessage(errorMessage: string) {
-        StatusBarMessageHelper.showErrorMessage(`Error: ${errorMessage}`);
+    private showUserErrorMessage(errorMessage: string) {
+        this.statusBarMessageHelper.showErrorMessage(`Error: ${errorMessage}`);
     }
 
-    public static setupGlobalErrorHandlers() {
+    public setupGlobalErrorHandlers() {
         process.on("uncaughtException", (error: Error) => {
-            Logger.logError(`Uncaught Exception: ${error}`);
+            this.logger.logError(`Uncaught Exception: ${error}`);
             this.handleError(error);
             // Optionally, shut down the process if the error is critical
             // process.exit(1);
         });
 
         process.on("unhandledRejection", (reason: any, promise: Promise<any>) => {
-            Logger.logError(`Unhandled Rejection at: ${promise} reason: ${reason}`);
+            this.logger.logError(`Unhandled Rejection at: ${promise} reason: ${reason}`);
             this.handleError(reason);
             // Optionally, shut down the process if the error is critical
             // process.exit(1);

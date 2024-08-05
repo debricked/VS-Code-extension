@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Organization, MessageStatus } from "../constants/index";
-import { debrickedDataHelper } from ".";
 import { GlobalState } from "./globalState";
 import * as vscode from "vscode";
 import { GlobalStore } from "./globalStore";
@@ -9,17 +8,10 @@ import { GlobalStore } from "./globalStore";
 export class Logger {
     private static logDirPath = path.join(Organization.debrickedInstalledDir, Organization.debrickedFolder);
     private static logFilePath: string;
-    private static get globalState(): GlobalState {
-        return GlobalState.getInstance();
-    }
-    private static globalStore = GlobalStore.getInstance();
 
     public static initialize(context: vscode.ExtensionContext) {
         const logDir = context.logUri.fsPath;
         Logger.logFilePath = path.join(logDir, Organization.logFile);
-
-        // Ensure the log directory exists
-        debrickedDataHelper.createDir(logDir);
     }
 
     public static async openLogFile() {
@@ -34,38 +26,44 @@ export class Logger {
 
     private static async writeLog(message: string) {
         const timestamp = new Date().toISOString();
-        const userId = await Logger.globalState.getGlobalData(Organization.debrickedDataKey, "", Organization.userId);
-        const sequenceId = Logger.globalStore.getSequenceID() ? `[seq_id:${Logger.globalStore.getSequenceID()}]` : "";
+        const userId = await GlobalState.getInstance().getGlobalData(
+            Organization.debrickedDataKey,
+            "",
+            Organization.userId,
+        );
+        const sequenceId = GlobalStore.getInstance().getSequenceID()
+            ? `[seq_id:${GlobalStore.getInstance().getSequenceID()}]`
+            : "";
 
         const logEntry = `[${timestamp}] [user_id:${userId}] ${sequenceId} ${message}\n`;
         fs.appendFileSync(Logger.logFilePath, logEntry, "utf-8");
     }
 
     public static async logMessage(message: string) {
-        await Logger.writeLog(message);
+        await this.writeLog(message);
     }
 
     public static async logMessageByStatus(status: string, message: string) {
-        await Logger.writeLog(`[${status}] ${message}`);
+        await this.writeLog(`[${status}] ${message}`);
     }
 
     public static async logInfo(message: string) {
-        await Logger.logMessageByStatus(MessageStatus.INFO, message);
+        await this.logMessageByStatus(MessageStatus.INFO, message);
     }
 
     public static async logWarn(message: string) {
-        await Logger.logMessageByStatus(MessageStatus.WARN, message);
+        await this.logMessageByStatus(MessageStatus.WARN, message);
     }
 
     public static async logError(message: string) {
-        await Logger.logMessageByStatus(MessageStatus.ERROR, message);
+        await this.logMessageByStatus(MessageStatus.ERROR, message);
     }
 
     public static async logObj(message: any) {
-        await Logger.logMessageByStatus(MessageStatus.WARN, JSON.stringify(message));
+        await this.logMessageByStatus(MessageStatus.WARN, JSON.stringify(message));
     }
 
     public static async logDebug(message: any) {
-        await Logger.logMessageByStatus(MessageStatus.DEBUG, JSON.stringify(message));
+        await this.logMessageByStatus(MessageStatus.DEBUG, JSON.stringify(message));
     }
 }

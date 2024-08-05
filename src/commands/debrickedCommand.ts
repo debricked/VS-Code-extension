@@ -1,16 +1,14 @@
 import * as vscode from "vscode";
 import { DebrickedCommands } from "../constants/index";
 import { BaseCommandService, ScanService, FileService } from "../services";
-import { Logger, ErrorHandler } from "../helpers";
-import { GlobalStore } from "helpers/globalStore";
+import { Logger, commonHelper, errorHandler, globalStore } from "../helpers";
 
 export class DebrickedCommand {
     public static async commands(context: vscode.ExtensionContext) {
         try {
             Logger.logInfo("Started registering commands");
-            const globalStore = GlobalStore.getInstance();
 
-            globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
             const baseSubCommands = DebrickedCommands.BASE_COMMAND.sub_commands;
             const fileSubCommands = DebrickedCommands.FILES.sub_commands;
 
@@ -29,6 +27,7 @@ export class DebrickedCommand {
                 DebrickedCommand.registerCommand(context, baseSubCommands[1].command, BaseCommandService.updateCommand);
                 DebrickedCommand.registerCommand(context, baseSubCommands[2].command, BaseCommandService.help);
                 DebrickedCommand.registerCommand(context, baseSubCommands[3].command, Logger.openLogFile);
+                DebrickedCommand.registerCommand(context, baseSubCommands[4].command, BaseCommandService.login);
             }
 
             // Register scan command
@@ -42,7 +41,7 @@ export class DebrickedCommand {
                 DebrickedCommand.registerCommand(context, fileSubCommands[0].command, FileService.findFilesService);
             }
         } catch (error) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         } finally {
             Logger.logInfo("Command registration has been completed");
         }

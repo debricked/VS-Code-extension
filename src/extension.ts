@@ -1,17 +1,14 @@
 import * as vscode from "vscode";
-import { ApiHelper, Common, ErrorHandler, GlobalState, Logger } from "./helpers";
+import { apiHelper, errorHandler, Logger, globalStore, commonHelper, indexHelper } from "./helpers";
 import { DebrickedCommand, ManifestWatcher } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
 import { BaseCommandService } from "services";
 import { RequestParam } from "./types";
-import { GlobalStore } from "helpers/globalStore";
 
 export async function activate(context: vscode.ExtensionContext) {
-    // Set up global error handlers
-    ErrorHandler.setupGlobalErrorHandlers();
+    await indexHelper.setupDebricked(context);
 
-    GlobalState.initialize(context);
     await vscode.window.withProgress(
         {
             location: vscode.ProgressLocation.Notification,
@@ -21,19 +18,15 @@ export async function activate(context: vscode.ExtensionContext) {
         async (progress) => {
             let progressCount = 0;
             progress.report({ increment: progressCount });
-            Logger.initialize(context);
-            GlobalState.initialize(context);
 
-            const globalState = GlobalState.getInstance();
-            const globalStore = GlobalStore.getInstance();
+            const globalState = globalStore.getGlobalStateInstance();
             // For dev - Clears the globalData - uncomment to clear the globalData
-            // await globalState.clearAllGlobalData();
-            globalStore.setSequenceID();
+            // await globalState?.clearAllGlobalData();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
             progress.report({
                 message: "Activating VS Code Extension",
                 increment: (progressCount += 20),
             });
-            await Common.setupDebricked();
             Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
 
             progress.report({
@@ -45,7 +38,7 @@ export async function activate(context: vscode.ExtensionContext) {
             vscode.window.registerTreeDataProvider(Organization.debrickedCommand, debCommandsProvider);
 
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
-            const debrickedData: any = globalState.getGlobalData(Organization.debrickedDataKey, {});
+            const debrickedData: any = globalState?.getGlobalData(Organization.debrickedDataKey, {});
 
             if (currentVersion !== debrickedData.extensionVersion || debrickedData.isFirstActivation) {
                 progress.report({
@@ -55,10 +48,16 @@ export async function activate(context: vscode.ExtensionContext) {
                 await BaseCommandService.installCommand();
             }
 
+            if (debrickedData.isFirstActivation === undefined || debrickedData.isFirstActivation) {
+                await BaseCommandService.login(true);
+            } else {
+                await BaseCommandService.login(false);
+            }
+
             await fetchRepositories();
             // Add file watcher for all files found from 'debricked files find'
             await ManifestWatcher.getInstance().setupWatchers(context);
-            
+
             progress.report({ message: "Debricked extension is ready to use", increment: 100 - progressCount });
             await new Promise((resolve) => setTimeout(resolve, 1000)); // added for showing the last progress info
         },
@@ -68,8 +67,7 @@ export async function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export async function deactivate() {
     Logger.logMessageByStatus(MessageStatus.INFO, "Deactivate Debricked VS Code Extension");
-    const globalStore = GlobalStore.getInstance();
-    globalStore.setSequenceID();
+    globalStore.setSequenceID(commonHelper.generateHashCode());
 }
 
 async function fetchRepositories() {
@@ -80,9 +78,9 @@ async function fetchRepositories() {
             endpoint: "open/repository-settings/repositories",
         };
 
-        const repositories = await ApiHelper.get(requestParam);
+        const repositories = await apiHelper.get(requestParam);
         Logger.logObj(repositories);
     } catch (error: any) {
-        ErrorHandler.handleError(error);
+        errorHandler.handleError(error);
     }
 }

@@ -2,23 +2,22 @@ import { MessageStatus, Organization } from "../constants/index";
 import * as crypto from "crypto";
 import { Logger } from "./loggerHelper";
 import { GlobalState } from "./globalState";
-import { debrickedDataHelper } from ".";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
-import { ErrorHandler } from "./errorHandler";
 
 export class Common {
-    // Singleton instance of GlobalState
-    private static get globalState(): GlobalState {
-        return GlobalState.getInstance();
-    }
+    constructor(
+        private logger: typeof Logger,
+        private showInputBoxHelper: ShowInputBoxHelper,
+        private globalState: typeof GlobalState,
+    ) {}
 
     /**
      * Prompt the user for input with a given prompt message.
      * @param prompt The message to prompt the user with.
      * @returns The user's input or undefined if cancelled.
      */
-    public static async getInput(prompt: string): Promise<string | undefined> {
-        return await ShowInputBoxHelper.promptForInput({ prompt });
+    public async getInput(prompt: string): Promise<string | undefined> {
+        return await this.showInputBoxHelper.promptForInput({ prompt });
     }
 
     /**
@@ -26,30 +25,30 @@ export class Common {
      * @param input The input string to hash. Defaults to the current date and time.
      * @returns The generated hash code as a hex string.
      */
-    public static generateHashCode(input: string = new Date().toISOString()): string {
+    public generateHashCode(input: string = new Date().toISOString()): string {
         return crypto.createHash("sha256").update(input).digest("hex");
     }
 
     /**
      * Check if a user ID exists in the global state. If not, generate and store a new user ID.
      */
-    public static async checkUserId(): Promise<void> {
+    public async checkUserId(): Promise<void> {
         try {
-            const userId = await Common.globalState.getGlobalData(
-                Organization.debrickedDataKey,
-                "",
-                Organization.userId,
-            );
+            const userId = await this.globalState
+                .getInstance()
+                .getGlobalData(Organization.debrickedDataKey, "", Organization.userId);
             if (!userId) {
-                const userHashCode = Common.generateHashCode(new Date().toDateString());
-                const debrickedData: any = await Common.globalState.getGlobalData(Organization.debrickedDataKey, {});
+                const userHashCode = this.generateHashCode(new Date().toDateString());
+                const debrickedData: any = await this.globalState
+                    .getInstance()
+                    .getGlobalData(Organization.debrickedDataKey, {});
                 debrickedData[Organization.userId] = userHashCode;
-                await Common.globalState.setGlobalData(Organization.debrickedDataKey, debrickedData);
+                await this.globalState.getInstance().setGlobalData(Organization.debrickedDataKey, debrickedData);
 
-                Logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated: ${userHashCode}`);
+                this.logger.logMessageByStatus(MessageStatus.INFO, `New user_id generated: ${userHashCode}`);
             }
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            throw error;
         }
     }
 
@@ -59,20 +58,8 @@ export class Common {
      * @param placeholderValue The value to replace the placeholder with.
      * @returns The updated string with the placeholder replaced.
      */
-    public static replacePlaceholder(originalString: string, placeholderValue: string): string {
+    public replacePlaceholder(originalString: string, placeholderValue: string): string {
         return originalString.replace("PLACEHOLDER", placeholderValue || new Date().toISOString());
-    }
-
-    /**
-     * Set up the Debricked environment by generating a sequence ID and checking the user ID.
-     */
-    public static async setupDebricked(): Promise<void> {
-        try {
-            await Common.checkUserId();
-            debrickedDataHelper.createDir(Organization.reportsFolderPath);
-        } catch (error: any) {
-            ErrorHandler.handleError(error);
-        }
     }
 
     /**

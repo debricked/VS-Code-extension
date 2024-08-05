@@ -1,33 +1,30 @@
 import { DebrickedCommandNode } from "../types";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import {
-    StatusBarMessageHelper,
-    Terminal,
+    statusBarMessageHelper,
+    terminal,
     StatusMessage,
     Logger,
-    QuickPick,
-    InstallHelper,
-    AuthHelper,
-    ErrorHandler,
-    GlobalStore,
+    showQuickPickHelper,
+    installHelper,
+    authHelper,
+    errorHandler,
+    globalStore,
+    commandHelper,
+    showInputBoxHelper,
+    commonHelper,
 } from "../helpers";
 import * as vscode from "vscode";
-import { GlobalState } from "helpers/globalState";
 export class BaseCommandService {
-    private static get globalState(): GlobalState {
-        return GlobalState.getInstance();
-    }
-    private static globalStore = GlobalStore.getInstance();
-
     static async baseCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register BaseCommand");
-            BaseCommandService.globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
             const subCommand: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
 
             let selectedSubCommand: any;
             if (subCommand) {
-                selectedSubCommand = await QuickPick.showQuickPick(subCommand, Messages.QUICK_PICK_FLAG);
+                selectedSubCommand = await showQuickPickHelper.showQuickPick(subCommand, Messages.QUICK_PICK_FLAG);
             }
 
             switch (selectedSubCommand?.cli_command) {
@@ -43,12 +40,20 @@ export class BaseCommandService {
                     BaseCommandService.help();
                     break;
 
+                case "log":
+                    Logger.openLogFile();
+                    break;
+
+                case "login":
+                    BaseCommandService.login();
+                    break;
+
                 default:
-                    StatusBarMessageHelper.setStatusBarMessage(
+                    statusBarMessageHelper.setStatusBarMessage(
                         StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.BASE_COMMAND.cli_command),
                     );
-                    Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description);
-                    StatusBarMessageHelper.setStatusBarMessage(
+                    terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description);
+                    statusBarMessageHelper.setStatusBarMessage(
                         StatusMessage.getStatusMessage(
                             MessageStatus.COMPLETE,
                             DebrickedCommands.BASE_COMMAND.cli_command,
@@ -57,9 +62,9 @@ export class BaseCommandService {
                     break;
             }
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         } finally {
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.cli_command),
             );
         }
@@ -68,13 +73,13 @@ export class BaseCommandService {
     static async help() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register HelpCommand");
-            BaseCommandService.globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
             const cmdParams = [];
             const subCommand: any = DebrickedCommands.BASE_COMMAND;
 
             let selectedFlags: any;
             if (subCommand.command) {
-                selectedFlags = await QuickPick.showQuickPick(subCommand.flags, Messages.QUICK_PICK_FLAG);
+                selectedFlags = await showQuickPickHelper.showQuickPick(subCommand.flags, Messages.QUICK_PICK_FLAG);
             }
 
             let accessTokenRequired: boolean = false;
@@ -85,17 +90,17 @@ export class BaseCommandService {
                 }
             }
 
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.BASE_COMMAND.cli_command),
             );
-            Terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, accessTokenRequired);
-            StatusBarMessageHelper.setStatusBarMessage(
+            terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, accessTokenRequired);
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.BASE_COMMAND.cli_command),
             );
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         } finally {
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.cli_command),
             );
         }
@@ -104,32 +109,81 @@ export class BaseCommandService {
     static async installCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
-            BaseCommandService.globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
 
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
-            const installer = new InstallHelper();
             Logger.logMessageByStatus(
                 MessageStatus.INFO,
-                `${Organization.isFirstActivationKey}: ${BaseCommandService.globalState.getGlobalData(Organization.isFirstActivationKey, "")} - ${Organization.extensionVersionKey}: ${currentVersion}`,
+                `${Organization.isFirstActivationKey}: ${globalStore.getGlobalStateInstance()?.getGlobalData(Organization.isFirstActivationKey, "")} - ${Organization.extensionVersionKey}: ${currentVersion}`,
             );
 
-            await installer.runInstallScript();
-            const debrickedData: any = await BaseCommandService.globalState.getGlobalData(
-                Organization.debrickedDataKey,
-                {},
-            );
+            await installHelper.runInstallScript();
+            const debrickedData: any = await globalStore
+                .getGlobalStateInstance()
+                ?.getGlobalData(Organization.debrickedDataKey, {});
             debrickedData[Organization.isFirstActivationKey] = false;
             debrickedData[Organization.extensionVersionKey] = currentVersion;
 
-            BaseCommandService.globalState.setGlobalData(Organization.debrickedDataKey, debrickedData);
+            globalStore.getGlobalStateInstance()?.setGlobalData(Organization.debrickedDataKey, debrickedData);
             Logger.logMessageByStatus(
                 MessageStatus.INFO,
                 `${Organization.extensionVersionKey}: ${debrickedData[Organization.extensionVersionKey]}`,
             );
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         } finally {
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
+                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),
+            );
+        }
+    }
+
+    static async login(updateCredentials: boolean = false) {
+        try {
+            Logger.logInfo("Register login");
+            globalStore.setSequenceID(commonHelper.generateHashCode());
+
+            const debrickedData: any = await globalStore
+                .getGlobalStateInstance()
+                ?.getGlobalData(Organization.debrickedDataKey, {});
+
+            if (updateCredentials) {
+                debrickedData["debricked_username"] = await showInputBoxHelper.promptForInput(
+                    {
+                        prompt: "Enter debricked user name",
+                        placeHolder: "Please enter debricked User Name",
+                    },
+                    undefined,
+                );
+                debrickedData["debricked_password"] = await showInputBoxHelper.promptForInput(
+                    {
+                        prompt: "Enter debricked password",
+                        placeHolder: "Please enter debricked password",
+                        password: true,
+                    },
+                    undefined,
+                );
+
+                globalStore.getGlobalStateInstance()?.setGlobalData(Organization.debrickedDataKey, debrickedData);
+            }
+            const bearerToken = JSON.parse(
+                await commandHelper.executeAsyncCommand(
+                    `curl -X POST https://debricked.com/api/login_check -d _username=${debrickedData["debricked_username"]} -d _password=${debrickedData["debricked_password"]}`,
+                ),
+            );
+
+            if (bearerToken && bearerToken.code === 401) {
+                throw new Error(bearerToken.message);
+            } else {
+                const newBearerToken = `Bearer ${bearerToken.token}`;
+                await authHelper.setToken(Organization.bearer, newBearerToken, Organization.bearerTokenKey);
+
+                Logger.logInfo(`Token generated successfully`);
+            }
+        } catch (error: any) {
+            errorHandler.handleError(error);
+        } finally {
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),
             );
         }
@@ -138,7 +192,7 @@ export class BaseCommandService {
     static async updateCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register UpdateCommand");
-            BaseCommandService.globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
             let subCommand: DebrickedCommandNode[] | undefined;
             if (DebrickedCommands.BASE_COMMAND.sub_commands) {
                 subCommand = DebrickedCommands.BASE_COMMAND.sub_commands[1].sub_commands;
@@ -146,20 +200,20 @@ export class BaseCommandService {
 
             let selectedSubCommand: any;
             if (subCommand) {
-                selectedSubCommand = await QuickPick.showQuickPick(subCommand, Messages.QUICK_PICK_TOKEN);
+                selectedSubCommand = await showQuickPickHelper.showQuickPick(subCommand, Messages.QUICK_PICK_TOKEN);
             }
             switch (selectedSubCommand?.cli_command) {
                 case "accessToken":
-                    AuthHelper.getToken(false, Organization.access);
+                    authHelper.getToken(false, Organization.access);
                     break;
                 case "bearerToken":
-                    AuthHelper.getToken(false, Organization.bearer);
+                    authHelper.getToken(false, Organization.bearer);
                     break;
             }
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         } finally {
-            StatusBarMessageHelper.setStatusBarMessage(
+            statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),
             );
         }

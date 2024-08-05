@@ -1,35 +1,30 @@
 import {
-    StatusBarMessageHelper,
+    statusBarMessageHelper,
     Logger,
-    QuickPick,
-    Command,
-    GitHelper,
-    GlobalState,
-    ErrorHandler,
-    GlobalStore,
+    showQuickPickHelper,
+    commandHelper,
+    gitHelper,
+    errorHandler,
+    globalStore,
+    commonHelper,
 } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode } from "../types";
 import * as vscode from "vscode";
 
 export class FileService {
-    private static get globalState(): GlobalState {
-        return GlobalState.getInstance();
-    }
-    private static globalStore = GlobalStore.getInstance();
-
     static async filesService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register FileCommand");
-            FileService.globalStore.setSequenceID();
+            globalStore.setSequenceID(commonHelper.generateHashCode());
 
             const command = DebrickedCommands.FILES;
 
             if (!command.sub_commands || command.sub_commands.length === 0) {
-                StatusBarMessageHelper.showInformationMessage("No sub-commands available for Files service");
+                statusBarMessageHelper.showInformationMessage("No sub-commands available for Files service");
                 return;
             }
-            const selectedSubCommand = await QuickPick.showQuickPick(
+            const selectedSubCommand = await showQuickPickHelper.showQuickPick(
                 command.sub_commands,
                 Messages.QUICK_PICK_SUB_COMMAND,
             );
@@ -46,7 +41,7 @@ export class FileService {
                     throw new Error(`Unsupported sub-command: ${selectedSubCommand.cli_command}`);
             }
         } catch (error: any) {
-            ErrorHandler.handleError(error);
+            errorHandler.handleError(error);
         }
     }
 
@@ -60,7 +55,7 @@ export class FileService {
             async (progress) => {
                 try {
                     Logger.logMessageByStatus(MessageStatus.INFO, "Register Find File Command");
-                    FileService.globalStore.setSequenceID();
+                    globalStore.setSequenceID(commonHelper.generateHashCode());
                     const cmdParams = [];
                     const command: DebrickedCommandNode = DebrickedCommands.FILES;
 
@@ -82,15 +77,15 @@ export class FileService {
                     progress.report({ message: "🚀Finding Files..." });
 
                     const foundFiles = JSON.parse(
-                        await Command.executeAsyncCommand(`${Organization.debrickedCli} ${cmdParams.join(" ")}`),
+                        await commandHelper.executeAsyncCommand(`${Organization.debrickedCli} ${cmdParams.join(" ")}`),
                     );
                     const foundFilesArray: string[] = foundFiles
                         .map((item: any) => item.manifestFile)
                         .filter((file: any) => file !== "");
 
-                    await GitHelper.setupGit();
-                    const selectedRepoName = await GitHelper.getRepositoryName();
-                    let repoData: any = await FileService.globalState.getGlobalData(selectedRepoName, {});
+                    await gitHelper.setupGit();
+                    const selectedRepoName = await gitHelper.getRepositoryName();
+                    let repoData: any = await globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName, {});
 
                     if (!repoData) {
                         repoData = {};
@@ -98,14 +93,14 @@ export class FileService {
 
                     repoData.filesToScan = foundFilesArray;
                     progress.report({ message: "🏁 Found Files" });
-                    await FileService.globalState.setGlobalData(selectedRepoName, repoData);
+                    await globalStore.getGlobalStateInstance()?.setGlobalData(selectedRepoName, repoData);
                     Logger.logMessageByStatus(
                         MessageStatus.INFO,
                         `Found ${foundFilesArray.length} Files: ${foundFilesArray}`,
                     );
                     return foundFilesArray;
                 } catch (error: any) {
-                    ErrorHandler.handleError(error);
+                    errorHandler.handleError(error);
                     throw error;
                 } finally {
                     Logger.logMessageByStatus(MessageStatus.INFO, "Files service finished.");
@@ -116,8 +111,10 @@ export class FileService {
     }
 
     static async getFilesToScan() {
-        const debrickedData: any = await FileService.globalState.getGlobalData(Organization.debrickedDataKey, {});
-        const repositoryName = await GitHelper.getRepositoryName();
+        const debrickedData: any = await globalStore
+            .getGlobalStateInstance()
+            ?.getGlobalData(Organization.debrickedDataKey, {});
+        const repositoryName = await gitHelper.getRepositoryName();
         if (repositoryName) {
             return debrickedData[repositoryName]?.filesToScan;
         } else {
