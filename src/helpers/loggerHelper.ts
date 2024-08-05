@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Organization, MessageStatus } from "../constants/index";
-import { GlobalState } from "./globalState";
 import * as vscode from "vscode";
 import { GlobalStore } from "./globalStore";
 
@@ -26,11 +25,9 @@ export class Logger {
 
     private static async writeLog(message: string) {
         const timestamp = new Date().toISOString();
-        const userId = await GlobalState.getInstance().getGlobalData(
-            Organization.debrickedDataKey,
-            "",
-            Organization.userId,
-        );
+        const userId = await GlobalStore.getInstance()
+            .getGlobalStateInstance()
+            ?.getGlobalData(Organization.debrickedDataKey, "", Organization.userId);
         const sequenceId = GlobalStore.getInstance().getSequenceID()
             ? `[seq_id:${GlobalStore.getInstance().getSequenceID()}]`
             : "";

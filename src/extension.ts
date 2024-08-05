@@ -5,13 +5,10 @@ import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
 import { BaseCommandService } from "services";
 import { RequestParam } from "./types";
-import { GlobalState } from "./helpers/globalState";
 
 export async function activate(context: vscode.ExtensionContext) {
-    // Set up global error handlers
-    errorHandler.setupGlobalErrorHandlers();
+    await indexHelper.setupDebricked(context);
 
-    GlobalState.initialize(context);
     await vscode.window.withProgress(
         {
             location: vscode.ProgressLocation.Notification,
@@ -21,11 +18,10 @@ export async function activate(context: vscode.ExtensionContext) {
         async (progress) => {
             let progressCount = 0;
             progress.report({ increment: progressCount });
-            await indexHelper.setupDebricked(context);
 
             const globalState = globalStore.getGlobalStateInstance();
             // For dev - Clears the globalData - uncomment to clear the globalData
-            // await globalState.clearAllGlobalData();
+            // await globalState?.clearAllGlobalData();
             globalStore.setSequenceID(commonHelper.generateHashCode());
             progress.report({
                 message: "Activating VS Code Extension",

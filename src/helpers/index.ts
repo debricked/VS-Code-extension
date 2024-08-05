@@ -30,12 +30,15 @@ class IndexHelper {
      */
     public async setupDebricked(context: vscode.ExtensionContext): Promise<void> {
         try {
+            // Set up global error handlers
+            errorHandler.setupGlobalErrorHandlers();
+            GlobalState.initialize(context);
+
             await this.commonHelper.checkUserId();
             this.debrickedDataHelper.createDir(Organization.reportsFolderPath);
             this.debrickedDataHelper.createDir(context.logUri.fsPath);
 
             Logger.initialize(context);
-            GlobalState.initialize(context);
 
             globalStore.setGlobalStateInstance(GlobalState.getInstance());
         } catch (error: any) {
