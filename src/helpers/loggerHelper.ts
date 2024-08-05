@@ -8,9 +8,9 @@ export class Logger {
     private static logDirPath = path.join(Organization.debrickedInstalledDir, Organization.debrickedFolder);
     private static logFilePath: string;
 
-    public static initialize(context: vscode.ExtensionContext) {
+    public static async initialize(context: vscode.ExtensionContext) {
         const logDir = context.logUri.fsPath;
-        Logger.logFilePath = path.join(logDir, Organization.logFile);
+        Logger.logFilePath = await path.join(logDir, Organization.logFile);
     }
 
     public static async openLogFile() {
@@ -19,8 +19,8 @@ export class Logger {
         await vscode.window.showTextDocument(document);
     }
 
-    public static setLogFile(fileName: string) {
-        Logger.logFilePath = path.join(Logger.logDirPath, fileName);
+    public static async setLogFile(fileName: string) {
+        Logger.logFilePath = await path.join(Logger.logDirPath, fileName);
     }
 
     private static async writeLog(message: string) {
@@ -31,7 +31,7 @@ export class Logger {
             : "";
 
         const logEntry = `[${timestamp}] [user_id:${userId}] ${sequenceId} ${message}\n`;
-        fs.appendFileSync(Logger.logFilePath, logEntry, "utf-8");
+        await fs.appendFileSync(Logger.logFilePath, logEntry, "utf-8");
     }
 
     public static async logMessage(message: string) {

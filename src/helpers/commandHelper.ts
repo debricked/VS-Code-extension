@@ -88,4 +88,16 @@ export class Command {
             throw error;
         }
     }
+
+    public execute(command: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            exec(command, (error, stdout, stderr) => {
+                if (error) {
+                    reject(new Error(`Execution error: ${stderr}`));
+                } else {
+                    resolve(stdout.trim());
+                }
+            });
+        });
+    }
 }

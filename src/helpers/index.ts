@@ -34,7 +34,6 @@ class IndexHelper {
             this.debrickedDataHelper.createDir(Organization.reportsFolderPath);
             this.debrickedDataHelper.createDir(context.logUri.fsPath);
             Logger.initialize(context);
-            // Set up global error handlers
             errorHandler.setupGlobalErrorHandlers();
             globalStore.setGlobalStateInstance(GlobalState.getInstance());
 
@@ -47,7 +46,7 @@ class IndexHelper {
 
 const statusBarMessageHelper = new StatusBarMessageHelper();
 const showInputBoxHelper = new ShowInputBoxHelper();
-const debrickedDataHelper = new DebrickedDataHelper(Logger);
+const debrickedDataHelper = new DebrickedDataHelper();
 const globalStore = GlobalStore.getInstance();
 
 const authHelper = new AuthHelper(showInputBoxHelper, statusBarMessageHelper, Logger, GlobalState);
@@ -58,7 +57,7 @@ const gitHelper = new GitHelper(commandHelper, Logger, showInputBoxHelper, Globa
 const terminal = new Terminal(authHelper, Logger);
 const apiClient = new ApiClient(authHelper, errorHandler, Logger);
 const apiHelper = new ApiHelper(apiClient, Logger);
-const installHelper = new InstallHelper(Logger, statusBarMessageHelper);
+const installHelper = new InstallHelper(Logger, statusBarMessageHelper, commandHelper);
 const fileHelper = new FileHelper(debrickedDataHelper, Logger);
 const indexHelper = new IndexHelper(debrickedDataHelper, commonHelper);
 const showQuickPickHelper = new ShowQuickPickHelper();
