@@ -4,7 +4,6 @@ import {
     Logger,
     terminal,
     gitHelper,
-    GlobalState,
     debrickedDataHelper,
     showInputBoxHelper,
     errorHandler,
@@ -15,10 +14,6 @@ import { DebrickedCommands, MessageStatus, Organization } from "../constants/ind
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
 
 export class ScanService {
-    private static get globalState(): GlobalState {
-        return GlobalState.getInstance();
-    }
-
     static async scanService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register ScanCommand");
@@ -30,7 +25,9 @@ export class ScanService {
 
             cmdParams.push(command.cli_command);
             const selectedRepoName = await gitHelper.getRepositoryName();
-            const currentRepoData: RepositoryInfo = await ScanService.globalState.getGlobalData(selectedRepoName, {});
+            const currentRepoData: RepositoryInfo = await globalStore
+                .getGlobalStateInstance()
+                ?.getGlobalData(selectedRepoName, {});
             Logger.logMessageByStatus(MessageStatus.INFO, `Current repository name: ${currentRepoData.repositoryName}`);
 
             if (currentRepoData?.repositoryName !== MessageStatus.UNKNOWN) {

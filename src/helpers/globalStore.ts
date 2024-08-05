@@ -1,6 +1,9 @@
+import { GlobalState } from "./globalState";
+
 export class GlobalStore {
     private static instance: GlobalStore;
     private sequenceID: string | undefined;
+    private globalStateInstance: GlobalState | undefined;
 
     private constructor() {}
 
@@ -24,5 +27,20 @@ export class GlobalStore {
      */
     public getSequenceID(): string | undefined {
         return this.sequenceID;
+    }
+
+    /**
+     * Set a new GlobalState Instance.
+     */
+    public setGlobalStateInstance(globalStateInstance: GlobalState): void {
+        this.globalStateInstance = globalStateInstance;
+    }
+
+    /**
+     * Get the current GlobalState Instance.
+     * @returns The current GlobalState Instance.
+     */
+    public getGlobalStateInstance(): GlobalState | undefined {
+        return this.globalStateInstance;
     }
 }

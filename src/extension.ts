@@ -1,10 +1,11 @@
 import * as vscode from "vscode";
-import { apiHelper, errorHandler, GlobalState, Logger, globalStore, commonHelper, indexHelper } from "./helpers";
+import { apiHelper, errorHandler, Logger, globalStore, commonHelper, indexHelper } from "./helpers";
 import { DebrickedCommand, ManifestWatcher } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
 import { BaseCommandService } from "services";
 import { RequestParam } from "./types";
+import { GlobalState } from "./helpers/globalState";
 
 export async function activate(context: vscode.ExtensionContext) {
     // Set up global error handlers
@@ -22,7 +23,7 @@ export async function activate(context: vscode.ExtensionContext) {
             progress.report({ increment: progressCount });
             await indexHelper.setupDebricked(context);
 
-            const globalState = GlobalState.getInstance();
+            const globalState = globalStore.getGlobalStateInstance();
             // For dev - Clears the globalData - uncomment to clear the globalData
             // await globalState.clearAllGlobalData();
             globalStore.setSequenceID(commonHelper.generateHashCode());
@@ -41,7 +42,7 @@ export async function activate(context: vscode.ExtensionContext) {
             vscode.window.registerTreeDataProvider(Organization.debrickedCommand, debCommandsProvider);
 
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
-            const debrickedData: any = globalState.getGlobalData(Organization.debrickedDataKey, {});
+            const debrickedData: any = globalState?.getGlobalData(Organization.debrickedDataKey, {});
 
             if (currentVersion !== debrickedData.extensionVersion || debrickedData.isFirstActivation) {
                 progress.report({

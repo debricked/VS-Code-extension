@@ -36,6 +36,8 @@ class IndexHelper {
 
             Logger.initialize(context);
             GlobalState.initialize(context);
+
+            globalStore.setGlobalStateInstance(GlobalState.getInstance());
         } catch (error: any) {
             throw error;
         }
@@ -74,7 +76,6 @@ export {
     gitHelper,
     showInputBoxHelper,
     debrickedDataHelper,
-    GlobalState,
     apiHelper,
     errorHandler,
     apiClient,

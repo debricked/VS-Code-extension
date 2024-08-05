@@ -4,7 +4,6 @@ import {
     showQuickPickHelper,
     commandHelper,
     gitHelper,
-    GlobalState,
     errorHandler,
     globalStore,
     commonHelper,
@@ -14,10 +13,6 @@ import { DebrickedCommandNode } from "../types";
 import * as vscode from "vscode";
 
 export class FileService {
-    private static get globalState(): GlobalState {
-        return GlobalState.getInstance();
-    }
-
     static async filesService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register FileCommand");
@@ -90,7 +85,7 @@ export class FileService {
 
                     await gitHelper.setupGit();
                     const selectedRepoName = await gitHelper.getRepositoryName();
-                    let repoData: any = await FileService.globalState.getGlobalData(selectedRepoName, {});
+                    let repoData: any = await globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName, {});
 
                     if (!repoData) {
                         repoData = {};
@@ -98,7 +93,7 @@ export class FileService {
 
                     repoData.filesToScan = foundFilesArray;
                     progress.report({ message: "🏁 Found Files" });
-                    await FileService.globalState.setGlobalData(selectedRepoName, repoData);
+                    await globalStore.getGlobalStateInstance()?.setGlobalData(selectedRepoName, repoData);
                     Logger.logMessageByStatus(
                         MessageStatus.INFO,
                         `Found ${foundFilesArray.length} Files: ${foundFilesArray}`,
@@ -116,7 +111,9 @@ export class FileService {
     }
 
     static async getFilesToScan() {
-        const debrickedData: any = await FileService.globalState.getGlobalData(Organization.debrickedDataKey, {});
+        const debrickedData: any = await globalStore
+            .getGlobalStateInstance()
+            ?.getGlobalData(Organization.debrickedDataKey, {});
         const repositoryName = await gitHelper.getRepositoryName();
         if (repositoryName) {
             return debrickedData[repositoryName]?.filesToScan;

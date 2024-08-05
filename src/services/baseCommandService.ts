@@ -15,12 +15,7 @@ import {
     commonHelper,
 } from "../helpers";
 import * as vscode from "vscode";
-import { GlobalState } from "../helpers";
 export class BaseCommandService {
-    private static get globalState(): GlobalState {
-        return GlobalState.getInstance();
-    }
-
     static async baseCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register BaseCommand");
@@ -119,18 +114,17 @@ export class BaseCommandService {
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
             Logger.logMessageByStatus(
                 MessageStatus.INFO,
-                `${Organization.isFirstActivationKey}: ${BaseCommandService.globalState.getGlobalData(Organization.isFirstActivationKey, "")} - ${Organization.extensionVersionKey}: ${currentVersion}`,
+                `${Organization.isFirstActivationKey}: ${globalStore.getGlobalStateInstance()?.getGlobalData(Organization.isFirstActivationKey, "")} - ${Organization.extensionVersionKey}: ${currentVersion}`,
             );
 
             await installHelper.runInstallScript();
-            const debrickedData: any = await BaseCommandService.globalState.getGlobalData(
-                Organization.debrickedDataKey,
-                {},
-            );
+            const debrickedData: any = await globalStore
+                .getGlobalStateInstance()
+                ?.getGlobalData(Organization.debrickedDataKey, {});
             debrickedData[Organization.isFirstActivationKey] = false;
             debrickedData[Organization.extensionVersionKey] = currentVersion;
 
-            BaseCommandService.globalState.setGlobalData(Organization.debrickedDataKey, debrickedData);
+            globalStore.getGlobalStateInstance()?.setGlobalData(Organization.debrickedDataKey, debrickedData);
             Logger.logMessageByStatus(
                 MessageStatus.INFO,
                 `${Organization.extensionVersionKey}: ${debrickedData[Organization.extensionVersionKey]}`,
@@ -149,10 +143,9 @@ export class BaseCommandService {
             Logger.logInfo("Register login");
             globalStore.setSequenceID(commonHelper.generateHashCode());
 
-            const debrickedData: any = await BaseCommandService.globalState.getGlobalData(
-                Organization.debrickedDataKey,
-                {},
-            );
+            const debrickedData: any = await globalStore
+                .getGlobalStateInstance()
+                ?.getGlobalData(Organization.debrickedDataKey, {});
 
             if (updateCredentials) {
                 debrickedData["debricked_username"] = await showInputBoxHelper.promptForInput(
@@ -171,7 +164,7 @@ export class BaseCommandService {
                     undefined,
                 );
 
-                BaseCommandService.globalState.setGlobalData(Organization.debrickedDataKey, debrickedData);
+                globalStore.getGlobalStateInstance()?.setGlobalData(Organization.debrickedDataKey, debrickedData);
             }
             const bearerToken = JSON.parse(
                 await commandHelper.executeAsyncCommand(
