@@ -2,6 +2,7 @@ import { GlobalState } from "./globalState";
 
 export class GlobalStore {
     private static instance: GlobalStore;
+    private userId: string | undefined;
     private sequenceID: string | undefined;
     private globalStateInstance: GlobalState | undefined;
 
@@ -42,5 +43,20 @@ export class GlobalStore {
      */
     public getGlobalStateInstance(): GlobalState | undefined {
         return this.globalStateInstance;
+    }
+
+    /**
+     * Set a new userId.
+     */
+    public setUserId(userId: string): void {
+        this.userId = userId;
+    }
+
+    /**
+     * Get the current userId.
+     * @returns The current userId.
+     */
+    public getUserId(): string | undefined {
+        return this.userId;
     }
 }

@@ -138,7 +138,7 @@ export class BaseCommandService {
         }
     }
 
-    static async login(updateCredentials: boolean = false) {
+    static async login(updateCredentials: boolean = true) {
         try {
             Logger.logInfo("Register login");
             globalStore.setSequenceID(commonHelper.generateHashCode());
