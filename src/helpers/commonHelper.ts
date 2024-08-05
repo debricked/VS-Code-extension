@@ -3,12 +3,9 @@ import * as crypto from "crypto";
 import { Logger } from "./loggerHelper";
 import { GlobalState } from "./globalState";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
-import { DebrickedDataHelper } from "./debrickedDataHelper";
-import * as vscode from "vscode";
 
 export class Common {
     constructor(
-        private debrickedDataHelper: DebrickedDataHelper,
         private logger: typeof Logger,
         private showInputBoxHelper: ShowInputBoxHelper,
         private globalState: typeof GlobalState,
@@ -61,21 +58,8 @@ export class Common {
      * @param placeholderValue The value to replace the placeholder with.
      * @returns The updated string with the placeholder replaced.
      */
-    public static replacePlaceholder(originalString: string, placeholderValue: string): string {
+    public replacePlaceholder(originalString: string, placeholderValue: string): string {
         return originalString.replace("PLACEHOLDER", placeholderValue || new Date().toISOString());
-    }
-
-    /**
-     * Set up the Debricked environment by generating a sequence ID and checking the user ID.
-     */
-    public async setupDebricked(context: vscode.ExtensionContext): Promise<void> {
-        try {
-            await this.checkUserId();
-            this.debrickedDataHelper.createDir(Organization.reportsFolderPath);
-            this.debrickedDataHelper.createDir(context.logUri.fsPath);
-        } catch (error: any) {
-            throw error;
-        }
     }
 
     /**

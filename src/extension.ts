@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { apiHelper, errorHandler, GlobalState, Logger, globalStore, commonHelper } from "./helpers";
+import { apiHelper, errorHandler, GlobalState, Logger, globalStore, commonHelper, indexHelper } from "./helpers";
 import { DebrickedCommand, ManifestWatcher } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
@@ -20,8 +20,7 @@ export async function activate(context: vscode.ExtensionContext) {
         async (progress) => {
             let progressCount = 0;
             progress.report({ increment: progressCount });
-            Logger.initialize(context);
-            GlobalState.initialize(context);
+            await indexHelper.setupDebricked(context);
 
             const globalState = GlobalState.getInstance();
             // For dev - Clears the globalData - uncomment to clear the globalData
@@ -31,7 +30,6 @@ export async function activate(context: vscode.ExtensionContext) {
                 message: "Activating VS Code Extension",
                 increment: (progressCount += 20),
             });
-            await commonHelper.setupDebricked(context);
             Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
 
             progress.report({

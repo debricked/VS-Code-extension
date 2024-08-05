@@ -1,7 +1,8 @@
+import * as vscode from "vscode";
 import { AuthHelper } from "./authHelper";
 import { StatusBarMessageHelper } from "./statusBarMessageHelper";
 import { Terminal } from "./terminalHelper";
-import { QuickPick } from "./showQuickPickHelper";
+import { ShowQuickPickHelper } from "./showQuickPickHelper";
 import { StatusMessage } from "./messageHelper";
 import { Logger } from "./loggerHelper";
 import { Common } from "./commonHelper";
@@ -16,6 +17,30 @@ import { ApiHelper } from "./apiHelper";
 import { ErrorHandler } from "./errorHandler";
 import { ApiClient } from "./apiClient";
 import { GlobalStore } from "./globalStore";
+import { Organization } from "../constants";
+
+class IndexHelper {
+    constructor(
+        private debrickedDataHelper: DebrickedDataHelper,
+        private commonHelper: Common,
+    ) {}
+
+    /**
+     * Set up the Debricked environment by generating a sequence ID and checking the user ID.
+     */
+    public async setupDebricked(context: vscode.ExtensionContext): Promise<void> {
+        try {
+            await this.commonHelper.checkUserId();
+            this.debrickedDataHelper.createDir(Organization.reportsFolderPath);
+            this.debrickedDataHelper.createDir(context.logUri.fsPath);
+
+            Logger.initialize(context);
+            GlobalState.initialize(context);
+        } catch (error: any) {
+            throw error;
+        }
+    }
+}
 
 const statusBarMessageHelper = new StatusBarMessageHelper();
 const showInputBoxHelper = new ShowInputBoxHelper();
@@ -25,22 +50,23 @@ const globalStore = GlobalStore.getInstance();
 const authHelper = new AuthHelper(showInputBoxHelper, statusBarMessageHelper, Logger, GlobalState);
 const errorHandler = new ErrorHandler(statusBarMessageHelper, Logger);
 const commandHelper = new Command(authHelper, Logger);
-const commonHelper = new Common(debrickedDataHelper, Logger, showInputBoxHelper, GlobalState);
+const commonHelper = new Common(Logger, showInputBoxHelper, GlobalState);
 const gitHelper = new GitHelper(commandHelper, Logger, showInputBoxHelper, GlobalState);
 const terminal = new Terminal(authHelper, Logger);
 const apiClient = new ApiClient(authHelper, errorHandler, Logger);
 const apiHelper = new ApiHelper(apiClient, Logger);
 const installHelper = new InstallHelper(Logger, statusBarMessageHelper);
 const fileHelper = new FileHelper(debrickedDataHelper, Logger);
+const indexHelper = new IndexHelper(debrickedDataHelper, commonHelper);
+const showQuickPickHelper = new ShowQuickPickHelper();
 
 export {
     authHelper,
     statusBarMessageHelper,
     terminal,
-    QuickPick,
+    showQuickPickHelper,
     StatusMessage,
     Logger,
-    Common,
     commonHelper,
     commandHelper,
     fileHelper,
@@ -53,4 +79,5 @@ export {
     errorHandler,
     apiClient,
     globalStore,
+    indexHelper,
 };

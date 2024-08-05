@@ -1,7 +1,7 @@
 import {
     statusBarMessageHelper,
     Logger,
-    QuickPick,
+    showQuickPickHelper,
     commandHelper,
     gitHelper,
     GlobalState,
@@ -29,7 +29,7 @@ export class FileService {
                 statusBarMessageHelper.showInformationMessage("No sub-commands available for Files service");
                 return;
             }
-            const selectedSubCommand = await QuickPick.showQuickPick(
+            const selectedSubCommand = await showQuickPickHelper.showQuickPick(
                 command.sub_commands,
                 Messages.QUICK_PICK_SUB_COMMAND,
             );

@@ -5,7 +5,7 @@ import {
     terminal,
     StatusMessage,
     Logger,
-    QuickPick,
+    showQuickPickHelper,
     installHelper,
     authHelper,
     errorHandler,
@@ -15,7 +15,7 @@ import {
     commonHelper,
 } from "../helpers";
 import * as vscode from "vscode";
-import { GlobalState } from "helpers/globalState";
+import { GlobalState } from "../helpers";
 export class BaseCommandService {
     private static get globalState(): GlobalState {
         return GlobalState.getInstance();
@@ -29,7 +29,7 @@ export class BaseCommandService {
 
             let selectedSubCommand: any;
             if (subCommand) {
-                selectedSubCommand = await QuickPick.showQuickPick(subCommand, Messages.QUICK_PICK_FLAG);
+                selectedSubCommand = await showQuickPickHelper.showQuickPick(subCommand, Messages.QUICK_PICK_FLAG);
             }
 
             switch (selectedSubCommand?.cli_command) {
@@ -84,7 +84,7 @@ export class BaseCommandService {
 
             let selectedFlags: any;
             if (subCommand.command) {
-                selectedFlags = await QuickPick.showQuickPick(subCommand.flags, Messages.QUICK_PICK_FLAG);
+                selectedFlags = await showQuickPickHelper.showQuickPick(subCommand.flags, Messages.QUICK_PICK_FLAG);
             }
 
             let accessTokenRequired: boolean = false;
@@ -207,7 +207,7 @@ export class BaseCommandService {
 
             let selectedSubCommand: any;
             if (subCommand) {
-                selectedSubCommand = await QuickPick.showQuickPick(subCommand, Messages.QUICK_PICK_TOKEN);
+                selectedSubCommand = await showQuickPickHelper.showQuickPick(subCommand, Messages.QUICK_PICK_TOKEN);
             }
             switch (selectedSubCommand?.cli_command) {
                 case "accessToken":

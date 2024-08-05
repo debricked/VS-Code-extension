@@ -77,7 +77,7 @@ export class Command {
                 );
             }
 
-            this.logger.logInfo(`Executing async command: ${command}`);
+            this.logger.logWarn(`Executing async command: ${command}`);
             const { stdout, stderr } = await execAsync(command, { cwd });
             if (stderr) {
                 this.logger.logMessageByStatus(MessageStatus.ERROR, `command error: ${stderr}`);

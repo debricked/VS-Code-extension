@@ -4,7 +4,6 @@ import {
     Logger,
     terminal,
     gitHelper,
-    Common,
     GlobalState,
     debrickedDataHelper,
     showInputBoxHelper,
@@ -14,6 +13,7 @@ import {
 } from "../helpers";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
+
 export class ScanService {
     private static get globalState(): GlobalState {
         return GlobalState.getInstance();
@@ -110,7 +110,9 @@ export class ScanService {
 
             case "-b":
                 if (selectedFlags.flagValue) {
-                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, currentRepoData.currentBranch));
+                    cmdParams.push(
+                        commonHelper.replacePlaceholder(selectedFlags.flagValue, currentRepoData.currentBranch),
+                    );
                     Logger.logInfo(`Branch info added: ${currentRepoData.currentBranch}`);
                 }
                 break;
@@ -118,7 +120,7 @@ export class ScanService {
             case "-c":
                 if (selectedFlags.flagValue) {
                     const commitHash = currentRepoData.commitID;
-                    cmdParams.push(Common.replacePlaceholder(selectedFlags.flagValue, commitHash));
+                    cmdParams.push(commonHelper.replacePlaceholder(selectedFlags.flagValue, commitHash));
                     Logger.logMessageByStatus(MessageStatus.INFO, `Commit hash added: ${commitHash}`);
                 }
                 break;
