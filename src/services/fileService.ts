@@ -83,8 +83,7 @@ export class FileService {
                         .map((item: any) => item.manifestFile)
                         .filter((file: any) => file !== "");
 
-                    await gitHelper.setupGit();
-                    const selectedRepoName = await gitHelper.getRepositoryName();
+                    const selectedRepoName = await gitHelper.getUpstream();
                     let repoData: any = await globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName, {});
 
                     if (!repoData) {
@@ -114,7 +113,7 @@ export class FileService {
         const debrickedData: any = await globalStore
             .getGlobalStateInstance()
             ?.getGlobalData(Organization.debrickedDataKey, {});
-        const repositoryName = await gitHelper.getRepositoryName();
+        const repositoryName = await gitHelper.getUpstream();
         if (repositoryName) {
             return debrickedData[repositoryName]?.filesToScan;
         } else {

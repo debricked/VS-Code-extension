@@ -23,6 +23,7 @@ class IndexHelper {
     constructor(
         private debrickedDataHelper: DebrickedDataHelper,
         private commonHelper: Common,
+        private gitHelper: GitHelper,
     ) {}
 
     /**
@@ -37,6 +38,7 @@ class IndexHelper {
             errorHandler.setupGlobalErrorHandlers();
 
             await this.commonHelper.checkUserId();
+            await this.gitHelper.setupGit();
         } catch (error: any) {
             throw error;
         }
@@ -50,7 +52,7 @@ const globalStore = GlobalStore.getInstance();
 
 const authHelper = new AuthHelper(showInputBoxHelper, statusBarMessageHelper, Logger, globalStore);
 const errorHandler = new ErrorHandler(statusBarMessageHelper, Logger);
-const commandHelper = new Command(authHelper, Logger);
+const commandHelper = new Command(authHelper, Logger, errorHandler);
 const commonHelper = new Common(Logger, showInputBoxHelper, globalStore);
 const gitHelper = new GitHelper(commandHelper, Logger, showInputBoxHelper, globalStore);
 const terminal = new Terminal(authHelper, Logger);
@@ -58,7 +60,7 @@ const apiClient = new ApiClient(authHelper, errorHandler, Logger);
 const apiHelper = new ApiHelper(apiClient, Logger);
 const installHelper = new InstallHelper(Logger, statusBarMessageHelper, commandHelper);
 const fileHelper = new FileHelper(debrickedDataHelper, Logger, globalStore);
-const indexHelper = new IndexHelper(debrickedDataHelper, commonHelper);
+const indexHelper = new IndexHelper(debrickedDataHelper, commonHelper, gitHelper);
 const showQuickPickHelper = new ShowQuickPickHelper();
 
 export {

@@ -4,11 +4,13 @@ import * as vscode from "vscode";
 import { promisify } from "util";
 import { AuthHelper } from "./authHelper";
 import { Logger } from "./loggerHelper";
+import { ErrorHandler } from "./errorHandler";
 
 export class Command {
     constructor(
         private authHelper: AuthHelper,
         private logger: typeof Logger,
+        private errorHandler: ErrorHandler,
     ) {}
     public async executeFileCommand(cmdParams: string[] = [], accessTokenRequired: boolean = false): Promise<string> {
         try {
@@ -85,7 +87,8 @@ export class Command {
             this.logger.logMessageByStatus(MessageStatus.FINISHED, stdout);
             return stdout.trim();
         } catch (error: any) {
-            throw error;
+            this.errorHandler.handleError(error);
+            return MessageStatus.UNKNOWN;
         }
     }
 }

@@ -43,7 +43,7 @@ export class FileHelper {
 
     public async setRepoID() {
         const globalState = this.globalStore.getGlobalStateInstance();
-        const selectedRepoName = await gitHelper.getRepositoryName();
+        const selectedRepoName = await gitHelper.getUpstream();
         const data = JSON.parse(
             fs.readFileSync(`${Organization.reportsFolderPath}/scan-output.json`, {
                 encoding: "utf8",

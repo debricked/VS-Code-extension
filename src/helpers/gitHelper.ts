@@ -56,32 +56,27 @@ export class GitHelper {
         return await this.command.executeAsyncCommand("git remote get-url origin");
     }
 
-    public async getRepositoryName(): Promise<string> {
-        return (
-            (await this.command.executeAsyncCommand("git rev-parse --show-toplevel").then((repoPath) => {
-                return repoPath.split("/").pop() || repoPath.split("\\").pop() || "";
-            })) || MessageStatus.UNKNOWN
-        );
-    }
-
     public async setupGit(): Promise<void> {
         const currentRepo = await this.getUpstream();
         this.logger.logMessageByStatus(MessageStatus.INFO, `Current repository: ${currentRepo}`);
-        const selectedRepoName: string = await this.getRepositoryName();
-        let repoData: any = await this.globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName, {});
 
-        if (selectedRepoName) {
+        let repoData: any = await this.globalStore.getGlobalStateInstance()?.getGlobalData(currentRepo, {});
+
+        if (currentRepo) {
             if (!repoData) {
                 repoData = {};
             }
-            repoData.repositoryName = selectedRepoName;
+            repoData.repositoryName = currentRepo;
         }
 
         repoData.userName = await this.getUsername();
         repoData.email = await this.getEmail();
-        repoData.currentBranch = await this.getCurrentBranch();
-        repoData.commitID = await this.getCommitHash();
 
-        await this.globalStore.getGlobalStateInstance()?.setGlobalData(selectedRepoName, repoData);
+        if (currentRepo !== MessageStatus.UNKNOWN) {
+            repoData.currentBranch = await this.getCurrentBranch();
+            repoData.commitID = await this.getCommitHash();
+        }
+
+        await this.globalStore.getGlobalStateInstance()?.setGlobalData(currentRepo, repoData);
     }
 }

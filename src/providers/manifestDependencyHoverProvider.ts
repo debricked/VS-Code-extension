@@ -9,7 +9,7 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
         document: vscode.TextDocument,
         position: vscode.Position,
     ): Promise<vscode.Hover | null | undefined> {
-        const selectedRepoName = await gitHelper.getRepositoryName();
+        const selectedRepoName = await gitHelper.getUpstream();
         this.manifestFiles = await globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName).filesToScan;
 
         // Check if the current file is a manifest file
