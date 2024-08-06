@@ -117,7 +117,7 @@
         "clean": "rimraf out && rimraf dist && rimraf coverage && rimraf .debricked",
         "clean-all": "rimraf out && rimraf dist && rimraf coverage && rimraf .vscode-test",
         "vsce": "vsce package",
-        "madge": "npm run compile-tests && rimraf out\\test && madge --image graph.svg out"
+        "madge": "npm run compile-tests && rimraf out\\test && madge --include-npm --image graph.svg out"
     },
     "devDependencies": {
         "@types/chai": "^4.3.16",
