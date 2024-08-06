@@ -92,7 +92,7 @@ export class FileService {
                     }
 
                     repoData.filesToScan = foundFilesArray;
-                    progress.report({ message: "🏁 Found Files" });
+                    progress.report({ message: `$(pass) Found Files` });
                     await globalStore.getGlobalStateInstance()?.setGlobalData(selectedRepoName, repoData);
                     Logger.logMessageByStatus(
                         MessageStatus.INFO,

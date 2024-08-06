@@ -1,6 +1,6 @@
 import { MessageStatus } from "../constants/index";
 import { Command } from "./commandHelper";
-import { GlobalState } from "./globalState";
+import { GlobalStore } from "./globalStore";
 import { Logger } from "./loggerHelper";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
 
@@ -9,7 +9,7 @@ export class GitHelper {
         private command: Command,
         private logger: typeof Logger,
         private showInputBoxHelper: ShowInputBoxHelper,
-        private globalState: typeof GlobalState,
+        private globalStore: GlobalStore,
     ) {}
 
     public async getCurrentBranch() {
@@ -68,7 +68,7 @@ export class GitHelper {
         const currentRepo = await this.getUpstream();
         this.logger.logMessageByStatus(MessageStatus.INFO, `Current repository: ${currentRepo}`);
         const selectedRepoName: string = await this.getRepositoryName();
-        let repoData: any = await this.globalState.getInstance().getGlobalData(selectedRepoName, {});
+        let repoData: any = await this.globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName, {});
 
         if (selectedRepoName) {
             if (!repoData) {
@@ -82,6 +82,6 @@ export class GitHelper {
         repoData.currentBranch = await this.getCurrentBranch();
         repoData.commitID = await this.getCommitHash();
 
-        await this.globalState.getInstance().setGlobalData(selectedRepoName, repoData);
+        await this.globalStore.getGlobalStateInstance()?.setGlobalData(selectedRepoName, repoData);
     }
 }
