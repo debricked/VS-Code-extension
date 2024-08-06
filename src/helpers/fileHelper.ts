@@ -4,11 +4,14 @@ import * as path from "path";
 import { MessageStatus, Organization } from "../constants/index";
 import { Logger } from "./loggerHelper";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
+import { GlobalStore } from "./globalStore";
+import { gitHelper } from "helpers";
 
 export class FileHelper {
     constructor(
         private debrickedDataHelper: DebrickedDataHelper,
         private logger: typeof Logger,
+        private globalStore: GlobalStore,
     ) {}
     /**
      * Stores content in a specified file within the 'debricked-result' folder.
@@ -36,5 +39,23 @@ export class FileHelper {
         const filePath = await this.storeResultInFile(fileName, content);
         this.logger.logMessageByStatus(MessageStatus.INFO, `store results in ${filePath}`);
         await this.openTextDocument(filePath);
+    }
+
+    public async setRepoID() {
+        const globalState = this.globalStore.getGlobalStateInstance();
+        const selectedRepoName = await gitHelper.getRepositoryName();
+        const data = JSON.parse(
+            fs.readFileSync(`${Organization.reportsFolderPath}/scan-output.json`, {
+                encoding: "utf8",
+                flag: "r",
+            }),
+        );
+        const match = data.detailsUrl.match(/\/repository\/(\d+)\//);
+        const repoID = match ? Number(match[1]) : null;
+
+        const repoData = globalState?.getGlobalData(selectedRepoName);
+        repoData["repoID"] = repoID;
+
+        globalState?.setGlobalData(selectedRepoName, repoData);
     }
 }

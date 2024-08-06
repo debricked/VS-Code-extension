@@ -10,6 +10,9 @@
     "categories": [
         "Other"
     ],
+    "capabilities": {
+        "hoverProvider": "true"
+    },
     "activationEvents": [],
     "main": "./dist/extension.js",
     "repository": {

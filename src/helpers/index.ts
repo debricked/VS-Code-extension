@@ -57,7 +57,7 @@ const terminal = new Terminal(authHelper, Logger);
 const apiClient = new ApiClient(authHelper, errorHandler, Logger);
 const apiHelper = new ApiHelper(apiClient, Logger);
 const installHelper = new InstallHelper(Logger, statusBarMessageHelper, commandHelper);
-const fileHelper = new FileHelper(debrickedDataHelper, Logger);
+const fileHelper = new FileHelper(debrickedDataHelper, Logger, globalStore);
 const indexHelper = new IndexHelper(debrickedDataHelper, commonHelper);
 const showQuickPickHelper = new ShowQuickPickHelper();
 

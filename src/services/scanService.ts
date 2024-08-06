@@ -1,17 +1,18 @@
 import {
     statusBarMessageHelper,
-    StatusMessage,
     Logger,
-    terminal,
     gitHelper,
     debrickedDataHelper,
     showInputBoxHelper,
     errorHandler,
     globalStore,
     commonHelper,
+    commandHelper,
+    authHelper,
 } from "../helpers";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
+import * as vscode from "vscode";
 
 export class ScanService {
     static async scanService() {
@@ -20,7 +21,7 @@ export class ScanService {
 
             debrickedDataHelper.createDir(Organization.reportsFolderPath);
             globalStore.setSequenceID(commonHelper.generateHashCode());
-            const cmdParams = [];
+            const cmdParams: string[] = [];
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 
             cmdParams.push(command.cli_command);
@@ -31,38 +32,43 @@ export class ScanService {
             Logger.logMessageByStatus(MessageStatus.INFO, `Current repository name: ${currentRepoData.repositoryName}`);
 
             if (currentRepoData?.repositoryName !== MessageStatus.UNKNOWN) {
-                if (command.flags && command.flags.length > 0) {
+                if (command.flags && command.global_flags && command.flags.length > 0) {
                     await ScanService.handleFlags(command.flags[1], cmdParams, currentRepoData);
+                    await ScanService.handleFlags(command.flags[2], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[3], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[4], cmdParams, currentRepoData);
+                    await ScanService.handleFlags(command.flags[4], cmdParams, currentRepoData);
+                    await ScanService.handleFlags(command.global_flags[0], cmdParams, currentRepoData);
                 }
             } else {
                 Logger.logMessageByStatus(MessageStatus.WARN, `No default repo selected`);
 
-                if (command.flags && command.flags.length > 0) {
+                if (command.flags && command.global_flags && command.flags.length > 0) {
                     await ScanService.handleFlags(command.flags[0], cmdParams, currentRepoData);
+                    await ScanService.handleFlags(command.flags[2], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[3], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[4], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[5], cmdParams, currentRepoData);
+                    await ScanService.handleFlags(command.global_flags[0], cmdParams, currentRepoData);
                 }
             }
 
-            statusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.SCAN.cli_command),
-            );
-
             Logger.logMessageByStatus(MessageStatus.INFO, `Executing terminal command with parameters: ${cmdParams}`);
-            terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, true);
-
-            statusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
+            vscode.window.withProgress(
+                {
+                    location: vscode.ProgressLocation.Window,
+                    title: Organization.nameCaps,
+                    cancellable: false,
+                },
+                async (progress) => {
+                    progress.report({ message: "Scanning Manifest Files" });
+                    await commandHelper.executeAsyncCommand(`${Organization.debrickedCli} ${cmdParams.join(" ")}`);
+                    statusBarMessageHelper.setStatusBarMessage(`Debricked: Scanning Completed $(pass-filled)`, 1000);
+                },
             );
         } catch (error: any) {
             errorHandler.handleError(error);
         } finally {
-            statusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
-            );
             Logger.logMessageByStatus(MessageStatus.INFO, "Scan service finished.");
         }
     }
@@ -122,6 +128,13 @@ export class ScanService {
                 }
                 break;
 
+            case "-t":
+                const accessToken = await authHelper.getToken(true, Organization.access);
+                if (accessToken) {
+                    cmdParams.push(accessToken);
+                    Logger.logMessageByStatus(MessageStatus.INFO, "Access token added");
+                }
+                break;
             default:
                 Logger.logMessageByStatus(MessageStatus.WARN, `Unrecognized flag: ${selectedFlags.flag}`);
                 break;

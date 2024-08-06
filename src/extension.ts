@@ -1,10 +1,11 @@
 import * as vscode from "vscode";
 import { apiHelper, errorHandler, Logger, globalStore, commonHelper, indexHelper } from "./helpers";
-import { DebrickedCommand, ManifestWatcher } from "./commands";
+import { DebrickedCommand } from "./commands";
 import { DebrickedCommandsTreeDataProvider } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
 import { BaseCommandService } from "services";
 import { RequestParam } from "./types";
+import { ManifestWatcher } from "watcher/manifestWatcher";
 
 export async function activate(context: vscode.ExtensionContext) {
     await indexHelper.setupDebricked(context);
