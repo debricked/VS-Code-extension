@@ -55,7 +55,7 @@ export class InstallHelper {
                     this.logger.logMessageByStatus(MessageStatus.INFO, `Starting installation...`);
                     const installCommand =
                         this.platform === Organization.osWin32 ? `"${install}"` : `${command} "${install}"`;
-                    const installOutput = await this.commandHelper.execute(installCommand);
+                    const installOutput = await this.commandHelper.executeAsyncCommand(installCommand);
                     this.logger.logMessageByStatus(MessageStatus.INFO, `${installOutput}`);
                     this.logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}`);
                     this.statusBarMessageHelper.showInformationMessage("CLI installed successfully");

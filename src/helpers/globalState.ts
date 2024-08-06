@@ -5,16 +5,9 @@ export class GlobalState {
 
     private constructor(private context: vscode.ExtensionContext) {}
 
-    public static initialize(context: vscode.ExtensionContext): GlobalState {
+    public static getInstance(context: vscode.ExtensionContext): GlobalState {
         if (!GlobalState.instance) {
             GlobalState.instance = new GlobalState(context);
-        }
-        return GlobalState.instance;
-    }
-
-    public static getInstance(): GlobalState {
-        if (!GlobalState.instance) {
-            throw new Error("GlobalState not initialized. Call initialize() first.");
         }
         return GlobalState.instance;
     }

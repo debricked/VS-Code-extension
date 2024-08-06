@@ -10,7 +10,7 @@ export class Command {
         private authHelper: AuthHelper,
         private logger: typeof Logger,
     ) {}
-    public async executeCommand(cmdParams: string[] = [], accessTokenRequired: boolean = false): Promise<string> {
+    public async executeFileCommand(cmdParams: string[] = [], accessTokenRequired: boolean = false): Promise<string> {
         try {
             if (accessTokenRequired) {
                 const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
@@ -87,17 +87,5 @@ export class Command {
         } catch (error: any) {
             throw error;
         }
-    }
-
-    public execute(command: string): Promise<string> {
-        return new Promise((resolve, reject) => {
-            exec(command, (error, stdout, stderr) => {
-                if (error) {
-                    reject(new Error(`Execution error: ${stderr}`));
-                } else {
-                    resolve(stdout.trim());
-                }
-            });
-        });
     }
 }
