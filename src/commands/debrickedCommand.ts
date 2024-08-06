@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { DebrickedCommands } from "../constants/index";
 import { BaseCommandService, ScanService, FileService } from "../services";
 import { Logger, commonHelper, errorHandler, globalStore } from "../helpers";
+import { ManifestDependencyHoverProvider } from "providers/manifestDependencyHoverProvider";
 
 export class DebrickedCommand {
     public static async commands(context: vscode.ExtensionContext) {
@@ -40,6 +41,11 @@ export class DebrickedCommand {
             if (fileSubCommands) {
                 DebrickedCommand.registerCommand(context, fileSubCommands[0].command, FileService.findFilesService);
             }
+
+            // Register hover provider
+            context.subscriptions.push(
+                vscode.languages.registerHoverProvider({ scheme: "file" }, await new ManifestDependencyHoverProvider()),
+            );
         } catch (error) {
             errorHandler.handleError(error);
         } finally {

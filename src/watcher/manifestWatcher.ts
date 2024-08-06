@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { MessageStatus, DebrickedCommands } from "../constants";
+import { MessageStatus, DebrickedCommands, Organization } from "../constants";
 import { ScanService, FileService } from "services";
-import { errorHandler, Logger, StatusMessage, statusBarMessageHelper } from "../helpers";
+import { errorHandler, Logger, StatusMessage, statusBarMessageHelper, fileHelper } from "../helpers";
 
 export class ManifestWatcher {
     private static instance: ManifestWatcher;
@@ -25,9 +25,9 @@ export class ManifestWatcher {
 
             // Setup global watcher if not already set
             if (!this.globalWatcher) {
-                this.setupGlobalWatcher(context);
+                this.workSpaceWatcher(context);
             }
-
+            this.reportsWatcher(context);
             const filesToScan = (await FileService.findFilesService()) || [];
             let diffScan: string[] = [];
             diffScan = filesToScan.filter((file) => !ManifestWatcher.files.includes(file));
@@ -48,7 +48,7 @@ export class ManifestWatcher {
         }
     }
 
-    private setupGlobalWatcher(context: vscode.ExtensionContext): void {
+    private workSpaceWatcher(context: vscode.ExtensionContext): void {
         this.globalWatcher = vscode.workspace.createFileSystemWatcher("**/*");
         this.globalWatcher.onDidCreate(async () => {
             await this.setupWatchers(context);
@@ -93,5 +93,13 @@ export class ManifestWatcher {
         } else {
             Logger.logInfo("No new manifest files found");
         }
+    }
+
+    private async reportsWatcher(context: vscode.ExtensionContext) {
+        const watcher = vscode.workspace.createFileSystemWatcher(`${Organization.reportsFolderPath}/scan-output.json`);
+        watcher.onDidChange(async () => {
+            await fileHelper.setRepoID();
+        });
+        context.subscriptions.push(watcher);
     }
 }
