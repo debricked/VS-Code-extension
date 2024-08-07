@@ -1,3 +1,4 @@
+import * as path from "path";
 import { MessageStatus } from "../constants/index";
 import { Command } from "./commandHelper";
 import { GlobalStore } from "./globalStore";
@@ -57,9 +58,10 @@ export class GitHelper {
     }
 
     public async setupGit(): Promise<void> {
-        const currentRepo = await this.getUpstream();
+        const currentRepo = path.basename(await this.getUpstream()).split(".")[0];
         this.logger.logMessageByStatus(MessageStatus.INFO, `Current repository: ${currentRepo}`);
 
+        this.globalStore.setRepository(currentRepo);
         let repoData: any = await this.globalStore.getGlobalStateInstance()?.getGlobalData(currentRepo, {});
 
         if (currentRepo) {

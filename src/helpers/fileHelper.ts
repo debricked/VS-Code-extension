@@ -5,7 +5,6 @@ import { MessageStatus, Organization } from "../constants/index";
 import { Logger } from "./loggerHelper";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
 import { GlobalStore } from "./globalStore";
-import { gitHelper } from "helpers";
 
 export class FileHelper {
     constructor(
@@ -43,7 +42,7 @@ export class FileHelper {
 
     public async setRepoID() {
         const globalState = this.globalStore.getGlobalStateInstance();
-        const selectedRepoName = await gitHelper.getUpstream();
+        const selectedRepoName = this.globalStore.getRepository();
         const data = JSON.parse(
             fs.readFileSync(`${Organization.reportsFolderPath}/scan-output.json`, {
                 encoding: "utf8",

@@ -1,3 +1,4 @@
+import { MessageStatus } from "../constants/index";
 import { GlobalState } from "./globalState";
 
 export class GlobalStore {
@@ -5,6 +6,7 @@ export class GlobalStore {
     private userId: string | undefined;
     private sequenceID: string | undefined;
     private globalStateInstance: GlobalState | undefined;
+    private repositoryName: string = MessageStatus.UNKNOWN;
 
     private constructor() {}
 
@@ -58,5 +60,20 @@ export class GlobalStore {
      */
     public getUserId(): string | undefined {
         return this.userId;
+    }
+
+    /**
+     * Set a new repositoryName.
+     */
+    public setRepository(repositoryName: string): void {
+        this.repositoryName = repositoryName;
+    }
+
+    /**
+     * Get the current repositoryName.
+     * @returns The current repositoryName.
+     */
+    public getRepository(): string {
+        return this.repositoryName;
     }
 }

@@ -3,7 +3,6 @@ import {
     Logger,
     showQuickPickHelper,
     commandHelper,
-    gitHelper,
     errorHandler,
     globalStore,
     commonHelper,
@@ -83,7 +82,7 @@ export class FileService {
                         .map((item: any) => item.manifestFile)
                         .filter((file: any) => file !== "");
 
-                    const selectedRepoName = await gitHelper.getUpstream();
+                    const selectedRepoName = globalStore.getRepository();
                     let repoData: any = await globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName, {});
 
                     if (!repoData) {
@@ -113,7 +112,7 @@ export class FileService {
         const debrickedData: any = await globalStore
             .getGlobalStateInstance()
             ?.getGlobalData(Organization.debrickedDataKey, {});
-        const repositoryName = await gitHelper.getUpstream();
+        const repositoryName = globalStore.getRepository();
         if (repositoryName) {
             return debrickedData[repositoryName]?.filesToScan;
         } else {
