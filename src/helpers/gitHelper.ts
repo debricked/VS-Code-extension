@@ -1,5 +1,6 @@
 import { MessageStatus } from "../constants/index";
 import { Command } from "./commandHelper";
+import { ErrorHandler } from "./errorHandler";
 import { GlobalStore } from "./globalStore";
 import { Logger } from "./loggerHelper";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
@@ -10,31 +11,32 @@ export class GitHelper {
         private logger: typeof Logger,
         private showInputBoxHelper: ShowInputBoxHelper,
         private globalStore: GlobalStore,
+        private errorHandler: ErrorHandler,
     ) {}
 
     public async getCurrentBranch() {
-        return await this.command.executeAsyncCommand("git branch --show-current");
+        return await this.executeAsyncCommand("git branch --show-current");
     }
 
     public async getCommitHash(): Promise<string> {
-        return (await this.command.executeAsyncCommand("git rev-parse HEAD")) || `${new Date().toISOString()}`;
+        return (await this.executeAsyncCommand("git rev-parse HEAD")) || `${new Date().toISOString()}`;
     }
 
     public async getRemoteUrl(): Promise<string> {
-        return await this.command.executeAsyncCommand("git config --get remote.origin.url");
+        return await this.executeAsyncCommand("git config --get remote.origin.url");
     }
 
     public async getStatus(): Promise<string> {
-        return await this.command.executeAsyncCommand("git status --short");
+        return await this.executeAsyncCommand("git status --short");
     }
 
     public async getLog(n: number = 10): Promise<string> {
-        return await this.command.executeAsyncCommand(`git log -n ${n} --pretty=format:"%h - %an, %ar : %s"`);
+        return await this.executeAsyncCommand(`git log -n ${n} --pretty=format:"%h - %an, %ar : %s"`);
     }
 
     public async getUsername(): Promise<string | undefined> {
         return (
-            (await this.command.executeAsyncCommand("git config --get user.name")) ||
+            (await this.executeAsyncCommand("git config --get user.name")) ||
             this.showInputBoxHelper.promptForInput(
                 { prompt: "Git user name", placeHolder: "Please enter User Name" },
                 "unknown-user",
@@ -44,7 +46,7 @@ export class GitHelper {
 
     public async getEmail(): Promise<string | undefined> {
         return (
-            (await this.command.executeAsyncCommand("git config --get user.email")) ||
+            (await this.executeAsyncCommand("git config --get user.email")) ||
             this.showInputBoxHelper.promptForInput(
                 { prompt: "Git user email", placeHolder: "Please enter Email ID" },
                 "unknown-email",
@@ -53,7 +55,7 @@ export class GitHelper {
     }
 
     public async getUpstream(): Promise<string> {
-        return await this.command.executeAsyncCommand("git remote get-url origin");
+        return await this.executeAsyncCommand("git remote get-url origin");
     }
 
     public async setupGit(): Promise<void> {
@@ -78,5 +80,14 @@ export class GitHelper {
         }
 
         await this.globalStore.getGlobalStateInstance()?.setGlobalData(currentRepo, repoData);
+    }
+
+    public async executeAsyncCommand(command: string): Promise<string> {
+        try {
+            return await this.command.executeAsyncCommand(command);
+        } catch (error: any) {
+            this.errorHandler.handleError(error);
+            return MessageStatus.UNKNOWN;
+        }
     }
 }
