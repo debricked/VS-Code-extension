@@ -1,6 +1,5 @@
 import { MessageStatus } from "../constants/index";
 import { Command } from "./commandHelper";
-import { ErrorHandler } from "./errorHandler";
 import { GlobalStore } from "./globalStore";
 import { Logger } from "./loggerHelper";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
@@ -11,7 +10,6 @@ export class GitHelper {
         private logger: typeof Logger,
         private showInputBoxHelper: ShowInputBoxHelper,
         private globalStore: GlobalStore,
-        private errorHandler: ErrorHandler,
     ) {}
 
     public async getCurrentBranch() {
@@ -82,11 +80,11 @@ export class GitHelper {
         await this.globalStore.getGlobalStateInstance()?.setGlobalData(currentRepo, repoData);
     }
 
-    public async executeAsyncCommand(command: string): Promise<string> {
+    private async executeAsyncCommand(command: string): Promise<string> {
         try {
             return await this.command.executeAsyncCommand(command);
         } catch (error: any) {
-            this.errorHandler.handleError(error);
+            Logger.logError(error);
             return MessageStatus.UNKNOWN;
         }
     }
