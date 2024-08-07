@@ -23,6 +23,7 @@ class IndexHelper {
     constructor(
         private debrickedDataHelper: DebrickedDataHelper,
         private commonHelper: Common,
+        private gitHelper: GitHelper,
     ) {}
 
     /**
@@ -37,6 +38,7 @@ class IndexHelper {
             errorHandler.setupGlobalErrorHandlers();
 
             await this.commonHelper.checkUserId();
+            await this.gitHelper.setupGit();
         } catch (error: any) {
             throw error;
         }
@@ -58,7 +60,7 @@ const apiClient = new ApiClient(authHelper, errorHandler, Logger);
 const apiHelper = new ApiHelper(apiClient, Logger);
 const installHelper = new InstallHelper(Logger, statusBarMessageHelper, commandHelper);
 const fileHelper = new FileHelper(debrickedDataHelper, Logger, globalStore);
-const indexHelper = new IndexHelper(debrickedDataHelper, commonHelper);
+const indexHelper = new IndexHelper(debrickedDataHelper, commonHelper, gitHelper);
 const showQuickPickHelper = new ShowQuickPickHelper();
 
 export {

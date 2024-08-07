@@ -25,7 +25,7 @@ export class ScanService {
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 
             cmdParams.push(command.cli_command);
-            const selectedRepoName = await gitHelper.getRepositoryName();
+            const selectedRepoName = await gitHelper.getUpstream();
             const currentRepoData: RepositoryInfo = await globalStore
                 .getGlobalStateInstance()
                 ?.getGlobalData(selectedRepoName, {});

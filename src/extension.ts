@@ -17,50 +17,56 @@ export async function activate(context: vscode.ExtensionContext) {
             cancellable: false,
         },
         async (progress) => {
-            let progressCount = 0;
-            progress.report({ increment: progressCount });
+            try {
+                let progressCount = 0;
+                progress.report({ increment: progressCount });
 
-            const globalState = globalStore.getGlobalStateInstance();
-            // For dev - Clears the globalData - uncomment to clear the globalData
-            // await globalState?.clearAllGlobalData();
-            globalStore.setSequenceID(commonHelper.generateHashCode());
-            progress.report({
-                message: "Activating VS Code Extension",
-                increment: (progressCount += 20),
-            });
-            Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
-
-            progress.report({
-                message: "Registering Debricked commands",
-                increment: (progressCount += 20),
-            });
-            await DebrickedCommand.commands(context);
-            const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
-            vscode.window.registerTreeDataProvider(Organization.debrickedCommand, debCommandsProvider);
-
-            const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
-            const debrickedData: any = globalState?.getGlobalData(Organization.debrickedDataKey, {});
-
-            if (currentVersion !== debrickedData.extensionVersion || debrickedData.isFirstActivation) {
+                const globalState = globalStore.getGlobalStateInstance();
+                // For dev - Clears the globalData - uncomment to clear the globalData
+                // await globalState?.clearAllGlobalData();
+                globalStore.setSequenceID(commonHelper.generateHashCode());
                 progress.report({
-                    message: "Installing Debricked cli",
+                    message: "Activating VS Code Extension",
                     increment: (progressCount += 20),
                 });
-                await BaseCommandService.installCommand();
+                Logger.logMessageByStatus(MessageStatus.INFO, "Activate Debricked VS Code Extension");
+
+                progress.report({
+                    message: "Registering Debricked commands",
+                    increment: (progressCount += 20),
+                });
+                await DebrickedCommand.commands(context);
+                const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
+                vscode.window.registerTreeDataProvider(Organization.debrickedCommand, debCommandsProvider);
+
+                const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
+                const debrickedData: any = globalState?.getGlobalData(Organization.debrickedDataKey, {});
+
+                if (currentVersion !== debrickedData.extensionVersion || debrickedData.isFirstActivation) {
+                    progress.report({
+                        message: "Installing Debricked cli",
+                        increment: (progressCount += 20),
+                    });
+                    await BaseCommandService.installCommand();
+                }
+
+                if (debrickedData.isFirstActivation === undefined || debrickedData.isFirstActivation) {
+                    await BaseCommandService.login(true);
+                } else {
+                    await BaseCommandService.login(false);
+                }
+
+                await fetchRepositories();
+                // Add file watcher for all files found from 'debricked files find'
+                await ManifestWatcher.getInstance().setupWatchers(context);
+
+                progress.report({ message: "Debricked extension is ready to use", increment: 100 - progressCount });
+                await new Promise((resolve) => setTimeout(resolve, 1000)); // added for showing the last progress info
+            } catch (error: any) {
+                errorHandler.handleError(error);
+            } finally {
+                Logger.logMessageByStatus(MessageStatus.INFO, "activation has finished.");
             }
-
-            if (debrickedData.isFirstActivation === undefined || debrickedData.isFirstActivation) {
-                await BaseCommandService.login(true);
-            } else {
-                await BaseCommandService.login(false);
-            }
-
-            await fetchRepositories();
-            // Add file watcher for all files found from 'debricked files find'
-            await ManifestWatcher.getInstance().setupWatchers(context);
-
-            progress.report({ message: "Debricked extension is ready to use", increment: 100 - progressCount });
-            await new Promise((resolve) => setTimeout(resolve, 1000)); // added for showing the last progress info
         },
     );
 }
