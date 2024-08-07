@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { gitHelper, globalStore } from "../helpers";
+import { globalStore } from "../helpers";
 
 export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
     private manifestFiles: string[] = [];
@@ -9,7 +9,7 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
         document: vscode.TextDocument,
         position: vscode.Position,
     ): Promise<vscode.Hover | null | undefined> {
-        const selectedRepoName = await gitHelper.getUpstream();
+        const selectedRepoName = globalStore.getRepository();
         this.manifestFiles = await globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName).filesToScan;
 
         // Check if the current file is a manifest file
