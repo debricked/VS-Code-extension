@@ -60,7 +60,7 @@ export class ScanService {
                     cancellable: false,
                 },
                 async (progress) => {
-                    progress.report({ message: "Scanning Manifest Files" });
+                    progress.report({ message: "Scanning Manifest Files🚀" });
                     await commandHelper.executeAsyncCommand(`${Organization.debrickedCli} ${cmdParams.join(" ")}`);
                     statusBarMessageHelper.setStatusBarMessage(`Debricked: Scanning Completed $(pass-filled)`, 1000);
                 },

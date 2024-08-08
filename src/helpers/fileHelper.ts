@@ -41,20 +41,21 @@ export class FileHelper {
     }
 
     public async setRepoID() {
-        const globalState = this.globalStore.getGlobalStateInstance();
-        const selectedRepoName = this.globalStore.getRepository();
         const data = JSON.parse(
             fs.readFileSync(`${Organization.reportsFolderPath}/scan-output.json`, {
                 encoding: "utf8",
                 flag: "r",
             }),
         );
-        const match = data.detailsUrl.match(/\/repository\/(\d+)\//);
-        const repoID = match ? Number(match[1]) : null;
+        const repoIdMatch = data.detailsUrl.match(/\/repository\/(\d+)\//);
+        const repoId = repoIdMatch ? Number(repoIdMatch[1]) : null;
 
-        const repoData = globalState?.getGlobalData(selectedRepoName);
-        repoData["repoID"] = repoID;
+        const commitMatch = data.detailsUrl.match(/\/commit\/(\d+)/);
+        const commitId = commitMatch ? Number(commitMatch[1]) : null;
 
-        globalState?.setGlobalData(selectedRepoName, repoData);
+        repoId ? this.globalStore.setRepoId(repoId) : null;
+        commitId ? this.globalStore.setCommitId(commitId) : null;
+
+        this.logger.logInfo("Found the repoId and commitId");
     }
 }

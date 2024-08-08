@@ -10,15 +10,22 @@ export class ApiHelper {
     ) {}
 
     public async get(requestParam: RequestParam): Promise<any> {
-        const { endpoint, page, rowsPerPage } = requestParam;
-        let url = `${Organization.baseUrl}${endpoint}`;
+        let url = `${Organization.baseUrl}${requestParam.endpoint}`;
 
         const params = [];
-        if (page) {
-            params.push(`page=${page}`);
+        if (requestParam.page) {
+            params.push(`page=${requestParam.page}`);
         }
-        if (rowsPerPage) {
-            params.push(`rowsPerPage=${rowsPerPage}`);
+        if (requestParam.rowsPerPage) {
+            params.push(`rowsPerPage=${requestParam.rowsPerPage}`);
+        }
+
+        if (requestParam.repoId) {
+            params.push(`repositoryId=${requestParam.repoId}`);
+        }
+
+        if (requestParam.commitId) {
+            params.push(`commitId=${requestParam.commitId}`);
         }
 
         if (params.length > 0) {

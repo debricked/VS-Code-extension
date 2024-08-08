@@ -35,7 +35,6 @@ class IndexHelper {
             this.debrickedDataHelper.createDir(Organization.reportsFolderPath);
             this.debrickedDataHelper.createDir(context.logUri.fsPath);
             Logger.initialize(context);
-            errorHandler.setupGlobalErrorHandlers();
 
             await this.commonHelper.checkUserId();
             await this.gitHelper.setupGit();
@@ -54,7 +53,7 @@ const authHelper = new AuthHelper(showInputBoxHelper, statusBarMessageHelper, Lo
 const errorHandler = new ErrorHandler(statusBarMessageHelper, Logger);
 const commandHelper = new Command(authHelper, Logger);
 const commonHelper = new Common(Logger, showInputBoxHelper, globalStore);
-const gitHelper = new GitHelper(commandHelper, Logger, showInputBoxHelper, globalStore);
+const gitHelper = new GitHelper(commandHelper, Logger, showInputBoxHelper, globalStore, statusBarMessageHelper);
 const terminal = new Terminal(authHelper, Logger);
 const apiClient = new ApiClient(authHelper, errorHandler, Logger);
 const apiHelper = new ApiHelper(apiClient, Logger);

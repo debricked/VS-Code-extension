@@ -4,6 +4,7 @@ import { Command } from "./commandHelper";
 import { GlobalStore } from "./globalStore";
 import { Logger } from "./loggerHelper";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
+import { StatusBarMessageHelper } from "./statusBarMessageHelper";
 
 export class GitHelper {
     constructor(
@@ -11,6 +12,7 @@ export class GitHelper {
         private logger: typeof Logger,
         private showInputBoxHelper: ShowInputBoxHelper,
         private globalStore: GlobalStore,
+        private statusBarMessageHelper: StatusBarMessageHelper,
     ) {}
 
     public async getCurrentBranch() {
@@ -77,6 +79,8 @@ export class GitHelper {
         if (currentRepo !== MessageStatus.UNKNOWN) {
             repoData.currentBranch = await this.getCurrentBranch();
             repoData.commitID = await this.getCommitHash();
+        } else {
+            this.statusBarMessageHelper.showInformationMessage("No repository selected");
         }
 
         await this.globalStore.getGlobalStateInstance()?.setGlobalData(currentRepo, repoData);
