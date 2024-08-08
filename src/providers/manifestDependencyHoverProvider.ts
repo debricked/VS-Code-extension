@@ -11,9 +11,14 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
     ): Promise<vscode.Hover | null | undefined> {
         const selectedRepoName = globalStore.getRepository();
         this.manifestFiles = await globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName).filesToScan;
+        const currentManifestFile = path.basename(document.fileName);
 
         // Check if the current file is a manifest file
-        if (!this.manifestFiles.includes(path.basename(document.fileName))) {
+        const isManifestFile = this.manifestFiles.some(
+            (manifest: string) => path.basename(manifest) === currentManifestFile,
+        );
+
+        if (!isManifestFile) {
             return null;
         }
 
@@ -23,18 +28,48 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
         }
 
         const lineText = document.lineAt(position.line).text;
-        const dependencyMatch = lineText.match(/"([^"]+)":\s*"([^"]+)"/);
+        const dependencyName = this.parseDependencyName(lineText, currentManifestFile);
 
-        if (dependencyMatch) {
-            const [, dependencyName, version] = dependencyMatch;
-            return new vscode.Hover([
-                `**${dependencyName}**`,
-                `Current version: ${version}`,
-                `[View on npm](https://www.npmjs.com/package/${dependencyName})`,
-                `[View on GitHub](https://github.com/search?q=${dependencyName})`,
-            ]);
+        if (dependencyName) {
+            const depData = globalStore.getDependencyData().get(dependencyName);
+            const licenseData = depData?.licenses[0]?.name ?? "License information unavailable";
+
+            const contents = new vscode.MarkdownString(
+                `<span style="color:#000;background-color:#fff;">Debricked</span>`,
+            );
+            contents.supportHtml = true;
+            contents.isTrusted = true;
+
+            const hoverContent = [`**${dependencyName}**`, contents, `License: ${licenseData}`];
+
+            return new vscode.Hover(hoverContent);
         }
 
+        return null;
+    }
+
+    private parseDependencyName(lineText: string, fileName: string): string | null {
+        lineText = lineText.trim();
+
+        switch (fileName) {
+            case "package.json": {
+                const packageJsonRegex = /"([^"]+)":\s*"([^"]+)"/;
+                const match = lineText.match(packageJsonRegex);
+                if (match) {
+                    return match[1] + " (npm)";
+                }
+                break;
+            }
+
+            case "go.mod": {
+                const goModRegex =
+                    /^(?:require\s+)?(\S+)\s+(v?\d+(?:\.\d+)*(?:-[\w\.-]+)?(?:\+[\w\.-]+)?)(?:\s+\/\/\s+indirect)?/;
+                const match = lineText.match(goModRegex);
+                if (match) {
+                    return match[1] + " (Go)";
+                }
+            }
+        }
         return null;
     }
 }

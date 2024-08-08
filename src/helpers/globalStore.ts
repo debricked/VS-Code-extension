@@ -1,3 +1,4 @@
+import { Dependency } from "types/dependency";
 import { MessageStatus } from "../constants/index";
 import { GlobalState } from "./globalState";
 
@@ -7,6 +8,9 @@ export class GlobalStore {
     private sequenceID: string | undefined;
     private globalStateInstance: GlobalState | undefined;
     private repositoryName: string = MessageStatus.UNKNOWN;
+    private repoData: any;
+    private repoId!: number;
+    private commitId!: number;
 
     private constructor() {}
 
@@ -75,5 +79,29 @@ export class GlobalStore {
      */
     public getRepository(): string {
         return this.repositoryName;
+    }
+
+    public setDependencyData(repoData: any) {
+        this.repoData = repoData;
+    }
+
+    public getDependencyData(): Map<string, Dependency> {
+        return this.repoData;
+    }
+
+    public getRepoId() {
+        return this.repoId;
+    }
+
+    public setRepoId(repoId: number) {
+        this.repoId = repoId;
+    }
+
+    public getCommitId() {
+        return this.commitId;
+    }
+
+    public setCommitId(commitId: number) {
+        this.commitId = commitId;
     }
 }

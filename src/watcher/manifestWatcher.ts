@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import { MessageStatus, DebrickedCommands, Organization } from "../constants";
-import { ScanService, FileService } from "services";
-import { errorHandler, Logger, StatusMessage, statusBarMessageHelper, fileHelper } from "../helpers";
+import { ScanService, FileService, DependencyService } from "../services";
+import { errorHandler, Logger, StatusMessage, statusBarMessageHelper, fileHelper, globalStore } from "../helpers";
 
 export class ManifestWatcher {
     private static instance: ManifestWatcher;
@@ -99,6 +99,11 @@ export class ManifestWatcher {
         const watcher = vscode.workspace.createFileSystemWatcher(`${Organization.reportsFolderPath}/scan-output.json`);
         watcher.onDidChange(async () => {
             await fileHelper.setRepoID();
+
+            const repoId = await globalStore.getRepoId();
+            const commitId = await globalStore.getCommitId();
+
+            await DependencyService.getDependencyData(repoId, commitId);
         });
         context.subscriptions.push(watcher);
     }
