@@ -24,6 +24,5 @@ export class DependencyService {
         });
 
         globalStore.setDependencyData(dependencyMap);
-        Logger.logObj(response);
     }
 }

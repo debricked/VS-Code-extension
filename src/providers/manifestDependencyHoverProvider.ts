@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { globalStore } from "../helpers";
+import { globalStore, template } from "../helpers";
 
 export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
     private manifestFiles: string[] = [];
@@ -34,13 +34,13 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
             const depData = globalStore.getDependencyData().get(dependencyName);
             const licenseData = depData?.licenses[0]?.name ?? "License information unavailable";
 
-            const contents = new vscode.MarkdownString(
-                `<span style="color:#000;background-color:#fff;">Debricked</span>`,
-            );
+            const contents = new vscode.MarkdownString();
             contents.supportHtml = true;
             contents.isTrusted = true;
+            contents.supportThemeIcons = true;
+            template.getLicenseContent(licenseData, contents);
 
-            const hoverContent = [`**${dependencyName}**`, contents, `License: ${licenseData}`];
+            const hoverContent = [contents];
 
             return new vscode.Hover(hoverContent);
         }
