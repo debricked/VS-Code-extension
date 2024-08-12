@@ -12,13 +12,13 @@ export interface DependencyResponse {
     commitName: string;
     dependencies: Dependency[];
 }
-export interface DependencyName {
+interface DependencyName {
     name: string;
     shortName: string;
     link: string;
 }
 
-export interface DependencyLicense {
+interface DependencyLicense {
     name: string;
 }
 
