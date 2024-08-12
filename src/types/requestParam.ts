@@ -4,4 +4,5 @@ export interface RequestParam {
     repoId?: number;
     endpoint: string;
     commitId?: number;
+    dependencyId?: number;
 }

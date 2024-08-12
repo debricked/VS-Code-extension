@@ -1,12 +1,14 @@
 import { Dependency, DependencyResponse, IndirectDependency } from "types/dependency";
 import { apiHelper, globalStore, Logger } from "../helpers";
 import { RequestParam } from "../types";
+import { DependencyVulnerabilityWrapper } from "types/vulnerability";
+import { Organization } from "../constants";
 
 export class DependencyService {
     static async getDependencyData(repoID: number, commitId: number) {
         Logger.logInfo("Started fetching the Dependency Data");
         const requestParam: RequestParam = {
-            endpoint: "open/dependencies/get-dependencies-hierarchy",
+            endpoint: Organization.dependencyUrl,
             repoId: repoID,
             commitId: commitId,
         };
@@ -24,6 +26,21 @@ export class DependencyService {
         });
 
         globalStore.setDependencyData(dependencyMap);
-        Logger.logObj(response);
+    }
+
+    static async getVulnerableData(depId: number) {
+        Logger.logInfo("Started fetching the Vulnerable Data");
+        const repoId = await globalStore.getRepoId();
+        const commitId = await globalStore.getCommitId();
+
+        const requestParam: RequestParam = {
+            endpoint: Organization.vulnerableUrl,
+            repoId: repoId,
+            commitId: commitId,
+            dependencyId: depId,
+        };
+        const response: DependencyVulnerabilityWrapper = await apiHelper.get(requestParam);
+        const vulnerableData = response.vulnerabilities;
+        return vulnerableData;
     }
 }

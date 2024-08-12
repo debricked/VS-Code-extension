@@ -1,6 +1,8 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { globalStore } from "../helpers";
+import { globalStore, template } from "../helpers";
+import { DependencyService } from "services";
+import { DependencyVulnerability } from "types/vulnerability";
 
 export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
     private manifestFiles: string[] = [];
@@ -30,22 +32,34 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
         const lineText = document.lineAt(position.line).text;
         const dependencyName = this.parseDependencyName(lineText, currentManifestFile);
 
-        if (dependencyName) {
-            const depData = globalStore.getDependencyData().get(dependencyName);
-            const licenseData = depData?.licenses[0]?.name ?? "License information unavailable";
-
-            const contents = new vscode.MarkdownString(
-                `<span style="color:#000;background-color:#fff;">Debricked</span>`,
-            );
-            contents.supportHtml = true;
-            contents.isTrusted = true;
-
-            const hoverContent = [`**${dependencyName}**`, contents, `License: ${licenseData}`];
-
-            return new vscode.Hover(hoverContent);
+        if (!dependencyName) {
+            return null;
         }
 
-        return null;
+        const depData = globalStore.getDependencyData().get(dependencyName);
+        const licenseData = depData?.licenses[0]?.name ?? "License information unavailable";
+        const vulnerableData = await this.getVulnerableData(depData?.id);
+
+        const contents = this.createMarkdownString();
+        template.licenseContent(licenseData, contents);
+        template.vulnerableContent(vulnerableData, contents);
+
+        return new vscode.Hover(contents);
+    }
+
+    private async getVulnerableData(dependencyId?: number): Promise<DependencyVulnerability[]> {
+        if (dependencyId) {
+            return await DependencyService.getVulnerableData(dependencyId);
+        }
+        return [];
+    }
+
+    private createMarkdownString(): vscode.MarkdownString {
+        const contents = new vscode.MarkdownString();
+        contents.supportHtml = true;
+        contents.isTrusted = true;
+        contents.supportThemeIcons = true;
+        return contents;
     }
 
     private parseDependencyName(lineText: string, fileName: string): string | null {

@@ -18,6 +18,7 @@ import { ErrorHandler } from "./errorHandler";
 import { ApiClient } from "./apiClient";
 import { GlobalStore } from "./globalStore";
 import { Organization } from "../constants";
+import { Template } from "./template";
 
 class IndexHelper {
     constructor(
@@ -61,6 +62,7 @@ const installHelper = new InstallHelper(Logger, statusBarMessageHelper, commandH
 const fileHelper = new FileHelper(debrickedDataHelper, Logger, globalStore);
 const indexHelper = new IndexHelper(debrickedDataHelper, commonHelper, gitHelper);
 const showQuickPickHelper = new ShowQuickPickHelper();
+const template = new Template();
 
 export {
     authHelper,
@@ -81,4 +83,5 @@ export {
     apiClient,
     globalStore,
     indexHelper,
+    template,
 };
