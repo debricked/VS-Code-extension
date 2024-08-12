@@ -28,6 +28,10 @@ export class ApiHelper {
             params.push(`commitId=${requestParam.commitId}`);
         }
 
+        if (requestParam.dependencyId) {
+            params.push(`dependencyId=${requestParam.dependencyId}`);
+        }
+
         if (params.length > 0) {
             url += `?${params.join("&")}`;
         }

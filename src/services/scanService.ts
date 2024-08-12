@@ -8,10 +8,13 @@ import {
     commonHelper,
     commandHelper,
     authHelper,
+    fileHelper,
 } from "../helpers";
 import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
+import * as fs from "fs";
+import { DependencyService } from "./dependencyService";
 
 export class ScanService {
     static async scanService() {
@@ -35,7 +38,6 @@ export class ScanService {
                     await ScanService.handleFlags(command.flags[1], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[2], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[3], cmdParams, currentRepoData);
-                    await ScanService.handleFlags(command.flags[4], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[4], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.global_flags[0], cmdParams, currentRepoData);
                 }
@@ -61,7 +63,21 @@ export class ScanService {
                 },
                 async (progress) => {
                     progress.report({ message: "Scanning Manifest Files🚀" });
-                    await commandHelper.executeAsyncCommand(`${Organization.debrickedCli} ${cmdParams.join(" ")}`);
+                    const output = await commandHelper.executeAsyncCommand(
+                        `${Organization.debrickedCli} ${cmdParams.join(" ")}`,
+                    );
+                    if (!output.includes("https://debricked.com/app/en/repository/")) {
+                        if (await fs.existsSync(`${Organization.reportsFolderPath}/scan-output.json`)) {
+                            await fileHelper.setRepoID();
+
+                            const repoId = await globalStore.getRepoId();
+                            const commitId = await globalStore.getCommitId();
+
+                            await DependencyService.getDependencyData(repoId, commitId);
+                        } else {
+                            throw new Error("No reports file exists");
+                        }
+                    }
                     statusBarMessageHelper.setStatusBarMessage(`Debricked: Scanning Completed $(pass-filled)`, 1000);
                 },
             );

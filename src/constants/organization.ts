@@ -5,7 +5,11 @@ import * as os from "os";
 export class Organization {
     static readonly name = "debricked";
     static readonly apiVersion = "1.0";
-    static readonly baseUrl = `https://debricked.com/api/${Organization.apiVersion}/`;
+    static readonly debrickedBaseUrl = "https://debricked.com";
+    static readonly baseUrl = `${Organization.debrickedBaseUrl}/api/${Organization.apiVersion}/`;
+
+    static readonly dependencyUrl = "open/dependencies/get-dependencies-hierarchy";
+    static readonly vulnerableUrl = "open/vulnerabilities/get-vulnerabilities";
 
     static readonly nameCaps = "Debricked";
     // Command and OS-specific constants
