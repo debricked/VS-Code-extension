@@ -1,7 +1,7 @@
 import { ApiClient } from "./apiClient";
 import { RequestParam } from "../types";
 import { Logger } from "./loggerHelper";
-import { Organization } from "../constants/index";
+import { SecondService } from "../constants";
 
 export class ApiHelper {
     constructor(
@@ -10,7 +10,7 @@ export class ApiHelper {
     ) {}
 
     public async get(requestParam: RequestParam): Promise<any> {
-        let url = `${Organization.baseUrl}${requestParam.endpoint}`;
+        let url = `${SecondService.baseUrl}${requestParam.endpoint}`;
 
         const params = [];
         if (requestParam.page) {

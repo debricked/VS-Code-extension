@@ -10,7 +10,7 @@ import {
     authHelper,
     fileHelper,
 } from "../helpers";
-import { DebrickedCommands, MessageStatus, Organization } from "../constants/index";
+import { DebrickedCommands, MessageStatus, Organization, SecondService } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import * as fs from "fs";
@@ -66,7 +66,7 @@ export class ScanService {
                     const output = await commandHelper.executeAsyncCommand(
                         `${Organization.debrickedCli} ${cmdParams.join(" ")}`,
                     );
-                    if (!output.includes("https://debricked.com/app/en/repository/")) {
+                    if (!output.includes(SecondService.repositoryBaseUrl)) {
                         if (await fs.existsSync(`${Organization.reportsFolderPath}/scan-output.json`)) {
                             await fileHelper.setRepoID();
 
@@ -74,6 +74,7 @@ export class ScanService {
                             const commitId = await globalStore.getCommitId();
 
                             await DependencyService.getDependencyData(repoId, commitId);
+                            await DependencyService.getVulnerableData();
                         } else {
                             throw new Error("No reports file exists");
                         }

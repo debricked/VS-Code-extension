@@ -1,14 +1,14 @@
 import { Dependency, DependencyResponse, IndirectDependency } from "types/dependency";
 import { apiHelper, globalStore, Logger } from "../helpers";
 import { RequestParam } from "../types";
-import { DependencyVulnerabilityWrapper } from "types/vulnerability";
-import { Organization } from "../constants";
+import { DependencyVulnerability, DependencyVulnerabilityWrapper } from "types/vulnerability";
+import { SecondService } from "../constants";
 
 export class DependencyService {
     static async getDependencyData(repoID: number, commitId: number) {
         Logger.logInfo("Started fetching the Dependency Data");
         const requestParam: RequestParam = {
-            endpoint: Organization.dependencyUrl,
+            endpoint: SecondService.dependencyUrl,
             repoId: repoID,
             commitId: commitId,
         };
@@ -28,19 +28,44 @@ export class DependencyService {
         globalStore.setDependencyData(dependencyMap);
     }
 
-    static async getVulnerableData(depId: number) {
+    static async getVulnerableData() {
         Logger.logInfo("Started fetching the Vulnerable Data");
         const repoId = await globalStore.getRepoId();
         const commitId = await globalStore.getCommitId();
 
         const requestParam: RequestParam = {
-            endpoint: Organization.vulnerableUrl,
+            endpoint: SecondService.vulnerableUrl,
             repoId: repoId,
             commitId: commitId,
-            dependencyId: depId,
         };
         const response: DependencyVulnerabilityWrapper = await apiHelper.get(requestParam);
-        const vulnerableData = response.vulnerabilities;
-        return vulnerableData;
+        const vulnerabilityMap = new Map<string, DependencyVulnerability[]>();
+
+        response.vulnerabilities.forEach((vul: DependencyVulnerability) => {
+            vul.dependencies.forEach((dep) => {
+                const name = dep.name;
+                if (!vulnerabilityMap.has(name)) {
+                    vulnerabilityMap.set(name, []);
+                }
+                vulnerabilityMap.get(name)!.push(vul);
+            });
+        });
+
+        globalStore.setVulnerableData(vulnerabilityMap);
+    }
+
+    static getPolicyViolationData(depName: string) {
+        Logger.logInfo("Started fetching Policy violation data");
+
+        const scannedData = globalStore.getScanData();
+
+        return scannedData.automationRules
+            .filter((automationRule) =>
+                automationRule.triggerEvents.some((triggerEvent) => triggerEvent.dependency === depName),
+            )
+            .map((automationRule) => ({
+                ruleActions: automationRule.ruleActions,
+                ruleLink: automationRule.ruleLink,
+            }));
     }
 }

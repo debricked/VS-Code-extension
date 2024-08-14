@@ -5,6 +5,7 @@ import { MessageStatus, Organization } from "../constants/index";
 import { Logger } from "./loggerHelper";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
 import { GlobalStore } from "./globalStore";
+import { ScannedData } from "types/scannedData";
 
 export class FileHelper {
     constructor(
@@ -41,7 +42,7 @@ export class FileHelper {
     }
 
     public async setRepoID() {
-        const data = JSON.parse(
+        const data: ScannedData = JSON.parse(
             fs.readFileSync(`${Organization.reportsFolderPath}/scan-output.json`, {
                 encoding: "utf8",
                 flag: "r",
@@ -55,6 +56,7 @@ export class FileHelper {
 
         repoId ? this.globalStore.setRepoId(repoId) : null;
         commitId ? this.globalStore.setCommitId(commitId) : null;
+        this.globalStore.setScanData(data);
 
         this.logger.logInfo("Found the repoId and commitId");
     }
