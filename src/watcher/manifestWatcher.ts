@@ -104,6 +104,7 @@ export class ManifestWatcher {
             const commitId = await globalStore.getCommitId();
 
             await DependencyService.getDependencyData(repoId, commitId);
+            await DependencyService.getVulnerableData();
         });
         context.subscriptions.push(watcher);
     }

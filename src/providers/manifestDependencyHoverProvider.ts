@@ -2,7 +2,8 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { globalStore, template } from "../helpers";
 import { DependencyService } from "services";
-import { DependencyVulnerability } from "types/vulnerability";
+import { TransitiveVulnerabilities, Vulnerabilities } from "types/vulnerability";
+import { Dependency } from "types/dependency";
 
 export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
     private manifestFiles: string[] = [];
@@ -37,21 +38,50 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
         }
 
         const depData = globalStore.getDependencyData().get(dependencyName);
-        const licenseData = depData?.licenses[0]?.name ?? "License information unavailable";
-        const vulnerableData = await this.getVulnerableData(depData?.id);
+        const licenseData = depData?.licenses[0]?.name ?? "Unknown";
+        const vulnerableData = await this.getVulnerableData(depData);
+        const policyViolationData = DependencyService.getPolicyViolationData(dependencyName);
 
         const contents = this.createMarkdownString();
         template.licenseContent(licenseData, contents);
         template.vulnerableContent(vulnerableData, contents);
+        template.policyViolationContent(policyViolationData, contents);
 
         return new vscode.Hover(contents);
     }
 
-    private async getVulnerableData(dependencyId?: number): Promise<DependencyVulnerability[]> {
-        if (dependencyId) {
-            return await DependencyService.getVulnerableData(dependencyId);
+    private async getVulnerableData(dependency?: Dependency): Promise<Vulnerabilities> {
+        const vulnerabilities: Vulnerabilities = {
+            directVulnerabilities: [],
+            indirectVulnerabilities: [],
+        };
+        const vulnerabilityData = globalStore.getVulnerableData();
+        //direct dependencies
+        if (dependency) {
+            vulnerabilities.directVulnerabilities = vulnerabilityData.get(dependency.name.name) ?? [];
         }
-        return [];
+        //indirect dependencies
+        if (dependency?.indirectDependencies) {
+            const vulnerabilitiesToFetch = dependency.indirectDependencies;
+
+            for (const indirectDep of vulnerabilitiesToFetch) {
+                const vulnerableData = vulnerabilityData.get(indirectDep.name.name) ?? [];
+
+                if (vulnerableData.length !== 0) {
+                    const transitiveVulnerableData: TransitiveVulnerabilities = {
+                        transitiveVulnerabilities: vulnerableData,
+                        dependencyName: indirectDep.name.name,
+                        dependencyId: indirectDep.id,
+                    };
+                    vulnerabilities.indirectVulnerabilities.push(transitiveVulnerableData);
+                }
+
+                if (vulnerabilities.indirectVulnerabilities.length > 1) {
+                    break;
+                }
+            }
+        }
+        return vulnerabilities;
     }
 
     private createMarkdownString(): vscode.MarkdownString {
@@ -82,7 +112,11 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
                 if (match) {
                     return match[1] + " (Go)";
                 }
+                break;
             }
+
+            default:
+                break;
         }
         return null;
     }

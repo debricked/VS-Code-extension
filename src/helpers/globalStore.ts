@@ -1,6 +1,8 @@
 import { Dependency } from "types/dependency";
 import { MessageStatus } from "../constants/index";
 import { GlobalState } from "./globalState";
+import { ScannedData } from "types/scannedData";
+import { DependencyVulnerability } from "types/vulnerability";
 
 export class GlobalStore {
     private static instance: GlobalStore;
@@ -11,6 +13,8 @@ export class GlobalStore {
     private repoData: any;
     private repoId!: number;
     private commitId!: number;
+    private scannedData!: ScannedData;
+    private vulnerableData!: Map<string, DependencyVulnerability[]>;
 
     private constructor() {}
 
@@ -103,5 +107,21 @@ export class GlobalStore {
 
     public setCommitId(commitId: number) {
         this.commitId = commitId;
+    }
+
+    public setScanData(data: ScannedData) {
+        this.scannedData = data;
+    }
+
+    public getScanData(): ScannedData {
+        return this.scannedData;
+    }
+
+    public setVulnerableData(data: Map<string, DependencyVulnerability[]>) {
+        this.vulnerableData = data;
+    }
+
+    public getVulnerableData(): Map<string, DependencyVulnerability[]> {
+        return this.vulnerableData;
     }
 }

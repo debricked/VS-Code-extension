@@ -4,12 +4,6 @@ import * as os from "os";
 
 export class Organization {
     static readonly name = "debricked";
-    static readonly apiVersion = "1.0";
-    static readonly debrickedBaseUrl = "https://debricked.com";
-    static readonly baseUrl = `${Organization.debrickedBaseUrl}/api/${Organization.apiVersion}/`;
-
-    static readonly dependencyUrl = "open/dependencies/get-dependencies-hierarchy";
-    static readonly vulnerableUrl = "open/vulnerabilities/get-vulnerabilities";
 
     static readonly nameCaps = "Debricked";
     // Command and OS-specific constants
@@ -58,6 +52,9 @@ export class Organization {
     static readonly bearer = "bearer";
     static readonly bearerTokenKey = "bearerToken";
     static readonly userId = "userId";
+
+    // Markdown
+    static readonly separator = "\n______________________________\n";
 
     // Messages
     static readonly UNSUPPORTED_OS = "Unsupported operating system";
