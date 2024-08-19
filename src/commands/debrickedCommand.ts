@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { DebrickedCommands } from "../constants/index";
-import { BaseCommandService, ScanService, FileService } from "../services";
+import { BaseCommandService, ScanService, FileService, ResolveService } from "../services";
 import { Logger, commonHelper, errorHandler, globalStore } from "../helpers";
 
 export class DebrickedCommand {
@@ -40,6 +40,9 @@ export class DebrickedCommand {
             if (fileSubCommands) {
                 DebrickedCommand.registerCommand(context, fileSubCommands[0].command, FileService.findFilesService);
             }
+
+            // Register resolve command
+            DebrickedCommand.registerCommand(context, DebrickedCommands.RESOLVE.command, ResolveService.resolveService);
         } catch (error) {
             errorHandler.handleError(error);
         } finally {

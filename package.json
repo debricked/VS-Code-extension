@@ -14,7 +14,7 @@
         "hoverProvider": "true"
     },
     "activationEvents": [
-        "*"
+        "onLanguage"
     ],
     "main": "./dist/extension.js",
     "repository": {
@@ -91,6 +91,12 @@
             {
                 "command": "debricked.files.find",
                 "title": "Find all dependency files in inputted path",
+                "category": "debricked",
+                "icon": "$(search)"
+            },
+            {
+                "command": "debricked.resolve",
+                "title": "Resolve manifest files",
                 "category": "debricked",
                 "icon": "$(search)"
             }
