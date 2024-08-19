@@ -1,6 +1,5 @@
-import { PolicyViolation } from "types/scannedData";
 import { Organization } from "../constants";
-import { Vulnerabilities } from "types/vulnerability";
+import { Vulnerabilities, PolicyViolation } from "../types";
 import * as vscode from "vscode";
 import { SecondService } from "../constants";
 

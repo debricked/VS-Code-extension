@@ -37,6 +37,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
                 await DebrickedCommand.commands(context);
                 await providers.registerHover(context);
+                await providers.registerDependencyPolicyProvider(context);
 
                 const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
                 vscode.window.registerTreeDataProvider(Organization.debrickedCommand, debCommandsProvider);

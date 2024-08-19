@@ -5,7 +5,7 @@ import { MessageStatus, Organization } from "../constants/index";
 import { Logger } from "./loggerHelper";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
 import { GlobalStore } from "./globalStore";
-import { ScannedData } from "types/scannedData";
+import { ScannedData } from "../types";
 
 export class FileHelper {
     constructor(

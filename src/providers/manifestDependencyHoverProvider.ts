@@ -1,25 +1,14 @@
 import * as vscode from "vscode";
-import * as path from "path";
-import { globalStore, template } from "../helpers";
+import { commonHelper, globalStore, template } from "../helpers";
 import { DependencyService } from "services";
-import { TransitiveVulnerabilities, Vulnerabilities } from "types/vulnerability";
-import { Dependency } from "types/dependency";
+import { TransitiveVulnerabilities, Vulnerabilities, Dependency } from "../types";
 
 export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
-    private manifestFiles: string[] = [];
-
     public async provideHover(
         document: vscode.TextDocument,
         position: vscode.Position,
     ): Promise<vscode.Hover | null | undefined> {
-        const selectedRepoName = globalStore.getRepository();
-        this.manifestFiles = await globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName).filesToScan;
-        const currentManifestFile = path.basename(document.fileName);
-
-        // Check if the current file is a manifest file
-        const isManifestFile = this.manifestFiles.some(
-            (manifest: string) => path.basename(manifest) === currentManifestFile,
-        );
+        const { isManifestFile, currentManifestFile } = await commonHelper.isCurrentDocManifestFile(document);
 
         if (!isManifestFile) {
             return null;

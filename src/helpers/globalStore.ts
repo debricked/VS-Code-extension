@@ -1,8 +1,6 @@
-import { Dependency } from "types/dependency";
 import { MessageStatus } from "../constants/index";
 import { GlobalState } from "./globalState";
-import { ScannedData } from "types/scannedData";
-import { DependencyVulnerability } from "types/vulnerability";
+import { ScannedData, DependencyVulnerability, Dependency } from "../types";
 
 export class GlobalStore {
     private static instance: GlobalStore;

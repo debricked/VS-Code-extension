@@ -1,7 +1,12 @@
-import { Dependency, DependencyResponse, IndirectDependency } from "types/dependency";
 import { apiHelper, globalStore, Logger } from "../helpers";
 import { RequestParam } from "../types";
-import { DependencyVulnerability, DependencyVulnerabilityWrapper } from "types/vulnerability";
+import {
+    DependencyVulnerability,
+    DependencyVulnerabilityWrapper,
+    Dependency,
+    DependencyResponse,
+    IndirectDependency,
+} from "../types";
 import { SecondService } from "../constants";
 
 export class DependencyService {
