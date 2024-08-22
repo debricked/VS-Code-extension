@@ -87,17 +87,17 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
 
         switch (fileName) {
             case "package.json": {
-                const match = lineText.match(Regex.packageJson);
+                const match = commonHelper.extractValueFromStringUsingRegex(lineText, Regex.packageJson);
                 if (match) {
-                    return match[1] + " (npm)";
+                    return match + " (npm)";
                 }
                 break;
             }
 
             case "go.mod": {
-                const match = lineText.match(Regex.goMod);
+                const match = commonHelper.extractValueFromStringUsingRegex(lineText, Regex.goMod);
                 if (match) {
-                    return match[1] + " (Go)";
+                    return match + " (Go)";
                 }
                 break;
             }

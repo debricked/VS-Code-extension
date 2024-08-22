@@ -6,11 +6,11 @@ import {
     errorHandler,
     globalStore,
     commonHelper,
+    fileHelper,
 } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization, Regex } from "../constants/index";
 import { DebrickedCommandNode, ScannedData } from "../types";
 import * as vscode from "vscode";
-import * as fs from "fs";
 
 export class FileService {
     static async filesService() {
@@ -122,12 +122,7 @@ export class FileService {
     }
 
     static async setRepoScannedData() {
-        const data: ScannedData = JSON.parse(
-            fs.readFileSync(Organization.scannedOutputPath, {
-                encoding: "utf8",
-                flag: "r",
-            }),
-        );
+        const data: ScannedData = JSON.parse(fileHelper.readFileSync(Organization.scannedOutputPath).toString());
         const url = data.detailsUrl;
 
         const repoId = Number(commonHelper.extractValueFromStringUsingRegex(url, Regex.repoId));
@@ -135,6 +130,7 @@ export class FileService {
 
         repoId ? globalStore.setRepoId(repoId) : null;
         commitId ? globalStore.setCommitId(commitId) : null;
+
         globalStore.setScanData(data);
 
         Logger.logInfo("Found the repoId and commitId");
