@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { errorHandler, Logger, globalStore, commonHelper, indexHelper } from "./helpers";
+import { errorHandler, Logger, globalStore, commonHelper, indexHelper, SentryHelper } from "./helpers";
 import { DebrickedCommand } from "./commands";
 import { DebrickedCommandsTreeDataProvider, providers } from "./providers";
 import { MessageStatus, Organization } from "./constants/index";
@@ -7,6 +7,7 @@ import { BaseCommandService } from "services";
 import { watchers } from "watcher";
 
 export async function activate(context: vscode.ExtensionContext) {
+    SentryHelper.initialize(Organization.sentry_dns, `${Organization.name}@${Organization.version}`, Organization.env);
     await indexHelper.setupDebricked(context);
 
     await vscode.window.withProgress(
@@ -76,4 +77,5 @@ export async function activate(context: vscode.ExtensionContext) {
 export async function deactivate() {
     Logger.logMessageByStatus(MessageStatus.INFO, "Deactivate Debricked VS Code Extension");
     globalStore.setSequenceID(commonHelper.generateHashCode());
+    SentryHelper.close();
 }

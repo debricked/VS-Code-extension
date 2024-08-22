@@ -38,7 +38,7 @@ export class Command {
                         this.logger.logMessageByStatus(MessageStatus.ERROR, error.message);
                         reject(new Error(stderr));
                     } else {
-                        this.logger.logMessageByStatus(MessageStatus.FINISHED, stdout);
+                        this.logger.logMessageByStatus(MessageStatus.INFO, stdout);
                         resolve(stdout);
                     }
                 });
@@ -64,11 +64,11 @@ export class Command {
                 const accessToken = await this.authHelper.getToken(true, Organization.access);
 
                 if (accessToken) {
-                    command = `${command} ${flags[0].flag} ${accessToken}`;
                     this.logger.logMessageByStatus(
                         MessageStatus.INFO,
                         `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: "${command} "`,
                     );
+                    command = `${command} ${flags[0].flag} ${accessToken}`;
                 }
             } else {
                 this.logger.logMessageByStatus(
@@ -77,12 +77,11 @@ export class Command {
                 );
             }
 
-            this.logger.logWarn(`Executing async command: ${command}`);
             const { stdout, stderr } = await execAsync(command, { cwd });
             if (stderr) {
                 this.logger.logMessageByStatus(MessageStatus.ERROR, `command error: ${stderr}`);
             }
-            this.logger.logMessageByStatus(MessageStatus.FINISHED, stdout);
+            this.logger.logMessageByStatus(MessageStatus.INFO, stdout);
             return stdout.trim();
         } catch (error: any) {
             throw error;

@@ -10,11 +10,13 @@ import {
     authHelper,
     errorHandler,
     globalStore,
-    commandHelper,
     showInputBoxHelper,
     commonHelper,
 } from "../helpers";
 import * as vscode from "vscode";
+import { exec } from "child_process";
+import { promisify } from "util";
+
 export class BaseCommandService {
     static async baseCommand() {
         try {
@@ -166,11 +168,12 @@ export class BaseCommandService {
 
                 globalStore.getGlobalStateInstance()?.setGlobalData(Organization.debrickedDataKey, debrickedData);
             }
-            const bearerToken = JSON.parse(
-                await commandHelper.executeAsyncCommand(
-                    `curl -X POST https://debricked.com/api/login_check -d _username=${debrickedData["debricked_username"]} -d _password=${debrickedData["debricked_password"]}`,
-                ),
+            const execAsync = promisify(exec);
+            const { stdout } = await execAsync(
+                `curl -X POST https://debricked.com/api/login_check -d _username=${debrickedData["debricked_username"]} -d _password=${debrickedData["debricked_password"]}`,
+                {},
             );
+            const bearerToken = JSON.parse(stdout.trim());
 
             if (bearerToken && bearerToken.code === 401) {
                 throw new Error(bearerToken.message);

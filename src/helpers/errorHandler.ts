@@ -24,10 +24,10 @@ export class ErrorHandler {
         }
     }
 
-    private logError(errorMessage: string, errorStack?: string) {
+    private logError(errorMessage: string, errorStack?: Error | string) {
         this.logger.logError(`Error: ${errorMessage}`);
         if (errorStack) {
-            this.logger.logError(`Stack Trace: ${errorStack}`);
+            this.logger.logException(errorStack);
         }
     }
 

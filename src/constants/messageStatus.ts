@@ -9,4 +9,7 @@ export enum MessageStatus {
     PENDING = "pending",
     SUCCESS = "success",
     UNKNOWN = "unknown",
+    FATAL = "fatal",
+    LOG = "log",
+    EXCEPTION = "exception",
 }
