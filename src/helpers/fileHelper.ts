@@ -60,4 +60,19 @@ export class FileHelper {
 
         this.logger.logInfo("Found the repoId and commitId");
     }
+
+    /**
+     * Reads a JSON file and returns its contents as a JSON object.
+     *
+     * @param filePath The path to the JSON file.
+     * @param options The options for reading the file.
+     * @returns The JSON object.
+     */
+    public readFileSync(filePath: fs.PathOrFileDescriptor, options?: { encoding: "utf8"; flag: "r" }): string | Buffer {
+        try {
+            return fs.readFileSync(filePath, options);
+        } catch (error: any) {
+            throw new Error(`Failed to read JSON file at ${filePath}: ${error}`);
+        }
+    }
 }

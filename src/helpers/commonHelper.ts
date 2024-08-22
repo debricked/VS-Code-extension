@@ -91,4 +91,29 @@ export class Common {
 
         return { isManifestFile, currentManifestFile };
     }
+
+    /**
+     * Extracts a value from a URL using a regular expression.
+     *
+     * @param url The URL to extract the value from.
+     * @param regex The regular expression to use for extraction.
+     * @returns The extracted value, or null if the regular expression does not match.
+     */
+    public extractValueFromStringUsingRegex(str: string, regex: RegExp, groupIndex: number = 1): string | null {
+        // Check if the str is a non-empty string
+        if (typeof str !== "string" || str === "") {
+            throw new Error("Invalid string");
+        }
+
+        // Check if the regular expression is valid
+        if (!(regex instanceof RegExp)) {
+            throw new Error("Invalid regular expression");
+        }
+
+        // Apply the regular expression to the URL
+        const match = str.match(regex);
+
+        // Return the first capturing group if the regular expression matches
+        return match && match[groupIndex] ? match[groupIndex] : null;
+    }
 }
