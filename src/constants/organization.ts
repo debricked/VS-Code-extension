@@ -4,7 +4,9 @@ import * as os from "os";
 
 export class Organization {
     static readonly name = "debricked";
-
+    static readonly version = "0.0.1";
+    static readonly env = "development";
+    static readonly sentry_dns = "https://5427545a2216287c2e4e0fc546172a6a@sentry.debricked.com/20";
     static readonly nameCaps = "Debricked";
     // Command and OS-specific constants
     static readonly command = Organization.getPlatformSpecificCommand();

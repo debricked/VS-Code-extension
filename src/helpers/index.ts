@@ -19,6 +19,7 @@ import { ApiClient } from "./apiClient";
 import { GlobalStore } from "./globalStore";
 import { Organization } from "../constants";
 import { Template } from "./template";
+import { SentryHelper } from "./SentryHelper";
 
 class IndexHelper {
     constructor(
@@ -84,4 +85,5 @@ export {
     globalStore,
     indexHelper,
     template,
+    SentryHelper,
 };

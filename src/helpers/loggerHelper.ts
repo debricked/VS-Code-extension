@@ -3,6 +3,7 @@ import * as path from "path";
 import { Organization, MessageStatus } from "../constants/index";
 import * as vscode from "vscode";
 import { GlobalStore } from "./globalStore";
+import { SentryHelper } from "./SentryHelper";
 
 export class Logger {
     private static logDirPath = path.join(Organization.debrickedInstalledDir, Organization.debrickedFolder);
@@ -25,21 +26,23 @@ export class Logger {
 
     private static async writeLog(message: string) {
         const timestamp = new Date().toISOString();
-        const userId = GlobalStore.getInstance().getUserId();
+        const userId = GlobalStore.getInstance().getUserId() || "";
         const sequenceId = GlobalStore.getInstance().getSequenceID()
             ? `[seq_id:${GlobalStore.getInstance().getSequenceID()}]`
             : "";
 
         const logEntry = `[${timestamp}] [user_id:${userId}] ${sequenceId} ${message}\n`;
         await fs.appendFileSync(Logger.logFilePath, logEntry, "utf-8");
+        SentryHelper.setUser({ id: userId });
     }
 
     public static async logMessage(message: string) {
         await this.writeLog(message);
     }
 
-    public static async logMessageByStatus(status: string, message: string) {
+    public static async logMessageByStatus(status: MessageStatus, message: any) {
         await this.writeLog(`[${status}] ${message}`);
+        SentryHelper.captureMessageBySeverityLevel(status, message);
     }
 
     public static async logInfo(message: string) {
@@ -60,5 +63,9 @@ export class Logger {
 
     public static async logDebug(message: any) {
         await this.logMessageByStatus(MessageStatus.DEBUG, JSON.stringify(message));
+    }
+
+    public static async logException(error: Error | string) {
+        await this.logMessageByStatus(MessageStatus.EXCEPTION, error);
     }
 }
