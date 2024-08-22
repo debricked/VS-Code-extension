@@ -7,9 +7,10 @@ import {
     globalStore,
     commonHelper,
 } from "../helpers";
-import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
-import { DebrickedCommandNode } from "../types";
+import { DebrickedCommands, Messages, MessageStatus, Organization, Regex } from "../constants/index";
+import { DebrickedCommandNode, ScannedData } from "../types";
 import * as vscode from "vscode";
+import * as fs from "fs";
 
 export class FileService {
     static async filesService() {
@@ -118,5 +119,24 @@ export class FileService {
         } else {
             return debrickedData["unknown"].filesToScan;
         }
+    }
+
+    static async setRepoScannedData() {
+        const data: ScannedData = JSON.parse(
+            fs.readFileSync(Organization.scannedOutputPath, {
+                encoding: "utf8",
+                flag: "r",
+            }),
+        );
+        const url = data.detailsUrl;
+
+        const repoId = Number(commonHelper.extractValueFromStringUsingRegex(url, Regex.repoId));
+        const commitId = Number(commonHelper.extractValueFromStringUsingRegex(url, Regex.commitId));
+
+        repoId ? globalStore.setRepoId(repoId) : null;
+        commitId ? globalStore.setCommitId(commitId) : null;
+        globalStore.setScanData(data);
+
+        Logger.logInfo("Found the repoId and commitId");
     }
 }

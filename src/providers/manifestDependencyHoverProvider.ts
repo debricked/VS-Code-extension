@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { commonHelper, globalStore, template } from "../helpers";
 import { DependencyService } from "services";
 import { TransitiveVulnerabilities, Vulnerabilities, Dependency } from "../types";
+import { Regex } from "../constants";
 
 export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
     public async provideHover(
@@ -86,8 +87,7 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
 
         switch (fileName) {
             case "package.json": {
-                const packageJsonRegex = /"([^"]+)":\s*"([^"]+)"/;
-                const match = lineText.match(packageJsonRegex);
+                const match = lineText.match(Regex.packageJson);
                 if (match) {
                     return match[1] + " (npm)";
                 }
@@ -95,9 +95,7 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
             }
 
             case "go.mod": {
-                const goModRegex =
-                    /^(?:require\s+)?(\S+)\s+(v?\d+(?:\.\d+)*(?:-[\w\.-]+)?(?:\+[\w\.-]+)?)(?:\s+\/\/\s+indirect)?/;
-                const match = lineText.match(goModRegex);
+                const match = lineText.match(Regex.goMod);
                 if (match) {
                     return match[1] + " (Go)";
                 }

@@ -26,11 +26,14 @@ export class Organization {
     static readonly reports = "reports";
     static readonly logFile = "debricked.log";
     static readonly debrickedCli = path.join(__dirname, `../resources/debricked-cli/cli/${Organization.command}`);
+    static readonly scannedOutput = "scan-output.json";
     static readonly reportsFolderPath = path.join(
         Organization.workspace,
         Organization.debrickedFolder,
         Organization.reports,
     );
+    static readonly scannedOutputPath = path.join(Organization.reportsFolderPath, Organization.scannedOutput);
+
     static readonly debrickedDataFile = "debricked_data.json";
     static readonly debrickedDataFilePath = path.join(
         Organization.debrickedRootDir,

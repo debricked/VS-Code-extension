@@ -4,14 +4,11 @@ import * as path from "path";
 import { MessageStatus, Organization } from "../constants/index";
 import { Logger } from "./loggerHelper";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
-import { GlobalStore } from "./globalStore";
-import { ScannedData } from "../types";
 
 export class FileHelper {
     constructor(
         private debrickedDataHelper: DebrickedDataHelper,
         private logger: typeof Logger,
-        private globalStore: GlobalStore,
     ) {}
     /**
      * Stores content in a specified file within the 'debricked-result' folder.
@@ -39,26 +36,6 @@ export class FileHelper {
         const filePath = await this.storeResultInFile(fileName, content);
         this.logger.logMessageByStatus(MessageStatus.INFO, `store results in ${filePath}`);
         await this.openTextDocument(filePath);
-    }
-
-    public async setRepoID() {
-        const data: ScannedData = JSON.parse(
-            fs.readFileSync(`${Organization.reportsFolderPath}/scan-output.json`, {
-                encoding: "utf8",
-                flag: "r",
-            }),
-        );
-        const repoIdMatch = data.detailsUrl.match(/\/repository\/(\d+)\//);
-        const repoId = repoIdMatch ? Number(repoIdMatch[1]) : null;
-
-        const commitMatch = data.detailsUrl.match(/\/commit\/(\d+)/);
-        const commitId = commitMatch ? Number(commitMatch[1]) : null;
-
-        repoId ? this.globalStore.setRepoId(repoId) : null;
-        commitId ? this.globalStore.setCommitId(commitId) : null;
-        this.globalStore.setScanData(data);
-
-        this.logger.logInfo("Found the repoId and commitId");
     }
 
     /**

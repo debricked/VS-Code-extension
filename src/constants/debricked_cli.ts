@@ -241,7 +241,7 @@ export class DebrickedCommands {
                 label: "JSON Path",
                 flag: "-j",
                 description: "write upload result as json to provided path",
-                report: `${Organization.debrickedFolder}/${Organization.reports}/scan-output.json`,
+                report: `${Organization.scannedOutputPath}`,
             },
             { label: "Author", flag: "-a", description: "commit author" },
             { label: "Branch", flag: "-b", description: "branch name", flagValue: "ide-PLACEHOLDER" },
