@@ -19,7 +19,7 @@ import { ApiClient } from "./apiClient";
 import { GlobalStore } from "./globalStore";
 import { Organization } from "../constants";
 import { Template } from "./template";
-import { SentryHelper } from "./SentryHelper";
+import { SentryHelper } from "./sentryHelper";
 
 class IndexHelper {
     constructor(
@@ -33,6 +33,11 @@ class IndexHelper {
      */
     public async setupDebricked(context: vscode.ExtensionContext): Promise<void> {
         try {
+            SentryHelper.initialize(
+                Organization.sentry_dns,
+                `${Organization.name}@${Organization.version}`,
+                Organization.env,
+            );
             globalStore.setGlobalStateInstance(GlobalState.getInstance(context));
             this.debrickedDataHelper.createDir(Organization.reportsFolderPath);
             this.debrickedDataHelper.createDir(context.logUri.fsPath);

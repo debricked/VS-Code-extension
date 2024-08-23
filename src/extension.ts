@@ -7,7 +7,6 @@ import { BaseCommandService } from "services";
 import { watchers } from "watcher";
 
 export async function activate(context: vscode.ExtensionContext) {
-    SentryHelper.initialize(Organization.sentry_dns, `${Organization.name}@${Organization.version}`, Organization.env);
     await indexHelper.setupDebricked(context);
 
     await vscode.window.withProgress(
