@@ -1,5 +1,5 @@
 import { Organization } from "../constants";
-import { Vulnerabilities, PolicyViolation } from "../types";
+import { Vulnerabilities, Package } from "../types";
 import * as vscode from "vscode";
 import { SecondService } from "../constants";
 
@@ -75,24 +75,21 @@ export class Template {
         contents.appendText(Organization.separator);
     }
 
-    public policyViolationContent(policyViolationData: PolicyViolation[], contents: vscode.MarkdownString) {
-        if (policyViolationData.length === 0) {
+    public policyViolationContent(policyViolationData: Package | any, contents: vscode.MarkdownString) {
+        if (!policyViolationData) {
             contents.appendMarkdown("No policy violations found.\n");
             return;
         }
 
         contents.appendMarkdown("Policy Violations\n\n");
 
-        policyViolationData.forEach((violation: PolicyViolation, index: number) => {
-            contents.appendMarkdown(`Rule - ${index + 1}`);
-            contents.appendMarkdown("\n");
-            violation.ruleActions.forEach((ruleAction: string, index: number) => {
-                contents.appendMarkdown(
-                    `  ${index + 1}. **${this.policyViolation[ruleAction as keyof typeof this.policyViolation]}** - [View rule](${violation.ruleLink})`,
-                );
-                contents.appendMarkdown("\n");
-            });
+        contents.appendMarkdown("\n");
+        policyViolationData?.ruleActions?.forEach((ruleAction: string, index: number) => {
+            contents.appendMarkdown(
+                `  ${index + 1}. **${this.policyViolation[ruleAction as keyof typeof this.policyViolation]}** - [View rule](${policyViolationData.ruleLink})`,
+            );
             contents.appendMarkdown("\n");
         });
+        contents.appendMarkdown("\n");
     }
 }

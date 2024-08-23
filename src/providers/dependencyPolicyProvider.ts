@@ -1,3 +1,4 @@
+import { Package } from "types";
 import { commonHelper, globalStore } from "../helpers";
 import * as vscode from "vscode";
 
@@ -19,54 +20,44 @@ export class DependencyPolicyProvider implements vscode.CodeActionProvider {
         if (currentManifestFile === "package.json") {
             const diagnostics: vscode.Diagnostic[] = [];
             const content = document.getText();
-            const scanData = globalStore.getScanData();
+            const processedScannedData: Map<string, Package> = globalStore.getProcessedScanData();
 
-            if (scanData) {
+            if (processedScannedData && processedScannedData.size > 0) {
                 const manifestData = JSON.parse(content) || {};
                 const allDependencies = {
                     ...manifestData.dependencies,
                     ...manifestData.devDependencies,
                 };
 
-                for (const rule of scanData.automationRules) {
-                    if (rule.triggered) {
-                        for (const event of rule.triggerEvents) {
-                            const packageName = this.extractPackageName(event.dependency);
-                            if (packageName in allDependencies) {
-                                const range = this.findDependencyRange(document, packageName);
-                                if (range) {
-                                    let diagnostic: vscode.Diagnostic;
-                                    if (rule.ruleActions.includes("failPipeline")) {
-                                        diagnostic = new vscode.Diagnostic(
-                                            range,
-                                            `Dependency ${packageName} failed the pipeline`,
-                                            vscode.DiagnosticSeverity.Error,
-                                        );
-                                    } else if (rule.ruleActions.includes("warnPipeline")) {
-                                        diagnostic = new vscode.Diagnostic(
-                                            range,
-                                            `Dependency ${packageName} triggered a pipeline warning`,
-                                            vscode.DiagnosticSeverity.Warning,
-                                        );
-                                    } else {
-                                        continue; // No diagnostic for 'pass' status
-                                    }
-                                    diagnostic.code = {
-                                        value: event.cve,
-                                        target: vscode.Uri.parse(event.cveLink),
-                                    };
-                                    diagnostics.push(diagnostic);
-                                }
+                for (const [packageName, packageData] of processedScannedData) {
+                    if (packageName in allDependencies) {
+                        const range = this.findDependencyRange(document, packageName);
+                        if (range) {
+                            let diagnostic: vscode.Diagnostic;
+                            if (packageData.ruleActions?.includes("failPipeline")) {
+                                diagnostic = new vscode.Diagnostic(
+                                    range,
+                                    `Dependency ${packageName} failed the pipeline`,
+                                    vscode.DiagnosticSeverity.Error,
+                                );
+                            } else if (packageData.ruleActions?.includes("warnPipeline")) {
+                                diagnostic = new vscode.Diagnostic(
+                                    range,
+                                    `Dependency ${packageName} triggered a pipeline warning`,
+                                    vscode.DiagnosticSeverity.Warning,
+                                );
+                            } else {
+                                continue; // No diagnostic for 'pass' status
                             }
+                            diagnostic.code = {
+                                value: packageData.cve || "",
+                                target: vscode.Uri.parse(packageData.cveLink || ""),
+                            };
+                            diagnostics.push(diagnostic);
                         }
                     }
                 }
             }
-
-            // let uri = document.uri;
-            // if (uri.path.endsWith(".git")) {
-            //     uri = uri.with({ path: uri.path.slice(0, -4) });
-            // }
 
             this.diagnosticCollection.set(document.uri, diagnostics);
         }
@@ -82,10 +73,5 @@ export class DependencyPolicyProvider implements vscode.CodeActionProvider {
             return new vscode.Range(startPos, endPos);
         }
         return null;
-    }
-
-    private extractPackageName(fullName: string): string {
-        // Extracts package name from strings like "vite (npm)"
-        return fullName.split(" ")[0];
     }
 }

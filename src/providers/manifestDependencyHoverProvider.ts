@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import { commonHelper, globalStore, template } from "../helpers";
-import { DependencyService } from "services";
 import { TransitiveVulnerabilities, Vulnerabilities, Dependency } from "../types";
 import { Regex } from "../constants";
 
@@ -27,15 +26,16 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
             return null;
         }
 
-        const depData = globalStore.getDependencyData().get(dependencyName);
+        const foundPackage = globalStore.getProcessedScanData().get(dependencyName);
+
+        const depData = globalStore.getDependencyData().get(`${dependencyName} (npm)`);
         const licenseData = depData?.licenses[0]?.name ?? "Unknown";
         const vulnerableData = await this.getVulnerableData(depData);
-        const policyViolationData = DependencyService.getPolicyViolationData(dependencyName);
 
         const contents = this.createMarkdownString();
         template.licenseContent(licenseData, contents);
         template.vulnerableContent(vulnerableData, contents);
-        template.policyViolationContent(policyViolationData, contents);
+        template.policyViolationContent(foundPackage, contents);
 
         return new vscode.Hover(contents);
     }
@@ -89,7 +89,7 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
             case "package.json": {
                 const match = commonHelper.extractValueFromStringUsingRegex(lineText, Regex.packageJson);
                 if (match) {
-                    return match + " (npm)";
+                    return match;
                 }
                 break;
             }

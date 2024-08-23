@@ -58,19 +58,4 @@ export class DependencyService {
 
         globalStore.setVulnerableData(vulnerabilityMap);
     }
-
-    static getPolicyViolationData(depName: string) {
-        Logger.logInfo("Started fetching Policy violation data");
-
-        const scannedData = globalStore.getScanData();
-
-        return scannedData.automationRules
-            .filter((automationRule) =>
-                automationRule.triggerEvents.some((triggerEvent) => triggerEvent.dependency === depName),
-            )
-            .map((automationRule) => ({
-                ruleActions: automationRule.ruleActions,
-                ruleLink: automationRule.ruleLink,
-            }));
-    }
 }

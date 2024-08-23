@@ -9,7 +9,7 @@ import {
     fileHelper,
 } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization, Regex } from "../constants/index";
-import { DebrickedCommandNode, ScannedData } from "../types";
+import { DebrickedCommandNode, Package, ScannedData } from "../types";
 import * as vscode from "vscode";
 
 export class FileService {
@@ -131,8 +131,27 @@ export class FileService {
         repoId ? globalStore.setRepoId(repoId) : null;
         commitId ? globalStore.setCommitId(commitId) : null;
 
+        FileService.processScannedData(data.automationRules);
         globalStore.setScanData(data);
-
         Logger.logInfo("Found the repoId and commitId");
+    }
+
+    static async processScannedData(automationRules: any[]) {
+        const actions = ["warnPipeline", "failPipeline"];
+        const triggerEvents = automationRules
+            .filter((rule) => actions.some((action) => rule.ruleActions.includes(action)))
+            .flatMap((rule) =>
+                rule.triggerEvents.map((event: any) => ({
+                    ...event,
+                    ruleActions: rule.ruleActions,
+                    ruleLink: rule.ruleLink,
+                })),
+            );
+
+        const triggerEventsMap = new Map<string, Package>(
+            triggerEvents.map((event) => [event.dependency.split(" ")[0], event]),
+        );
+
+        globalStore.setProcessedScanData(triggerEventsMap);
     }
 }

@@ -11,6 +11,7 @@ import {
 } from "./vulnerability";
 import { ScannedData, PolicyViolation } from "./scannedData";
 import { Dependency, DependencyResponse, IndirectDependency } from "./dependency";
+import { Package } from "./package";
 
 export {
     DebrickedCommandNode,
@@ -27,4 +28,5 @@ export {
     DependencyResponse,
     IndirectDependency,
     PolicyViolation,
+    Package,
 };
