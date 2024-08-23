@@ -71,6 +71,12 @@
                 "icon": "$(file-text)"
             },
             {
+                "command": "debricked.debricked.sentry",
+                "title": "Debricked sentry logs",
+                "category": "debricked",
+                "icon": "$(file-text)"
+            },
+            {
                 "command": "debricked.debricked.login",
                 "title": "Debricked login",
                 "category": "debricked",

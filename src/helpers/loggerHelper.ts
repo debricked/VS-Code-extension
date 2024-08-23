@@ -3,7 +3,7 @@ import * as path from "path";
 import { Organization, MessageStatus } from "../constants/index";
 import * as vscode from "vscode";
 import { GlobalStore } from "./globalStore";
-import { SentryHelper } from "./SentryHelper";
+import { SentryHelper } from "./sentryHelper";
 
 export class Logger {
     private static logDirPath = path.join(Organization.debrickedInstalledDir, Organization.debrickedFolder);

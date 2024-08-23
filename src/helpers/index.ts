@@ -19,7 +19,7 @@ import { ApiClient } from "./apiClient";
 import { GlobalStore } from "./globalStore";
 import { Organization } from "../constants";
 import { Template } from "./template";
-import { SentryHelper } from "./SentryHelper";
+import { SentryHelper } from "./sentryHelper";
 
 class IndexHelper {
     constructor(
@@ -37,7 +37,7 @@ class IndexHelper {
             this.debrickedDataHelper.createDir(Organization.reportsFolderPath);
             this.debrickedDataHelper.createDir(context.logUri.fsPath);
             Logger.initialize(context);
-
+            SentryHelper.configureSentry();
             await this.commonHelper.checkUserId();
             await this.gitHelper.setupGit();
         } catch (error: any) {

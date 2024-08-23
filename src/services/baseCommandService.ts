@@ -12,6 +12,7 @@ import {
     globalStore,
     showInputBoxHelper,
     commonHelper,
+    SentryHelper,
 } from "../helpers";
 import * as vscode from "vscode";
 import { exec } from "child_process";
@@ -44,6 +45,10 @@ export class BaseCommandService {
 
                 case "log":
                     Logger.openLogFile();
+                    break;
+
+                case "sentry":
+                    await SentryHelper.reConfigureSentry();
                     break;
 
                 case "login":
