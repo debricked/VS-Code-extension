@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { DebrickedCommands } from "../constants/index";
 import { BaseCommandService, ScanService, FileService } from "../services";
-import { Logger, commonHelper, errorHandler, globalStore } from "../helpers";
+import { Logger, SentryHelper, commonHelper, errorHandler, globalStore } from "../helpers";
 
 export class DebrickedCommand {
     public static async commands(context: vscode.ExtensionContext) {
@@ -28,6 +28,7 @@ export class DebrickedCommand {
                 DebrickedCommand.registerCommand(context, baseSubCommands[2].command, BaseCommandService.help);
                 DebrickedCommand.registerCommand(context, baseSubCommands[3].command, Logger.openLogFile);
                 DebrickedCommand.registerCommand(context, baseSubCommands[4].command, BaseCommandService.login);
+                DebrickedCommand.registerCommand(context, baseSubCommands[5].command, SentryHelper.reConfigureSentry);
             }
 
             // Register scan command

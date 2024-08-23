@@ -33,16 +33,11 @@ class IndexHelper {
      */
     public async setupDebricked(context: vscode.ExtensionContext): Promise<void> {
         try {
-            SentryHelper.initialize(
-                Organization.sentry_dns,
-                `${Organization.name}@${Organization.version}`,
-                Organization.env,
-            );
             globalStore.setGlobalStateInstance(GlobalState.getInstance(context));
             this.debrickedDataHelper.createDir(Organization.reportsFolderPath);
             this.debrickedDataHelper.createDir(context.logUri.fsPath);
             Logger.initialize(context);
-
+            SentryHelper.configureSentry();
             await this.commonHelper.checkUserId();
             await this.gitHelper.setupGit();
         } catch (error: any) {

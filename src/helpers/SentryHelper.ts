@@ -1,5 +1,7 @@
 import * as Sentry from "@sentry/node";
-import { MessageStatus } from "../constants";
+import { MessageStatus, Organization } from "../constants";
+import * as vscode from "vscode";
+import { GlobalStore } from "./globalStore";
 
 export class SentryHelper {
     private static instance: SentryHelper;
@@ -139,5 +141,40 @@ export class SentryHelper {
             default:
                 console.warn(`Unhandled severity level: ${level}`);
         }
+    }
+
+    public static async configureSentry(): Promise<void> {
+        const isSentryEnabled = await SentryHelper.getSentryEnabledState();
+
+        if (isSentryEnabled === "Yes") {
+            SentryHelper.initialize(
+                Organization.sentry_dns,
+                `${Organization.name}@${Organization.version}`,
+                Organization.env,
+            );
+            vscode.window.showWarningMessage("Logs are being sent to Sentry");
+        } else {
+            SentryHelper.close();
+            vscode.window.showInformationMessage("Sentry Logs are disabled");
+        }
+    }
+
+    public static async reConfigureSentry(): Promise<void> {
+        const response = await vscode.window.showInformationMessage("Do you want to enable Sentry?", "Yes", "No");
+
+        GlobalStore.getInstance().getGlobalStateInstance()?.setGlobalData("sentry_enabled", response);
+
+        SentryHelper.configureSentry();
+    }
+
+    private static async getSentryEnabledState(): Promise<string | undefined> {
+        let storedState = GlobalStore.getInstance().getGlobalStateInstance()?.getGlobalData("sentry_enabled");
+
+        if (storedState === undefined) {
+            storedState = await vscode.window.showInformationMessage("Do you want to enable Sentry?", "Yes", "No");
+            GlobalStore.getInstance().getGlobalStateInstance()?.setGlobalData("sentry_enabled", storedState);
+        }
+
+        return storedState;
     }
 }

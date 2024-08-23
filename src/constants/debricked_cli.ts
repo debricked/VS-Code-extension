@@ -54,6 +54,12 @@ export class DebrickedCommands {
                 cli_command: "login",
                 description: "Debricked login",
             },
+            {
+                label: "Sentry Logs",
+                command: "debricked.debricked.sentry",
+                cli_command: "sentry",
+                description: "Debricked sentry logs",
+            },
         ],
         flags: [
             {
