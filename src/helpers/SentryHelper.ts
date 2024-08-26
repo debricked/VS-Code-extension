@@ -149,7 +149,7 @@ export class SentryHelper {
         if (isSentryEnabled === "Yes") {
             SentryHelper.initialize(
                 Organization.sentry_dns,
-                `${Organization.name}@${Organization.version}`,
+                `${Organization.name}@${Organization.packageJson.version}`,
                 Organization.env,
             );
             vscode.window.showWarningMessage("Logs are being sent to Sentry");
