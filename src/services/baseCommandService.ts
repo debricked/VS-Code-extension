@@ -228,7 +228,7 @@ export class BaseCommandService {
     }
 
     static async getCurrentExtensionVersion(): Promise<string> {
-        const extension = vscode.extensions.getExtension(`${Organization.name}.${Organization.extensionName}`);
-        return extension ? extension.packageJSON.version : Organization.baseVersion;
+        const extension = vscode.extensions.getExtension(`${Organization.name}.${Organization.packageJson.name}`);
+        return extension ? extension.packageJSON.version : Organization.packageJson.version;
     }
 }

@@ -1,10 +1,15 @@
 import * as path from "path";
 import * as vscode from "vscode";
 import * as os from "os";
+import * as fs from "fs";
 
 export class Organization {
-    static readonly name = "debricked";
-    static readonly version = "0.0.1";
+    static readonly debrickedRootDir = path.join(__dirname, "../");
+    static readonly packageJson = JSON.parse(
+        fs.readFileSync(`${Organization.debrickedRootDir}\package.json`).toString(),
+    );
+
+    static readonly name = Organization.packageJson.displayName;
     static readonly env = "development";
     static readonly sentry_dns = "https://5427545a2216287c2e4e0fc546172a6a@sentry.debricked.com/20";
     static readonly nameCaps = "Debricked";
@@ -21,7 +26,6 @@ export class Organization {
     static readonly reports = "reports";
     static readonly logFile = "debricked.log";
     static readonly debrickedCli = path.join(__dirname, `../resources/debricked-cli/cli/${Organization.command}`);
-    static readonly debrickedInstalledDir = path.join(__dirname, "../");
     static readonly reportsFolderPath = path.join(
         Organization.workspace,
         Organization.debrickedFolder,
@@ -29,7 +33,7 @@ export class Organization {
     );
     static readonly debrickedDataFile = "debricked_data.json";
     static readonly debrickedDataFilePath = path.join(
-        Organization.debrickedInstalledDir,
+        Organization.debrickedRootDir,
         Organization.debrickedFolder,
         Organization.debrickedDataFile,
     );
@@ -43,8 +47,6 @@ export class Organization {
     // Extension constants
     static readonly extensionVersionKey = "extensionVersion";
     static readonly isFirstActivationKey = "isFirstActivation";
-    static readonly baseVersion = "0.0.0";
-    static readonly extensionName = "vs-code-extension";
     static readonly debrickedCommand = "debrickedCommands";
 
     // Keys for storing data

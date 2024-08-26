@@ -6,7 +6,6 @@ import { GlobalStore } from "./globalStore";
 import { SentryHelper } from "./sentryHelper";
 
 export class Logger {
-    private static logDirPath = path.join(Organization.debrickedInstalledDir, Organization.debrickedFolder);
     private static logFilePath: string;
 
     public static async initialize(context: vscode.ExtensionContext) {
@@ -18,10 +17,6 @@ export class Logger {
         const logUri = vscode.Uri.file(Logger.logFilePath);
         const document = await vscode.workspace.openTextDocument(logUri);
         await vscode.window.showTextDocument(document);
-    }
-
-    public static async setLogFile(fileName: string) {
-        Logger.logFilePath = await path.join(Logger.logDirPath, fileName);
     }
 
     private static async writeLog(message: string) {
