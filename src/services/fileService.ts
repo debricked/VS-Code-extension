@@ -9,7 +9,7 @@ import {
     fileHelper,
 } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization, Regex } from "../constants/index";
-import { DebrickedCommandNode, Package, ScannedData } from "../types";
+import { DebrickedCommandNode, Package } from "../types";
 import * as vscode from "vscode";
 
 export class FileService {
@@ -122,7 +122,11 @@ export class FileService {
     }
 
     static async setRepoScannedData() {
-        const data: ScannedData = JSON.parse(fileHelper.readFileSync(Organization.scannedOutputPath).toString());
+        const scannedFilePath = DebrickedCommands.SCAN.flags ? DebrickedCommands.SCAN.flags[2].report : "";
+        let data;
+        if (scannedFilePath) {
+            data = JSON.parse(fileHelper.readFileSync(scannedFilePath).toString());
+        }
         const url = data.detailsUrl;
 
         const repoId = Number(commonHelper.extractValueFromStringUsingRegex(url, Regex.repoId));
@@ -157,7 +161,7 @@ export class FileService {
                 if (existingPackage) {
                     const existingPolicyRules = existingPackage.policyRules || [];
                     const newPolicyRule = event.policyRules[0];
-                    
+
                     if (!existingPolicyRules.some((rule: any) => rule.ruleLink === newPolicyRule.ruleLink)) {
                         existingPackage.policyRules = [...existingPolicyRules, newPolicyRule];
                     }

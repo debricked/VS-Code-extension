@@ -1,3 +1,4 @@
+import path from "path";
 import { DebrickedCommandNode, Flag } from "../types";
 import { Organization } from "./organization";
 
@@ -241,7 +242,7 @@ export class DebrickedCommands {
                 label: "JSON Path",
                 flag: "-j",
                 description: "write upload result as json to provided path",
-                report: `${Organization.scannedOutputPath}`,
+                report: path.join(Organization.reportsFolderPath, "scan-output.json"),
             },
             { label: "Author", flag: "-a", description: "commit author" },
             { label: "Branch", flag: "-b", description: "branch name", flagValue: "ide-PLACEHOLDER" },

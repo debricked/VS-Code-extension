@@ -66,7 +66,11 @@ export class ScanService {
                         true,
                     );
                     if (!output.includes(SecondService.repositoryBaseUrl)) {
-                        if (DebrickedCommands.SCAN.flags && fs.existsSync(Organization.scannedOutputPath)) {
+                        if (
+                            DebrickedCommands.SCAN.flags &&
+                            DebrickedCommands.SCAN.flags[2].report &&
+                            fs.existsSync(DebrickedCommands.SCAN.flags[2].report)
+                        ) {
                             await FileService.setRepoScannedData();
 
                             const repoId = await globalStore.getRepoId();

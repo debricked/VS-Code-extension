@@ -9,7 +9,6 @@ import {
     DependencyVulnerability,
     TransitiveVulnerabilities,
 } from "./vulnerability";
-import { ScannedData, PolicyViolation } from "./scannedData";
 import { Dependency, DependencyResponse, IndirectDependency } from "./dependency";
 import { Package } from "./package";
 
@@ -23,10 +22,8 @@ export {
     Vulnerabilities,
     DependencyVulnerability,
     TransitiveVulnerabilities,
-    ScannedData,
     Dependency,
     DependencyResponse,
     IndirectDependency,
-    PolicyViolation,
     Package,
 };
