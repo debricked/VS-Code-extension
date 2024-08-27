@@ -8,13 +8,13 @@ import {
     commonHelper,
     commandHelper,
     authHelper,
-    fileHelper,
 } from "../helpers";
 import { DebrickedCommands, MessageStatus, Organization, SecondService } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import * as fs from "fs";
 import { DependencyService } from "./dependencyService";
+import { FileService } from "./fileService";
 
 export class ScanService {
     static async scanService() {
@@ -39,7 +39,6 @@ export class ScanService {
                     await ScanService.handleFlags(command.flags[2], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[3], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[4], cmdParams, currentRepoData);
-                    await ScanService.handleFlags(command.global_flags[0], cmdParams, currentRepoData);
                 }
             } else {
                 Logger.logMessageByStatus(MessageStatus.WARN, `No default repo selected`);
@@ -50,7 +49,6 @@ export class ScanService {
                     await ScanService.handleFlags(command.flags[3], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[4], cmdParams, currentRepoData);
                     await ScanService.handleFlags(command.flags[5], cmdParams, currentRepoData);
-                    await ScanService.handleFlags(command.global_flags[0], cmdParams, currentRepoData);
                 }
             }
 
@@ -65,10 +63,15 @@ export class ScanService {
                     progress.report({ message: "Scanning Manifest Files🚀" });
                     const output = await commandHelper.executeAsyncCommand(
                         `${Organization.debrickedCli} ${cmdParams.join(" ")}`,
+                        true,
                     );
                     if (!output.includes(SecondService.repositoryBaseUrl)) {
-                        if (await fs.existsSync(`${Organization.reportsFolderPath}/scan-output.json`)) {
-                            await fileHelper.setRepoID();
+                        if (
+                            DebrickedCommands.SCAN.flags &&
+                            DebrickedCommands.SCAN.flags[2].report &&
+                            fs.existsSync(DebrickedCommands.SCAN.flags[2].report)
+                        ) {
+                            await FileService.setRepoScannedData();
 
                             const repoId = await globalStore.getRepoId();
                             const commitId = await globalStore.getCommitId();

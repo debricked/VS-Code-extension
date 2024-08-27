@@ -31,6 +31,7 @@ export class Organization {
         Organization.debrickedFolder,
         Organization.reports,
     );
+
     static readonly debrickedDataFile = "debricked_data.json";
     static readonly debrickedDataFilePath = path.join(
         Organization.debrickedRootDir,

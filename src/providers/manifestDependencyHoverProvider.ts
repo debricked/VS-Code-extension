@@ -1,25 +1,14 @@
 import * as vscode from "vscode";
-import * as path from "path";
-import { globalStore, template } from "../helpers";
-import { DependencyService } from "services";
-import { TransitiveVulnerabilities, Vulnerabilities } from "types/vulnerability";
-import { Dependency } from "types/dependency";
+import { commonHelper, globalStore, template } from "../helpers";
+import { Vulnerabilities, Package } from "../types";
+import { Regex } from "../constants";
 
 export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
-    private manifestFiles: string[] = [];
-
     public async provideHover(
         document: vscode.TextDocument,
         position: vscode.Position,
     ): Promise<vscode.Hover | null | undefined> {
-        const selectedRepoName = globalStore.getRepository();
-        this.manifestFiles = await globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName).filesToScan;
-        const currentManifestFile = path.basename(document.fileName);
-
-        // Check if the current file is a manifest file
-        const isManifestFile = this.manifestFiles.some(
-            (manifest: string) => path.basename(manifest) === currentManifestFile,
-        );
+        const { isManifestFile, currentManifestFile } = await commonHelper.isCurrentDocManifestFile(document);
 
         if (!isManifestFile) {
             return null;
@@ -37,50 +26,51 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
             return null;
         }
 
-        const depData = globalStore.getDependencyData().get(dependencyName);
-        const licenseData = depData?.licenses[0]?.name ?? "Unknown";
-        const vulnerableData = await this.getVulnerableData(depData);
-        const policyViolationData = DependencyService.getPolicyViolationData(dependencyName);
+        const foundPackage = globalStore.getPackages().get(dependencyName);
+
+        const licenseData = foundPackage?.licenses ? foundPackage?.licenses[0] : "Unknown";
+        const vulnerableData = await this.getVulnerableData(foundPackage);
 
         const contents = this.createMarkdownString();
         template.licenseContent(licenseData, contents);
         template.vulnerableContent(vulnerableData, contents);
-        template.policyViolationContent(policyViolationData, contents);
+        if (foundPackage) {
+            template.policyViolationContent(foundPackage, contents);
+        }
 
         return new vscode.Hover(contents);
     }
 
-    private async getVulnerableData(dependency?: Dependency): Promise<Vulnerabilities> {
+    private async getVulnerableData(dependency?: Package): Promise<Vulnerabilities> {
         const vulnerabilities: Vulnerabilities = {
             directVulnerabilities: [],
             indirectVulnerabilities: [],
         };
-        const vulnerabilityData = globalStore.getVulnerableData();
-        //direct dependencies
+        const vulnerabilityData = await globalStore.getVulnerableData();
+
         if (dependency) {
-            vulnerabilities.directVulnerabilities = vulnerabilityData.get(dependency.name.name) ?? [];
-        }
-        //indirect dependencies
-        if (dependency?.indirectDependencies) {
-            const vulnerabilitiesToFetch = dependency.indirectDependencies;
+            // Direct dependencies
+            vulnerabilities.directVulnerabilities = vulnerabilityData.get(dependency.dependencyName) ?? [];
 
-            for (const indirectDep of vulnerabilitiesToFetch) {
-                const vulnerableData = vulnerabilityData.get(indirectDep.name.name) ?? [];
+            // Indirect dependencies
+            if (dependency.indirectDependency) {
+                for (const [dependencyName, indirectDep] of dependency.indirectDependency) {
+                    const vulnerableData = vulnerabilityData.get(dependencyName) ?? [];
 
-                if (vulnerableData.length !== 0) {
-                    const transitiveVulnerableData: TransitiveVulnerabilities = {
-                        transitiveVulnerabilities: vulnerableData,
-                        dependencyName: indirectDep.name.name,
-                        dependencyId: indirectDep.id,
-                    };
-                    vulnerabilities.indirectVulnerabilities.push(transitiveVulnerableData);
-                }
+                    if (vulnerableData.length > 0) {
+                        vulnerabilities.indirectVulnerabilities.push({
+                            transitiveVulnerabilities: vulnerableData,
+                            dependencyName: indirectDep.dependencyName,
+                        });
+                    }
 
-                if (vulnerabilities.indirectVulnerabilities.length > 1) {
-                    break;
+                    if (vulnerabilities.indirectVulnerabilities.length > 1) {
+                        break;
+                    }
                 }
             }
         }
+
         return vulnerabilities;
     }
 
@@ -97,20 +87,17 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
 
         switch (fileName) {
             case "package.json": {
-                const packageJsonRegex = /"([^"]+)":\s*"([^"]+)"/;
-                const match = lineText.match(packageJsonRegex);
+                const match = commonHelper.extractValueFromStringUsingRegex(lineText, Regex.packageJson);
                 if (match) {
-                    return match[1] + " (npm)";
+                    return match;
                 }
                 break;
             }
 
             case "go.mod": {
-                const goModRegex =
-                    /^(?:require\s+)?(\S+)\s+(v?\d+(?:\.\d+)*(?:-[\w\.-]+)?(?:\+[\w\.-]+)?)(?:\s+\/\/\s+indirect)?/;
-                const match = lineText.match(goModRegex);
+                const match = commonHelper.extractValueFromStringUsingRegex(lineText, Regex.goMod);
                 if (match) {
-                    return match[1] + " (Go)";
+                    return match + " (Go)";
                 }
                 break;
             }

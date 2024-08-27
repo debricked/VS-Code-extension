@@ -4,14 +4,11 @@ import * as path from "path";
 import { MessageStatus, Organization } from "../constants/index";
 import { Logger } from "./loggerHelper";
 import { DebrickedDataHelper } from "./debrickedDataHelper";
-import { GlobalStore } from "./globalStore";
-import { ScannedData } from "types/scannedData";
 
 export class FileHelper {
     constructor(
         private debrickedDataHelper: DebrickedDataHelper,
         private logger: typeof Logger,
-        private globalStore: GlobalStore,
     ) {}
     /**
      * Stores content in a specified file within the 'debricked-result' folder.
@@ -41,23 +38,18 @@ export class FileHelper {
         await this.openTextDocument(filePath);
     }
 
-    public async setRepoID() {
-        const data: ScannedData = JSON.parse(
-            fs.readFileSync(`${Organization.reportsFolderPath}/scan-output.json`, {
-                encoding: "utf8",
-                flag: "r",
-            }),
-        );
-        const repoIdMatch = data.detailsUrl.match(/\/repository\/(\d+)\//);
-        const repoId = repoIdMatch ? Number(repoIdMatch[1]) : null;
-
-        const commitMatch = data.detailsUrl.match(/\/commit\/(\d+)/);
-        const commitId = commitMatch ? Number(commitMatch[1]) : null;
-
-        repoId ? this.globalStore.setRepoId(repoId) : null;
-        commitId ? this.globalStore.setCommitId(commitId) : null;
-        this.globalStore.setScanData(data);
-
-        this.logger.logInfo("Found the repoId and commitId");
+    /**
+     * Reads a JSON file and returns its contents as a JSON object.
+     *
+     * @param filePath The path to the JSON file.
+     * @param options The options for reading the file.
+     * @returns The JSON object.
+     */
+    public readFileSync(filePath: fs.PathOrFileDescriptor, options?: { encoding: "utf8"; flag: "r" }): string | Buffer {
+        try {
+            return fs.readFileSync(filePath, options);
+        } catch (error: any) {
+            throw new Error(`Failed to read JSON file at ${filePath}: ${error}`);
+        }
     }
 }

@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { MessageStatus, DebrickedCommands, Organization } from "../constants";
+import { MessageStatus, DebrickedCommands } from "../constants";
 import { ScanService, FileService, DependencyService } from "../services";
-import { errorHandler, Logger, StatusMessage, statusBarMessageHelper, fileHelper, globalStore } from "../helpers";
+import { errorHandler, Logger, StatusMessage, statusBarMessageHelper, globalStore } from "../helpers";
 
 export class ManifestWatcher {
     private static instance: ManifestWatcher;
@@ -96,16 +96,20 @@ export class ManifestWatcher {
     }
 
     private async reportsWatcher(context: vscode.ExtensionContext) {
-        const watcher = vscode.workspace.createFileSystemWatcher(`${Organization.reportsFolderPath}/scan-output.json`);
-        watcher.onDidChange(async () => {
-            await fileHelper.setRepoID();
+        const scannedFilePath = DebrickedCommands.SCAN.flags ? DebrickedCommands.SCAN.flags[2].report : "";
+        let watcher;
+        if (scannedFilePath) {
+            watcher = vscode.workspace.createFileSystemWatcher(scannedFilePath);
+            watcher.onDidChange(async () => {
+                await FileService.setRepoScannedData();
 
-            const repoId = await globalStore.getRepoId();
-            const commitId = await globalStore.getCommitId();
+                const repoId = await globalStore.getRepoId();
+                const commitId = await globalStore.getCommitId();
 
-            await DependencyService.getDependencyData(repoId, commitId);
-            await DependencyService.getVulnerableData();
-        });
-        context.subscriptions.push(watcher);
+                await DependencyService.getDependencyData(repoId, commitId);
+                await DependencyService.getVulnerableData();
+            });
+            context.subscriptions.push(watcher);
+        }
     }
 }
