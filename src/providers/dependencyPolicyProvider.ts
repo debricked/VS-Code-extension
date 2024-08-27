@@ -1,6 +1,7 @@
 import { Package } from "types";
 import { commonHelper, globalStore } from "../helpers";
 import * as vscode from "vscode";
+import { PolicyTriggerEvents, SecondService } from "../constants";
 
 export class DependencyPolicyProvider implements vscode.CodeActionProvider {
     constructor(private diagnosticCollection: vscode.DiagnosticCollection) {}
@@ -20,46 +21,52 @@ export class DependencyPolicyProvider implements vscode.CodeActionProvider {
         if (currentManifestFile === "package.json") {
             const diagnostics: vscode.Diagnostic[] = [];
             const content = document.getText();
-            const processedScannedData: Map<string, Package> = globalStore.getProcessedScanData();
+            const packages: Map<string, Package> = globalStore.getPackages();
 
-            if (processedScannedData && processedScannedData.size > 0) {
+            if (packages && packages.size > 0) {
                 const manifestData = JSON.parse(content) || {};
                 const allDependencies = {
                     ...manifestData.dependencies,
                     ...manifestData.devDependencies,
                 };
 
-                for (const [packageName, packageData] of processedScannedData) {
+                for (const [packageName, packageData] of packages) {
                     if (packageName in allDependencies) {
                         const range = this.findDependencyRange(document, packageName);
                         if (range) {
-                            let diagnostic: vscode.Diagnostic;
-                            if (packageData.ruleActions?.includes("failPipeline")) {
-                                diagnostic = new vscode.Diagnostic(
-                                    range,
-                                    `Dependency ${packageName} failed the pipeline`,
-                                    vscode.DiagnosticSeverity.Error,
-                                );
-                            } else if (packageData.ruleActions?.includes("warnPipeline")) {
-                                diagnostic = new vscode.Diagnostic(
-                                    range,
-                                    `Dependency ${packageName} triggered a pipeline warning`,
-                                    vscode.DiagnosticSeverity.Warning,
-                                );
-                            } else {
-                                continue; // No diagnostic for 'pass' status
+                            let diagnostic: vscode.Diagnostic | undefined;
+                            packageData.policyRules?.forEach((rule) => {
+                                if (rule.ruleActions?.includes(PolicyTriggerEvents.FAIL_PIPELINE)) {
+                                    diagnostic = new vscode.Diagnostic(
+                                        range,
+                                        `Dependency ${packageName} failed the pipeline`,
+                                        vscode.DiagnosticSeverity.Error,
+                                    );
+                                } else if (rule.ruleActions?.includes(PolicyTriggerEvents.WARN_PIPELINE)) {
+                                    diagnostic = new vscode.Diagnostic(
+                                        range,
+                                        `Dependency ${packageName} triggered a pipeline warning`,
+                                        vscode.DiagnosticSeverity.Warning,
+                                    );
+                                }
+                            });
+
+                            if (diagnostic) {
+                                diagnostic.code = {
+                                    value: packageData.cve ?? "Unknown reason",
+                                    target: vscode.Uri.parse(packageData.cveLink ?? SecondService.debrickedBaseUrl),
+                                };
+                                diagnostics.push(diagnostic);
                             }
-                            diagnostic.code = {
-                                value: packageData.cve || "",
-                                target: vscode.Uri.parse(packageData.cveLink || ""),
-                            };
-                            diagnostics.push(diagnostic);
                         }
                     }
                 }
             }
 
-            this.diagnosticCollection.set(document.uri, diagnostics);
+            const uri = document.uri;
+            if (!uri.path.endsWith(".git")) {
+                this.diagnosticCollection.set(uri, diagnostics);
+            }
         }
     }
 

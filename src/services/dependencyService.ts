@@ -1,5 +1,5 @@
 import { apiHelper, globalStore, Logger } from "../helpers";
-import { RequestParam } from "../types";
+import { Package, RequestParam } from "../types";
 import {
     DependencyVulnerability,
     DependencyVulnerabilityWrapper,
@@ -18,19 +18,42 @@ export class DependencyService {
             commitId: commitId,
         };
         const response: DependencyResponse = await apiHelper.get(requestParam);
-        const dependencyMap = new Map<string, IndirectDependency>();
+        const packageData = globalStore.getPackages();
 
-        // Converts the response to map
-        response.dependencies.forEach((dep: Dependency) => {
-            dependencyMap.set(dep.name.name, dep);
-            if (dep.indirectDependencies.length > 0) {
-                dep.indirectDependencies.forEach((indirectDep: IndirectDependency) => {
-                    dependencyMap.set(indirectDep.name.name, indirectDep);
-                });
+        response.dependencies.forEach((dependency: Dependency) => {
+            const depName = dependency.name.name?.split(" ")[0];
+            const foundPackage = packageData.get(depName);
+            const newDependency: Package = {
+                licenses: [],
+                dependencyName: "",
+            };
+
+            if (foundPackage) {
+                const licenses = dependency.licenses.map((license) => license.name);
+                foundPackage.licenses = licenses;
+                Object.assign(newDependency, foundPackage);
+            } else {
+                newDependency.licenses = dependency.licenses.map((license) => license.name);
+                newDependency.dependencyName = depName;
             }
-        });
 
-        globalStore.setDependencyData(dependencyMap);
+            if (dependency.indirectDependencies.length > 0) {
+                const indirectDepsMap = new Map<string, Package>();
+
+                dependency.indirectDependencies.forEach((indirectDep: IndirectDependency) => {
+                    const indirectDepName = indirectDep.name.name?.split(" ")[0];
+                    const newIndirectDep: Package = {
+                        licenses: indirectDep.licenses.map((license) => license.name),
+                        dependencyName: indirectDepName,
+                    };
+                    indirectDepsMap.set(indirectDepName, newIndirectDep);
+                });
+                newDependency.indirectDependency = indirectDepsMap;
+            }
+
+            packageData.set(depName, newDependency);
+        });
+        globalStore.setPackages(packageData);
     }
 
     static async getVulnerableData() {
@@ -48,7 +71,7 @@ export class DependencyService {
 
         response.vulnerabilities.forEach((vul: DependencyVulnerability) => {
             vul.dependencies.forEach((dep) => {
-                const name = dep.name;
+                const name = dep.name.split(" ")[0];
                 if (!vulnerabilityMap.has(name)) {
                     vulnerabilityMap.set(name, []);
                 }

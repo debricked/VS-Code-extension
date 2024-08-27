@@ -131,27 +131,43 @@ export class FileService {
         repoId ? globalStore.setRepoId(repoId) : null;
         commitId ? globalStore.setCommitId(commitId) : null;
 
-        FileService.processScannedData(data.automationRules);
-        globalStore.setScanData(data);
+        FileService.processPackages(data.automationRules);
         Logger.logInfo("Found the repoId and commitId");
     }
 
-    static async processScannedData(automationRules: any[]) {
+    static processPackages(automationRules: any[]) {
         const actions = ["warnPipeline", "failPipeline"];
-        const triggerEvents = automationRules
+
+        const triggerEventsMap = automationRules
             .filter((rule) => actions.some((action) => rule.ruleActions.includes(action)))
             .flatMap((rule) =>
-                rule.triggerEvents.map((event: any) => ({
-                    ...event,
-                    ruleActions: rule.ruleActions,
-                    ruleLink: rule.ruleLink,
-                })),
-            );
+                rule.triggerEvents.map((event: any) => {
+                    const { dependency, ...restOfEvent } = event;
+                    const { ruleActions, ruleLink } = rule;
+                    return {
+                        ...restOfEvent,
+                        dependencyName: dependency.split(" ")[0],
+                        policyRules: [{ ruleActions, ruleLink }],
+                    };
+                }),
+            )
+            .reduce((map, event) => {
+                // for storing the multiple rules
+                const existingPackage = map.get(event.dependencyName);
+                if (existingPackage) {
+                    const existingPolicyRules = existingPackage.policyRules || [];
+                    const newPolicyRule = event.policyRules[0];
+                    
+                    if (!existingPolicyRules.some((rule: any) => rule.ruleLink === newPolicyRule.ruleLink)) {
+                        existingPackage.policyRules = [...existingPolicyRules, newPolicyRule];
+                    }
+                } else {
+                    map.set(event.dependencyName, event);
+                }
 
-        const triggerEventsMap = new Map<string, Package>(
-            triggerEvents.map((event) => [event.dependency.split(" ")[0], event]),
-        );
+                return map;
+            }, new Map<string, Package>());
 
-        globalStore.setProcessedScanData(triggerEventsMap);
+        globalStore.setPackages(triggerEventsMap);
     }
 }

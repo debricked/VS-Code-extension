@@ -35,7 +35,7 @@ class IndexHelper {
         try {
             SentryHelper.initialize(
                 Organization.sentry_dns,
-                `${Organization.name}@${Organization.version}`,
+                `${Organization.name}@${Organization.packageJson.version}`,
                 Organization.env,
             );
             globalStore.setGlobalStateInstance(GlobalState.getInstance(context));

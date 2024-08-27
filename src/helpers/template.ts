@@ -1,21 +1,13 @@
 import { Organization } from "../constants";
 import { Vulnerabilities, Package } from "../types";
 import * as vscode from "vscode";
-import { SecondService } from "../constants";
+import { SecondService, PolicyRules } from "../constants";
 
 export class Template {
     constructor() {}
 
-    private policyViolation = {
-        failPipeline: "Pipeline failing",
-        warnPipeline: "Pipeline warning",
-        markUnaffected: "Mark vulnerability as unaffected",
-        markVulnerable: "Flag vulnerability as vulnerable",
-        sendEmail: "Notified email",
-        triggerWebhook: "Triggered webhook",
-    };
-
     public licenseContent(license: string, contents: vscode.MarkdownString) {
+        contents.appendText(Organization.separator);
         contents.appendMarkdown(`License: **${license}**`);
         contents.appendText(Organization.separator);
     }
@@ -75,21 +67,26 @@ export class Template {
         contents.appendText(Organization.separator);
     }
 
-    public policyViolationContent(policyViolationData: Package | any, contents: vscode.MarkdownString) {
-        if (!policyViolationData) {
+    public policyViolationContent(policyViolationData: Package, contents: vscode.MarkdownString) {
+        if (policyViolationData?.policyRules === undefined) {
             contents.appendMarkdown("No policy violations found.\n");
+            contents.appendText(Organization.separator);
             return;
         }
 
         contents.appendMarkdown("Policy Violations\n\n");
 
         contents.appendMarkdown("\n");
-        policyViolationData?.ruleActions?.forEach((ruleAction: string, index: number) => {
-            contents.appendMarkdown(
-                `  ${index + 1}. **${this.policyViolation[ruleAction as keyof typeof this.policyViolation]}** - [View rule](${policyViolationData.ruleLink})`,
-            );
-            contents.appendMarkdown("\n");
+        policyViolationData.policyRules?.forEach((rule, index) => {
+            if (index < 2) {
+                rule.ruleActions?.forEach((ruleAction: string, index: number) => {
+                    contents.appendMarkdown(
+                        `  ${index + 1}. **${PolicyRules[ruleAction as keyof typeof PolicyRules]}** - [View rule](${rule.ruleLink})`,
+                    );
+                });
+                contents.appendMarkdown("\n\n");
+            }
         });
-        contents.appendMarkdown("\n");
+        contents.appendText(Organization.separator);
     }
 }

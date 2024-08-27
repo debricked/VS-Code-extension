@@ -1,6 +1,6 @@
 import { MessageStatus } from "../constants/index";
 import { GlobalState } from "./globalState";
-import { ScannedData, DependencyVulnerability, Dependency, Package } from "../types";
+import { DependencyVulnerability, Package } from "../types";
 
 export class GlobalStore {
     private static instance: GlobalStore;
@@ -8,11 +8,9 @@ export class GlobalStore {
     private sequenceID: string | undefined;
     private globalStateInstance: GlobalState | undefined;
     private repositoryName: string = MessageStatus.UNKNOWN;
-    private repoData: any;
     private repoId!: number;
     private commitId!: number;
-    private scannedData!: ScannedData;
-    private processedScanData!: Map<string, Package>;
+    private packages!: Map<string, Package>;
 
     private vulnerableData!: Map<string, DependencyVulnerability[]>;
 
@@ -85,14 +83,6 @@ export class GlobalStore {
         return this.repositoryName;
     }
 
-    public setDependencyData(repoData: any) {
-        this.repoData = repoData;
-    }
-
-    public getDependencyData(): Map<string, Dependency> {
-        return this.repoData;
-    }
-
     public getRepoId() {
         return this.repoId;
     }
@@ -109,20 +99,12 @@ export class GlobalStore {
         this.commitId = commitId;
     }
 
-    public setScanData(data: ScannedData) {
-        this.scannedData = data;
+    public setPackages(data: Map<string, Package>) {
+        this.packages = data;
     }
 
-    public getScanData(): ScannedData {
-        return this.scannedData;
-    }
-
-    public setProcessedScanData(data: Map<string, Package>) {
-        this.processedScanData = data;
-    }
-
-    public getProcessedScanData(): Map<string, Package> {
-        return this.processedScanData;
+    public getPackages(): Map<string, Package> {
+        return this.packages;
     }
 
     public setVulnerableData(data: Map<string, DependencyVulnerability[]>) {

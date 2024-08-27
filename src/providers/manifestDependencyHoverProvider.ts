@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { commonHelper, globalStore, template } from "../helpers";
-import { TransitiveVulnerabilities, Vulnerabilities, Dependency } from "../types";
+import { Vulnerabilities, Package } from "../types";
 import { Regex } from "../constants";
 
 export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
@@ -26,51 +26,51 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
             return null;
         }
 
-        const foundPackage = globalStore.getProcessedScanData().get(dependencyName);
+        const foundPackage = globalStore.getPackages().get(dependencyName);
 
-        const depData = globalStore.getDependencyData().get(`${dependencyName} (npm)`);
-        const licenseData = depData?.licenses[0]?.name ?? "Unknown";
-        const vulnerableData = await this.getVulnerableData(depData);
+        const licenseData = foundPackage?.licenses ? foundPackage?.licenses[0] : "Unknown";
+        const vulnerableData = await this.getVulnerableData(foundPackage);
 
         const contents = this.createMarkdownString();
         template.licenseContent(licenseData, contents);
         template.vulnerableContent(vulnerableData, contents);
-        template.policyViolationContent(foundPackage, contents);
+        if (foundPackage) {
+            template.policyViolationContent(foundPackage, contents);
+        }
 
         return new vscode.Hover(contents);
     }
 
-    private async getVulnerableData(dependency?: Dependency): Promise<Vulnerabilities> {
+    private async getVulnerableData(dependency?: Package): Promise<Vulnerabilities> {
         const vulnerabilities: Vulnerabilities = {
             directVulnerabilities: [],
             indirectVulnerabilities: [],
         };
-        const vulnerabilityData = globalStore.getVulnerableData();
-        //direct dependencies
+        const vulnerabilityData = await globalStore.getVulnerableData();
+
         if (dependency) {
-            vulnerabilities.directVulnerabilities = vulnerabilityData.get(dependency.name.name) ?? [];
-        }
-        //indirect dependencies
-        if (dependency?.indirectDependencies) {
-            const vulnerabilitiesToFetch = dependency.indirectDependencies;
+            // Direct dependencies
+            vulnerabilities.directVulnerabilities = vulnerabilityData.get(dependency.dependencyName) ?? [];
 
-            for (const indirectDep of vulnerabilitiesToFetch) {
-                const vulnerableData = vulnerabilityData.get(indirectDep.name.name) ?? [];
+            // Indirect dependencies
+            if (dependency.indirectDependency) {
+                for (const [dependencyName, indirectDep] of dependency.indirectDependency) {
+                    const vulnerableData = vulnerabilityData.get(dependencyName) ?? [];
 
-                if (vulnerableData.length !== 0) {
-                    const transitiveVulnerableData: TransitiveVulnerabilities = {
-                        transitiveVulnerabilities: vulnerableData,
-                        dependencyName: indirectDep.name.name,
-                        dependencyId: indirectDep.id,
-                    };
-                    vulnerabilities.indirectVulnerabilities.push(transitiveVulnerableData);
-                }
+                    if (vulnerableData.length > 0) {
+                        vulnerabilities.indirectVulnerabilities.push({
+                            transitiveVulnerabilities: vulnerableData,
+                            dependencyName: indirectDep.dependencyName,
+                        });
+                    }
 
-                if (vulnerabilities.indirectVulnerabilities.length > 1) {
-                    break;
+                    if (vulnerabilities.indirectVulnerabilities.length > 1) {
+                        break;
+                    }
                 }
             }
         }
+
         return vulnerabilities;
     }
 
