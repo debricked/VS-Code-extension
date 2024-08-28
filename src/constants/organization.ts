@@ -2,15 +2,16 @@ import * as path from "path";
 import * as vscode from "vscode";
 import * as os from "os";
 import * as fs from "fs";
+import { Environment } from "./enums";
 
 export class Organization {
-    static readonly debrickedRootDir = path.join(__dirname, "../");
+    static readonly debrickedRootDir = path.join(__dirname, "../../");
     static readonly packageJson = JSON.parse(
         fs.readFileSync(`${Organization.debrickedRootDir}\package.json`).toString(),
     );
 
     static readonly name = Organization.packageJson.displayName;
-    static readonly env = "development";
+    static readonly environment: Environment = (process.env.NODE_ENV as Environment) ?? Environment.PROD;
     static readonly sentry_dns = "https://5427545a2216287c2e4e0fc546172a6a@sentry.debricked.com/20";
     static readonly nameCaps = "Debricked";
     // Command and OS-specific constants

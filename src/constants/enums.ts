@@ -13,3 +13,10 @@ export enum MessageStatus {
     LOG = "log",
     EXCEPTION = "exception",
 }
+
+export enum Environment {
+    DEV = "development",
+    STAGING = "staging",
+    PROD = "production",
+    TEST = "test",
+}

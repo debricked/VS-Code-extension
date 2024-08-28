@@ -52,7 +52,6 @@ export class ScanService {
                 }
             }
 
-            Logger.logMessageByStatus(MessageStatus.INFO, `Executing terminal command with parameters: ${cmdParams}`);
             vscode.window.withProgress(
                 {
                     location: vscode.ProgressLocation.Window,
