@@ -5,7 +5,7 @@ import * as fs from "fs";
 import { Environment } from "./enums";
 
 export class Organization {
-    static readonly debrickedRootDir = path.join(__dirname, "../../");
+    static readonly debrickedRootDir = path.join(__dirname, "../");
     static readonly packageJson = JSON.parse(
         fs.readFileSync(`${Organization.debrickedRootDir}\package.json`).toString(),
     );

@@ -5,11 +5,13 @@ import { GlobalStore } from "./globalStore";
 import { Logger } from "./loggerHelper";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
 import { StatusBarMessageHelper } from "./statusBarMessageHelper";
+import { SentryHelper } from "./sentryHelper";
 
 export class GitHelper {
     constructor(
         private command: Command,
         private logger: typeof Logger,
+        private sentryHelper: typeof SentryHelper,
         private showInputBoxHelper: ShowInputBoxHelper,
         private globalStore: GlobalStore,
         private statusBarMessageHelper: StatusBarMessageHelper,
@@ -75,6 +77,9 @@ export class GitHelper {
 
         repoData.userName = await this.getUsername();
         repoData.email = await this.getEmail();
+
+        const userId = this.globalStore.getUserId() || "";
+        this.sentryHelper.setUser({ id: userId, email: repoData.email, username: repoData.userName });
 
         if (currentRepo !== MessageStatus.UNKNOWN) {
             repoData.currentBranch = await this.getCurrentBranch();

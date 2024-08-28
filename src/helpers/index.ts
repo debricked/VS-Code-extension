@@ -55,7 +55,14 @@ const authHelper = new AuthHelper(showInputBoxHelper, statusBarMessageHelper, Lo
 const errorHandler = new ErrorHandler(statusBarMessageHelper, Logger);
 const commandHelper = new Command(authHelper, Logger);
 const commonHelper = new Common(Logger, showInputBoxHelper, globalStore);
-const gitHelper = new GitHelper(commandHelper, Logger, showInputBoxHelper, globalStore, statusBarMessageHelper);
+const gitHelper = new GitHelper(
+    commandHelper,
+    Logger,
+    SentryHelper,
+    showInputBoxHelper,
+    globalStore,
+    statusBarMessageHelper,
+);
 const terminal = new Terminal(authHelper, Logger);
 const apiClient = new ApiClient(authHelper, errorHandler, Logger);
 const apiHelper = new ApiHelper(apiClient, Logger);
