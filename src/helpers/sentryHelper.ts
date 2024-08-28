@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/node";
-import { MessageStatus, Organization } from "../constants";
+import { Environment, MessageStatus, Organization } from "../constants";
 import * as vscode from "vscode";
 import { GlobalStore } from "./globalStore";
 
@@ -19,7 +19,7 @@ export class SentryHelper {
     public static initialize(
         dsn: string,
         release: string,
-        environment: string = "production",
+        environment: Environment,
         tracesSampleRate: number = 1.0,
     ): void {
         if (!SentryHelper.instance) {
@@ -150,7 +150,7 @@ export class SentryHelper {
             SentryHelper.initialize(
                 Organization.sentry_dns,
                 `${Organization.packageJson.name}@${Organization.packageJson.version}`,
-                Organization.env,
+                Organization.environment,
             );
             vscode.window.showWarningMessage("Logs are being sent to Sentry");
         } else {

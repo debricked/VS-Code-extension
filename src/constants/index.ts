@@ -1,6 +1,6 @@
 import { DebrickedCommands } from "./debricked_cli";
 import { Messages } from "./messages";
-import { MessageStatus } from "./messageStatus";
+import { MessageStatus, Environment } from "./enums";
 import { Organization } from "./organization";
 import { SecondService } from "./secondService";
 import { Regex } from "./regex";
@@ -15,4 +15,5 @@ export {
     Regex,
     PolicyRules,
     PolicyTriggerEvents,
+    Environment,
 };
