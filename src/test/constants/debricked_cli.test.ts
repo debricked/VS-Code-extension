@@ -20,8 +20,8 @@ describe("Debricked CLI: Test Suite", () => {
             expect(commands).to.be.an("array");
             expect(commands).to.have.lengthOf(3);
             expect(commands[0]).to.have.property("label", "Debricked");
-            expect(commands[1]).to.have.property("label", "Help");
-            expect(commands[2]).to.have.property("label", "Scan");
+            expect(commands[1]).to.have.property("label", "Scan");
+            expect(commands[2]).to.have.property("label", "Files");
         });
 
         it("should get a specific command", () => {

@@ -9,7 +9,7 @@ import {
     commandHelper,
     authHelper,
 } from "../helpers";
-import { DebrickedCommands, MessageStatus, Organization, SecondService } from "../constants/index";
+import { DebrickedCommands, MessageStatus, Organization, SecondService, TokenType } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import * as fs from "fs";
@@ -147,7 +147,7 @@ export class ScanService {
                 break;
 
             case "-t":
-                const accessToken = await authHelper.getToken(true, Organization.access);
+                const accessToken = await authHelper.getToken(true, TokenType.ACCESS);
                 if (accessToken) {
                     cmdParams.push(accessToken);
                     Logger.logMessageByStatus(MessageStatus.INFO, "Access token added");

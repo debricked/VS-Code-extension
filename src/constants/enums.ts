@@ -20,3 +20,8 @@ export enum Environment {
     PROD = "production",
     TEST = "test",
 }
+
+export enum TokenType {
+    ACCESS = "access",
+    BEARER = "bearer",
+}

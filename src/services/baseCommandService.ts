@@ -1,5 +1,5 @@
 import { DebrickedCommandNode } from "../types";
-import { DebrickedCommands, Messages, MessageStatus, Organization } from "../constants/index";
+import { DebrickedCommands, Messages, MessageStatus, Organization, TokenType } from "../constants/index";
 import {
     statusBarMessageHelper,
     terminal,
@@ -184,7 +184,7 @@ export class BaseCommandService {
                 throw new Error(bearerToken.message);
             } else {
                 const newBearerToken = `Bearer ${bearerToken.token}`;
-                await authHelper.setToken(Organization.bearer, newBearerToken, Organization.bearerTokenKey);
+                await authHelper.setToken(TokenType.BEARER, newBearerToken);
 
                 Logger.logInfo(`Token generated successfully`);
             }
@@ -212,10 +212,10 @@ export class BaseCommandService {
             }
             switch (selectedSubCommand?.cli_command) {
                 case "accessToken":
-                    authHelper.getToken(false, Organization.access);
+                    authHelper.getToken(false, TokenType.ACCESS);
                     break;
                 case "bearerToken":
-                    authHelper.getToken(false, Organization.bearer);
+                    authHelper.getToken(false, TokenType.BEARER);
                     break;
             }
         } catch (error: any) {
