@@ -124,7 +124,7 @@
         "check-types": "tsc --noEmit",
         "lint": "eslint src --ext ts",
         "lint:fix": "eslint --fix src --ext ts",
-        "test": "vscode-test --coverage NODE_ENV=test",
+        "test": "set NODE_ENV=test && vscode-test --coverage",
         "clean": "rimraf out && rimraf dist && rimraf coverage && rimraf .debricked",
         "clean-all": "rimraf out && rimraf dist && rimraf coverage && rimraf .vscode-test",
         "vsce": "vsce package",
