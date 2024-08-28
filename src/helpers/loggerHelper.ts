@@ -28,7 +28,6 @@ export class Logger {
 
         const logEntry = `[${timestamp}] [user_id:${userId}] ${sequenceId} ${message}\n`;
         await fs.appendFileSync(Logger.logFilePath, logEntry, "utf-8");
-        SentryHelper.setUser({ id: userId });
     }
 
     public static async logMessage(message: string) {
