@@ -8,7 +8,7 @@ export class Terminal {
     constructor(
         private authHelper: AuthHelper,
         private logger: typeof Logger,
-        private debrickedCliPath: string = Organization.debrickedCli,
+        private command: string = Organization.debrickedCli,
     ) {}
 
     public async createAndUseTerminal(
@@ -24,7 +24,7 @@ export class Terminal {
             if (accessToken) {
                 this.logger.logMessageByStatus(
                     MessageStatus.INFO,
-                    `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: "${this.debrickedCliPath} ${cmdParams.join(" ")}"`,
+                    `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: "${this.command} ${cmdParams.join(" ")}"`,
                 );
                 cmdParams.push(flags[0].flag);
                 cmdParams.push(accessToken);
@@ -32,10 +32,10 @@ export class Terminal {
         } else {
             this.logger.logMessageByStatus(
                 MessageStatus.INFO,
-                `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: "${this.debrickedCliPath}"`,
+                `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: "${this.command}"`,
             );
         }
-        this.debrickedCliPath = `${this.debrickedCliPath} ${cmdParams.join(" ")}`;
+        this.command = `${this.command} ${cmdParams.join(" ")}`;
 
         let terminal: vscode.Terminal;
         if (vscode.window.activeTerminal) {
@@ -44,7 +44,7 @@ export class Terminal {
             terminal = vscode.window.createTerminal(description);
         }
 
-        terminal.sendText(this.debrickedCliPath);
+        terminal.sendText(this.command);
         terminal.show();
         return terminal;
     }
