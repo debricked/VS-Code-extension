@@ -1,4 +1,4 @@
-import { Messages, Organization } from "../constants/index";
+import { Messages, TokenType } from "../constants/index";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
 import { StatusBarMessageHelper } from "./statusBarMessageHelper";
 import { Logger } from "./loggerHelper";
@@ -17,15 +17,13 @@ export class AuthHelper {
      * @param void
      * @returns Promise<string | undefined>
      */
-    async getToken(useDefaultToken: boolean = true, tokenKey: "access" | "bearer"): Promise<string | undefined> {
+    async getToken(useDefaultToken: boolean = true, tokenKey: TokenType): Promise<string | undefined> {
         try {
             let token: string | undefined;
-            const TOKEN_KEY =
-                tokenKey === Organization.access ? Organization.accessTokenKey : Organization.bearerTokenKey;
-            const defaultAccessToken: any = await this.globalStore.getGlobalStateInstance()?.getSecretData(TOKEN_KEY);
+            const defaultToken: any = await this.globalStore.getGlobalStateInstance()?.getSecretData(tokenKey);
 
             if (useDefaultToken) {
-                token = defaultAccessToken;
+                token = defaultToken;
             }
 
             if (!token) {
@@ -33,16 +31,15 @@ export class AuthHelper {
                 this.logger.logInfo("InputBox Opened for tokens");
 
                 token = await this.showInputBoxHelper.promptForInput({
-                    prompt:
-                        tokenKey === Organization.access ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
+                    prompt: tokenKey === TokenType.ACCESS ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
                     ignoreFocusOut: true,
                     password: true,
-                    title: tokenKey === Organization.access ? Messages.ACCESS_TOKEN : Messages.BEARER_TOKEN,
+                    title: tokenKey === TokenType.ACCESS ? Messages.ACCESS_TOKEN : Messages.BEARER_TOKEN,
                     placeHolder:
-                        tokenKey === Organization.access ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
+                        tokenKey === TokenType.ACCESS ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
                 });
 
-                this.setToken(tokenKey, token, TOKEN_KEY);
+                this.setToken(tokenKey, token);
             }
 
             return token;
@@ -51,14 +48,13 @@ export class AuthHelper {
         }
     }
 
-    async setToken(tokenKey: "access" | "bearer", token: string | undefined, TOKEN_KEY: string): Promise<void> {
+    async setToken(tokenKey: TokenType, token: string | undefined): Promise<void> {
         if (token) {
-            await this.globalStore.getGlobalStateInstance()?.setSecretData(TOKEN_KEY, token);
-            const message =
-                tokenKey === Organization.access ? Messages.ACCESS_TOKEN_SAVED : Messages.BEARER_TOKEN_SAVED;
+            await this.globalStore.getGlobalStateInstance()?.setSecretData(tokenKey, token);
+            const message = tokenKey === TokenType.ACCESS ? Messages.ACCESS_TOKEN_SAVED : Messages.BEARER_TOKEN_SAVED;
             this.statusBarMessageHelper.showInformationMessage(message);
         } else {
-            const message = tokenKey === Organization.access ? Messages.ACCESS_TOKEN_RQD : Messages.BEARER_TOKEN_RQD;
+            const message = tokenKey === TokenType.ACCESS ? Messages.ACCESS_TOKEN_RQD : Messages.BEARER_TOKEN_RQD;
             throw new Error(message);
         }
     }
