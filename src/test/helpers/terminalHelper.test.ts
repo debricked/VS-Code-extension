@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { authHelper } from "../../helpers";
 import { Logger } from "../../helpers/loggerHelper";
-import { DebrickedCommands, Messages, MessageStatus, Organization } from "../../constants";
+import { DebrickedCommands, Messages, MessageStatus } from "../../constants";
 import { expect, sinon } from "../setup";
 import { Terminal } from "../../helpers/terminalHelper";
 

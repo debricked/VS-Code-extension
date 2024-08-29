@@ -28,6 +28,10 @@ export class Logger {
 
         const logEntry = `[${timestamp}] [user_id:${userId}] ${sequenceId} ${message}\n`;
         await fs.appendFileSync(Logger.logFilePath, logEntry, "utf-8");
+
+        if (sequenceId) {
+            SentryHelper.setTag("sequence_id", GlobalStore.getInstance().getSequenceID());
+        }
     }
 
     public static async logMessage(message: string) {

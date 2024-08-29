@@ -3,6 +3,7 @@ import { AuthHelper } from "./authHelper";
 import { ErrorHandler } from "./errorHandler";
 import { Logger } from "./loggerHelper";
 import { TokenType } from "../constants";
+import * as Sentry from "@sentry/node";
 
 export class ApiClient {
     private axiosInstance: AxiosInstance;
@@ -46,7 +47,12 @@ export class ApiClient {
     }
 
     public get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-        return this.axiosInstance.get<T>(url, config).then((response) => response.data);
+        return Sentry.startSpan({ name: "api-request", op: "http.client", startTime: new Date() }, async (span) => {
+            return this.axiosInstance.get<T>(url, config).then((response) => {
+                span.end(new Date());
+                return response.data;
+            });
+        });
     }
 
     public post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
