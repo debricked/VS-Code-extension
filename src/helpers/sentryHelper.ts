@@ -28,6 +28,12 @@ export class SentryHelper {
                 release,
                 environment,
                 tracesSampleRate,
+                tracesSampler: (samplingContext) => {
+                    if (samplingContext.op === "http") {
+                        return 0.2;
+                    }
+                    return 1;
+                },
             });
             SentryHelper.instance = new SentryHelper();
         }
@@ -89,7 +95,7 @@ export class SentryHelper {
      * @param key - The key for the tag.
      * @param value - The value for the tag.
      */
-    public static setTag(key: string, value: string): void {
+    public static setTag(key: string, value: string = ""): void {
         Sentry.setTag(key, value);
     }
 

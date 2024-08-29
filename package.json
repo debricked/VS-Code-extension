@@ -157,7 +157,7 @@
         "typescript": "^5.4.5"
     },
     "dependencies": {
-        "@sentry/node": "^8.26.0",
+        "@sentry/node": "^8.27.0",
         "mock-fs": "^5.2.0",
         "proxyquire": "^2.1.3"
     }
