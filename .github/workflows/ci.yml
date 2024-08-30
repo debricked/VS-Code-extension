@@ -57,18 +57,10 @@ jobs:
             - name: Install system dependencies
               run: |
                   sudo apt-get update
-                  sudo apt-get install -y libasound2 libgbm1 libgtk-3-0 libnss3 xvfb dbus-x11
-
-            - name: Set up X11 and D-Bus
-              run: |
-                  export DISPLAY=:99
-                  Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-                  sleep 3  # give xvfb some time to start
+                  sudo apt-get install -y libasound2 libgbm1 libgtk-3-0 libnss3 xvfb
 
             - name: Run tests
-              run: |
-                  export $(dbus-launch)
-                  xvfb-run -a npm run test
+              run: xvfb-run -a npm run test
 
             - name: Upload coverage
               uses: actions/upload-artifact@v4
