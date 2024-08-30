@@ -1,47 +1,70 @@
-// import * as sinon from "sinon";
-// import * as vscode from "vscode";
-// import { expect } from "../setup";
-// import { StatusBarMessageHelper } from "../../helpers";
+import * as vscode from "vscode";
+import { StatusBarMessageHelper } from "../../helpers/statusBarMessageHelper";
+import { Organization } from "../../constants";
+import { expect, sinon } from "../setup";
 
-// describe("Statusbar Message Helper: Test Suite", () => {
-//     let sandbox: sinon.SinonSandbox;
-//     let setStatusBarMessageStub: sinon.SinonStub;
-//     let showErrorMessageStub: sinon.SinonStub;
+describe("StatusBarMessageHelper", () => {
+    let statusBarMessageHelper: StatusBarMessageHelper;
+    let windowStub: sinon.SinonStubbedInstance<typeof vscode.window>;
+    let sandbox: sinon.SinonSandbox;
 
-//     beforeEach(() => {
-//         sandbox = sinon.createSandbox();
-//         setStatusBarMessageStub = sandbox.stub(vscode.window, "setStatusBarMessage").returns({
-//             dispose: sandbox.stub(),
-//         } as any);
-//         showErrorMessageStub = sandbox.stub(vscode.window, "showErrorMessage");
-//     });
+    beforeEach(() => {
+        sandbox = sinon.createSandbox();
+        windowStub = sandbox.stub(vscode.window);
+        statusBarMessageHelper = new StatusBarMessageHelper();
+    });
 
-//     afterEach(() => {
-//         sandbox.restore();
-//     });
+    afterEach(() => {
+        sandbox.restore();
+    });
 
-//     it("should set status bar message with default timeout", () => {
-//         StatusBarMessageHelper.setStatusBarMessage("Test message");
-//         expect(setStatusBarMessageStub.calledOnceWith("Test message", 3000)).to.be.true;
-//     });
+    describe("setStatusBarMessage", () => {
+        it("should set a status bar message", () => {
+            const message = "Test message";
+            const disposeMock = { dispose: sinon.stub() };
+            windowStub.setStatusBarMessage.returns(disposeMock as any);
 
-//     it("should set status bar message with custom timeout", () => {
-//         StatusBarMessageHelper.setStatusBarMessage("Test message", 5000);
-//         expect(setStatusBarMessageStub.calledOnceWith("Test message", 5000)).to.be.true;
-//     });
+            statusBarMessageHelper.setStatusBarMessage(message);
 
-//     it("should dispose previous status bar message if exists", () => {
-//         const disposeStub = sandbox.stub();
-//         (StatusBarMessageHelper as any).statusBarMessage = { dispose: disposeStub };
+            expect(windowStub.setStatusBarMessage.calledOnce).to.be.true;
+            expect(windowStub.setStatusBarMessage.firstCall.args[0]).to.equal(message);
+        });
 
-//         StatusBarMessageHelper.setStatusBarMessage("New message");
+        it("should dispose previous status bar message before setting a new one", () => {
+            const message1 = "Test message 1";
+            const message2 = "Test message 2";
+            const disposeMock1 = { dispose: sinon.stub() };
+            const disposeMock2 = { dispose: sinon.stub() };
+            windowStub.setStatusBarMessage.onFirstCall().returns(disposeMock1 as any);
+            windowStub.setStatusBarMessage.onSecondCall().returns(disposeMock2 as any);
 
-//         expect(disposeStub.calledOnce).to.be.true;
-//         expect(setStatusBarMessageStub.calledOnceWith("New message", 3000)).to.be.true;
-//     });
+            statusBarMessageHelper.setStatusBarMessage(message1);
+            statusBarMessageHelper.setStatusBarMessage(message2);
 
-//     it("should show error message", () => {
-//         StatusBarMessageHelper.showErrorMessage("Error message");
-//         expect(showErrorMessageStub.calledOnceWith("Error message")).to.be.true;
-//     });
-// });
+            expect(disposeMock1.dispose.calledOnce).to.be.true;
+            expect(windowStub.setStatusBarMessage.calledTwice).to.be.true;
+        });
+    });
+
+    describe("showErrorMessage", () => {
+        it("should show an error message with organization prefix", () => {
+            const message = "Test error";
+            statusBarMessageHelper.showErrorMessage(message);
+
+            expect(windowStub.showErrorMessage.calledOnce).to.be.true;
+            expect(windowStub.showErrorMessage.firstCall.args[0]).to.equal(`${Organization.nameCaps}: ${message}`);
+        });
+    });
+
+    describe("showInformationMessage", () => {
+        it("should show an information message with organization prefix", () => {
+            const message = "Test info";
+            statusBarMessageHelper.showInformationMessage(message);
+
+            expect(windowStub.showInformationMessage.calledOnce).to.be.true;
+            expect(windowStub.showInformationMessage.firstCall.args[0]).to.equal(
+                `${Organization.nameCaps}: ${message}`,
+            );
+        });
+    });
+});
