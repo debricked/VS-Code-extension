@@ -9,7 +9,7 @@ import {
     fileHelper,
 } from "../helpers";
 import { DebrickedCommands, Messages, MessageStatus, Organization, Regex } from "../constants/index";
-import { DebrickedCommandNode, Package } from "../types";
+import { Package } from "../types";
 import * as vscode from "vscode";
 
 export class FileService {
@@ -56,14 +56,12 @@ export class FileService {
                 try {
                     Logger.logMessageByStatus(MessageStatus.INFO, "Register Find File Command");
                     globalStore.setSequenceID(commonHelper.generateHashCode());
-                    const cmdParams = [];
-                    const command: DebrickedCommandNode = DebrickedCommands.FILES;
 
-                    cmdParams.push(command.cli_command);
+                    const command = DebrickedCommands.FILES;
+                    const cmdParams = [command.cli_command];
 
-                    let selectedSubCommand: DebrickedCommandNode | undefined;
                     if (command.sub_commands && command.sub_commands.length > 0) {
-                        selectedSubCommand = command.sub_commands[0];
+                        const selectedSubCommand = command.sub_commands[0];
                         if (selectedSubCommand && selectedSubCommand.cli_command) {
                             cmdParams.push(selectedSubCommand.cli_command, "-j");
                         }
@@ -74,7 +72,8 @@ export class FileService {
                     const foundFiles = JSON.parse(
                         await commandHelper.executeAsyncCommand(`${Organization.debrickedCli} ${cmdParams.join(" ")}`),
                     );
-                    const foundFilesArray: string[] = foundFiles
+
+                    const foundFilesArray = foundFiles
                         .map((item: any) => item.manifestFile)
                         .filter((file: any) => file !== "");
 
@@ -87,13 +86,16 @@ export class FileService {
 
                     repoData.filesToScan = foundFilesArray;
                     progress.report({ message: `$(pass) Found Files` });
+
                     await globalStore.getGlobalStateInstance()?.setGlobalData(selectedRepoName, repoData);
+
                     Logger.logMessageByStatus(
                         MessageStatus.INFO,
                         `Found ${foundFilesArray.length} Files: ${foundFilesArray}`,
                     );
+
                     return foundFilesArray;
-                } catch (error: any) {
+                } catch (error) {
                     errorHandler.handleError(error);
                     throw error;
                 } finally {
