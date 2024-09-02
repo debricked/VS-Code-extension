@@ -75,7 +75,10 @@ export class DependencyService {
                 if (!vulnerabilityMap.has(name)) {
                     vulnerabilityMap.set(name, []);
                 }
-                vulnerabilityMap.get(name)!.push(vul);
+                const vulnerableData = vulnerabilityMap.get(name);
+                if (vulnerableData) {
+                    vulnerableData.push(vul);
+                }
             });
         });
 

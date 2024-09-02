@@ -1,119 +1,158 @@
-// import * as vscode from "vscode";
-// import * as path from "path";
-// import proxyquire from "proxyquire";
-// import { Common } from "../../helpers";
-// import * as crypto from "crypto";
-// import { expect, sinon, mockWorkspacePath } from "../setup";
-// import { Organization } from "../../constants/index";
+import * as vscode from "vscode";
+import { Common } from "../../helpers/commonHelper";
+import { Logger } from "../../helpers/loggerHelper";
+import { ShowInputBoxHelper } from "../../helpers/showInputBoxHelper";
+import { GlobalStore } from "../../helpers/globalStore";
+import { MessageStatus, Organization } from "../../constants";
+import { expect, sinon } from "../setup";
 
-// describe("Common", () => {
-//     let showInputBoxStub: sinon.SinonStub;
-//     let fsExistsSyncStub: sinon.SinonStub;
-//     let fsReadFileSyncStub: sinon.SinonStub;
-//     let fsWriteFileSyncStub: sinon.SinonStub;
-//     let fsMkdirSyncStub: sinon.SinonStub;
+describe("Common Helper", () => {
+    let common: Common;
+    let loggerStub: sinon.SinonStubbedInstance<typeof Logger>;
+    let showInputBoxHelperStub: sinon.SinonStubbedInstance<ShowInputBoxHelper>;
+    let globalStoreStub: sinon.SinonStubbedInstance<GlobalStore>;
+    let sandbox: sinon.SinonSandbox;
 
-//     const mockPath = path.join(mockWorkspacePath, Organization.debrickedDataFile);
+    beforeEach(() => {
+        sandbox = sinon.createSandbox();
+        loggerStub = {
+            logMessageByStatus: sandbox.stub(),
+        } as any;
+        showInputBoxHelperStub = {
+            promptForInput: sandbox.stub(),
+        } as any;
+        globalStoreStub = {
+            getGlobalStateInstance: sandbox.stub(),
+            setUserId: sandbox.stub(),
+            getRepository: sandbox.stub(),
+        } as any;
 
-//     before(() => {
-//         showInputBoxStub = sinon.stub(vscode.window, "showInputBox");
+        common = new Common(loggerStub, showInputBoxHelperStub, globalStoreStub);
+    });
 
-//         fsExistsSyncStub = sinon.stub();
-//         fsReadFileSyncStub = sinon.stub();
-//         fsWriteFileSyncStub = sinon.stub();
-//         fsMkdirSyncStub = sinon.stub();
+    afterEach(() => {
+        sandbox.restore();
+    });
 
-//         proxyquire("../../helpers", {
-//             fs: {
-//                 existsSync: fsExistsSyncStub,
-//                 readFileSync: fsReadFileSyncStub,
-//                 writeFileSync: fsWriteFileSyncStub,
-//                 mkdirSync: fsMkdirSyncStub,
-//             },
-//         }).Common;
-//     });
+    describe("getInput", () => {
+        it("should call promptForInput with the given prompt", async () => {
+            const prompt = "Test prompt";
+            await common.getInput(prompt);
+            expect(showInputBoxHelperStub.promptForInput.calledOnceWith({ prompt })).to.be.true;
+        });
+    });
 
-//     afterEach(() => {
-//         sinon.resetHistory();
-//     });
+    describe("generateHashCode", () => {
+        it("should generate a consistent hash for a given input", () => {
+            const input = "test input";
+            const hash1 = common.generateHashCode(input);
+            const hash2 = common.generateHashCode(input);
+            expect(hash1).to.equal(hash2);
+        });
 
-//     after(() => {
-//         showInputBoxStub.restore();
-//     });
+        it("should generate different hashes for different inputs", () => {
+            const hash1 = common.generateHashCode("input1");
+            const hash2 = common.generateHashCode("input2");
+            expect(hash1).to.not.equal(hash2);
+        });
+    });
 
-//     it("should get input from the user", async () => {
-//         const prompt = "Enter something";
-//         showInputBoxStub.resolves("test input");
+    describe("checkUserId", () => {
+        it("should generate and store a new user ID if one does not exist", async () => {
+            const mockGlobalState = {
+                getGlobalData: sandbox.stub().resolves(undefined),
+                setGlobalData: sandbox.stub().resolves(undefined),
+            };
+            mockGlobalState.getGlobalData.onSecondCall().resolves({});
+            globalStoreStub.getGlobalStateInstance.returns(mockGlobalState as any);
+            await common.checkUserId();
 
-//         const result = await Common.getInput(prompt);
+            expect(mockGlobalState.getGlobalData.calledWith(Organization.debrickedDataKey, "", Organization.userId)).to
+                .be.true;
+            expect(mockGlobalState.setGlobalData.called).to.be.true;
+            expect(loggerStub.logMessageByStatus.calledWith(MessageStatus.INFO, sinon.match(/New user_id generated:/)))
+                .to.be.true;
+            expect(globalStoreStub.setUserId.called).to.be.true;
+        });
 
-//         expect(result).to.equal("test input");
-//         expect(showInputBoxStub.calledOnceWith({ prompt })).to.be.true;
-//     });
+        it("should use existing user ID if one exists", async () => {
+            const existingUserId = "existing-user-id";
+            const mockGlobalState = {
+                getGlobalData: sandbox.stub().resolves(existingUserId),
+            };
+            globalStoreStub.getGlobalStateInstance.returns(mockGlobalState as any);
 
-//     // it("should save data to debricked data file", async () => {
-//     //     const key = "user_id";
-//     //     const value = await Common.generateHashCode(key);
-//     //     await Common.saveToDebrickedData(key, value);
+            await common.checkUserId();
 
-//     //     expect(JSON.parse(fsWriteFileSyncStub.firstCall.args[1])).to.deep.equal({ [key]: value });
-//     // });
+            expect(mockGlobalState.getGlobalData.calledWith(Organization.debrickedDataKey, "", Organization.userId)).to
+                .be.true;
+            expect(loggerStub.logMessageByStatus.calledWith(MessageStatus.INFO, `Existing user_id: ${existingUserId}`))
+                .to.be.true;
+            expect(globalStoreStub.setUserId.calledWith(existingUserId)).to.be.true;
+        });
+    });
 
-//     // it("should retrieve data from debricked data file", async () => {
-//     //     const key = "user_id";
-//     //     const value = "testValue";
-//     //     fsExistsSyncStub.withArgs(mockPath).returns(true);
-//     //     fsReadFileSyncStub.withArgs(mockPath, "utf-8").returns(JSON.stringify({ [key]: value }));
+    describe("replacePlaceholder", () => {
+        it("should replace PLACEHOLDER with the given value", () => {
+            const original = "Hello, PLACEHOLDER!";
+            const replaced = common.replacePlaceholder(original, "World");
+            expect(replaced).to.equal("Hello, World!");
+        });
 
-//     //     const result = await Common.getFromDebrickedData(key);
+        it("should use current date if no placeholder value is provided", () => {
+            const original = "Current time: PLACEHOLDER";
+            const replaced = common.replacePlaceholder(original, "");
+            expect(replaced).to.not.equal(original);
+            expect(replaced).to.match(/Current time: \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+        });
+    });
 
-//     //     expect(result).to.equal(value);
-//     // });
+    describe("isCurrentDocManifestFile", () => {
+        it("should return true for a manifest file", async () => {
+            const mockDocument = { fileName: "/path/to/package.json" } as vscode.TextDocument;
+            globalStoreStub.getRepository.returns("test-repo");
+            globalStoreStub.getGlobalStateInstance.returns({
+                getGlobalData: sandbox.stub().returns({ filesToScan: ["package.json"] }),
+            } as any);
 
-//     // it("should return 'user_id' if data is found in debricked data file", async () => {
-//     //     fsExistsSyncStub.withArgs(mockPath).returns(false);
+            const result = await common.isCurrentDocManifestFile(mockDocument);
 
-//     //     const result = await Common.getFromDebrickedData("user_id");
+            expect(result).to.deep.equal({ isManifestFile: true, currentManifestFile: "package.json" });
+        });
 
-//     //     expect(result).to.not.equal("");
-//     // });
+        it("should return false for a non-manifest file", async () => {
+            const mockDocument = { fileName: "/path/to/notmanifest.txt" } as vscode.TextDocument;
+            globalStoreStub.getRepository.returns("test-repo");
+            globalStoreStub.getGlobalStateInstance.returns({
+                getGlobalData: sandbox.stub().returns({ filesToScan: ["package.json"] }),
+            } as any);
 
-//     // it("should return 'unknown-user' if data not found in debricked data file", async () => {
-//     //     fsExistsSyncStub.withArgs(mockPath).returns(false);
+            const result = await common.isCurrentDocManifestFile(mockDocument);
 
-//     //     const result = await Common.getFromDebrickedData("");
+            expect(result).to.deep.equal({ isManifestFile: false, currentManifestFile: "notmanifest.txt" });
+        });
+    });
 
-//     //     expect(result).to.equal("unknown-user");
-//     // });
+    describe("extractValueFromStringUsingRegex", () => {
+        it("should extract a value using a regex", () => {
+            const str = "The quick brown fox";
+            const regex = /quick (\w+) fox/;
+            const result = common.extractValueFromStringUsingRegex(str, regex);
+            expect(result).to.equal("brown");
+        });
 
-//     it("should generate hash code", () => {
-//         const input = "test input";
-//         const hashCode = Common.generateHashCode(input);
+        it("should return null if regex does not match", () => {
+            const str = "The quick brown fox";
+            const regex = /lazy (\w+) dog/;
+            const result = common.extractValueFromStringUsingRegex(str, regex);
+            expect(result).to.be.null;
+        });
 
-//         expect(hashCode).to.equal(crypto.createHash("sha256").update(input).digest("hex"));
-//     });
-
-//     // it("should generate new user ID if user ID is unknown", async () => {
-//     //     fsExistsSyncStub.withArgs(mockPath).returns(true);
-//     //     fsReadFileSyncStub.withArgs(mockPath, "utf-8").returns(JSON.stringify({ user_id: "unknown-user" }));
-
-//     //     const clock = sinon.useFakeTimers(new Date("2023-01-01").getTime());
-
-//     //     await Common.checkUserId();
-
-//     //     expect(fsWriteFileSyncStub.calledOnce).to.be.true;
-//     //     expect(JSON.parse(fsWriteFileSyncStub.firstCall.args[1])).to.have.property("user_id");
-//     //     expect(JSON.parse(fsWriteFileSyncStub.firstCall.args[1]).user_id).to.not.equal("unknown-user");
-
-//     //     clock.restore();
-//     // });
-
-//     it("should not generate new user ID if user ID is known", async () => {
-//         fsExistsSyncStub.withArgs(mockPath).returns(true);
-//         fsReadFileSyncStub.withArgs(mockPath, "utf-8").returns(JSON.stringify({ user_id: "known-user" }));
-
-//         await Common.checkUserId();
-
-//         expect(fsWriteFileSyncStub.notCalled).to.be.true;
-//     });
-// });
+        it("should throw an error for invalid input", () => {
+            expect(() => common.extractValueFromStringUsingRegex("", /test/)).to.throw("Invalid string");
+            expect(() => common.extractValueFromStringUsingRegex("test", "not a regex" as any)).to.throw(
+                "Invalid regular expression",
+            );
+        });
+    });
+});

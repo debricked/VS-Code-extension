@@ -64,17 +64,6 @@ export class Common {
         return originalString.replace("PLACEHOLDER", placeholderValue || new Date().toISOString());
     }
 
-    /**
-     * Convert a string into an array by splitting it by a specified separator.
-     * Trims whitespace and removes asterisks from each element.
-     * @param inputString The input string to convert.
-     * @param separator The separator to split the string by.
-     * @returns The resulting array of strings.
-     */
-    public static stringToArray(inputString: string, separator: string): string[] {
-        return inputString.split(separator).map((item) => item.trim().replace(/^\* /, ""));
-    }
-
     public async isCurrentDocManifestFile(document: vscode.TextDocument) {
         const selectedRepoName = this.globalStore.getRepository();
         const manifestFiles = await this.globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName)
@@ -93,7 +82,7 @@ export class Common {
     }
 
     /**
-     * Extracts a value from a URL using a regular expression.
+     * Extracts a value from a string using a regular expression.
      *
      * @param url The URL to extract the value from.
      * @param regex The regular expression to use for extraction.
@@ -110,7 +99,7 @@ export class Common {
             throw new Error("Invalid regular expression");
         }
 
-        // Apply the regular expression to the URL
+        // Apply the regular expression to the string
         const match = str.match(regex);
 
         // Return the first capturing group if the regular expression matches

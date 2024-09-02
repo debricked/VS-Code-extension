@@ -11,7 +11,7 @@ export class Organization {
     );
 
     static readonly name = Organization.packageJson.displayName;
-    static readonly environment: Environment = (process.env.NODE_ENV as Environment) ?? Environment.PROD;
+    static readonly environment: Environment = (process.env.NODE_ENV?.trim() as Environment) ?? Environment.PROD;
     static readonly sentry_dns = "https://5427545a2216287c2e4e0fc546172a6a@sentry.debricked.com/20";
     static readonly nameCaps = "Debricked";
     // Command and OS-specific constants

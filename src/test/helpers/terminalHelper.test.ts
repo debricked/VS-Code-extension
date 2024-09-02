@@ -13,6 +13,7 @@ describe("Terminal Helper", () => {
     let logMessageByStatusStub: sinon.SinonStub;
     let getCommandSpecificFlagsStub: sinon.SinonStub;
     let terminal: Terminal;
+    let sandbox: sinon.SinonSandbox;
 
     const mockTerminal: vscode.Terminal = {
         sendText: () => {},
@@ -21,18 +22,18 @@ describe("Terminal Helper", () => {
     const mockCliPath = "/mock/path/to/debricked";
 
     beforeEach(() => {
-        createTerminalStub = sinon.stub(vscode.window, "createTerminal").returns(mockTerminal);
-        sendTextStub = sinon.stub(mockTerminal, "sendText");
-        showStub = sinon.stub(mockTerminal, "show");
-        getTokenStub = sinon.stub(authHelper, "getToken");
-        logMessageByStatusStub = sinon.stub(Logger, "logMessageByStatus");
-        getCommandSpecificFlagsStub = sinon.stub(DebrickedCommands, "getCommandSpecificFlags");
-
+        sandbox = sinon.createSandbox();
+        createTerminalStub = sandbox.stub(vscode.window, "createTerminal").returns(mockTerminal);
+        sendTextStub = sandbox.stub(mockTerminal, "sendText");
+        showStub = sandbox.stub(mockTerminal, "show");
+        getTokenStub = sandbox.stub(authHelper, "getToken");
+        logMessageByStatusStub = sandbox.stub(Logger, "logMessageByStatus");
+        getCommandSpecificFlagsStub = sandbox.stub(DebrickedCommands, "getCommandSpecificFlags");
         terminal = new Terminal(authHelper, Logger, mockCliPath);
     });
 
     afterEach(() => {
-        sinon.restore();
+        sandbox.restore();
     });
 
     it("should create and use terminal without access token", async () => {

@@ -1,85 +1,67 @@
-// import * as vscode from "vscode";
-// import { QuickPick } from "../../helpers"; // Update with the correct path to your QuickPick module
-// import { expect, sinon } from "../setup";
+import * as vscode from "vscode";
+import { sinon, expect } from "../setup";
+import { ShowQuickPickHelper } from "../../helpers/showQuickPickHelper";
 
-// describe("QuickPick", () => {
-//     let showQuickPickStub: sinon.SinonStub;
+describe("ShowQuickPickHelper", () => {
+    let showQuickPickHelper: ShowQuickPickHelper;
+    let showQuickPickStub: sinon.SinonStub;
+    let sandbox: sinon.SinonSandbox;
 
-//     beforeEach(() => {
-//         showQuickPickStub = sinon.stub(vscode.window, "showQuickPick");
-//     });
+    beforeEach(() => {
+        sandbox = sinon.createSandbox();
+        showQuickPickHelper = new ShowQuickPickHelper();
+        showQuickPickStub = sandbox.stub(vscode.window, "showQuickPick");
+    });
 
-//     afterEach(() => {
-//         sinon.restore();
-//     });
+    afterEach(() => {
+        sandbox.restore();
+    });
 
-//     it("should show quick pick and return the selected item", async () => {
-//         const items = [{ label: "Option 1" }, { label: "Option 2" }];
-//         const selectedItem = items[0];
+    it("should call vscode.window.showQuickPick with correct parameters", async () => {
+        const items: vscode.QuickPickItem[] = [{ label: "Item 1" }, { label: "Item 2" }, { label: "Item 3" }];
+        const placeHolder = "Select an item";
+        const canPickMany = false;
 
-//         showQuickPickStub.resolves(selectedItem);
+        await showQuickPickHelper.showQuickPick(items, placeHolder, canPickMany);
 
-//         const result = await QuickPick.showQuickPick(items, "Select an option");
+        expect(showQuickPickStub.calledOnce).to.be.true;
+        expect(showQuickPickStub.firstCall.args[0]).to.deep.equal(items);
+        expect(showQuickPickStub.firstCall.args[1]).to.deep.equal({
+            placeHolder,
+            canPickMany,
+        });
+    });
 
-//         expect(
-//             showQuickPickStub.calledOnceWith(items, {
-//                 placeHolder: "Select an option",
-//                 canPickMany: false,
-//             }),
-//         ).to.be.true;
+    it("should return the selected item", async () => {
+        const items: vscode.QuickPickItem[] = [{ label: "Item 1" }, { label: "Item 2" }, { label: "Item 3" }];
+        const placeHolder = "Select an item";
+        const selectedItem = items[1];
 
-//         expect(result).to.equal(selectedItem);
-//     });
+        showQuickPickStub.resolves(selectedItem);
 
-//     it("should show quick pick with canPickMany option and return the selected items", async () => {
-//         const items = [{ label: "Option 1" }, { label: "Option 2" }];
-//         const selectedItems = [items[0], items[1]];
+        const result = await showQuickPickHelper.showQuickPick(items, placeHolder);
 
-//         showQuickPickStub.resolves(selectedItems);
+        expect(result).to.equal(selectedItem);
+    });
 
-//         const result = await QuickPick.showQuickPick(items, "Select options", true);
+    it("should handle cancellation (undefined return)", async () => {
+        const items: vscode.QuickPickItem[] = [{ label: "Item 1" }, { label: "Item 2" }, { label: "Item 3" }];
+        const placeHolder = "Select an item";
 
-//         expect(
-//             showQuickPickStub.calledOnceWith(items, {
-//                 placeHolder: "Select options",
-//                 canPickMany: true,
-//             }),
-//         ).to.be.true;
+        showQuickPickStub.resolves(undefined);
 
-//         expect(result).to.deep.equal(selectedItems);
-//     });
+        const result = await showQuickPickHelper.showQuickPick(items, placeHolder);
 
-//     it("should return undefined if no item is selected", async () => {
-//         const items = [{ label: "Option 1" }, { label: "Option 2" }];
+        expect(result).to.be.undefined;
+    });
 
-//         showQuickPickStub.resolves(undefined);
+    it("should allow multiple selections when canPickMany is true", async () => {
+        const items: vscode.QuickPickItem[] = [{ label: "Item 1" }, { label: "Item 2" }, { label: "Item 3" }];
+        const placeHolder = "Select items";
+        const canPickMany = true;
 
-//         const result = await QuickPick.showQuickPick(items, "Select an option");
+        await showQuickPickHelper.showQuickPick(items, placeHolder, canPickMany);
 
-//         expect(
-//             showQuickPickStub.calledOnceWith(items, {
-//                 placeHolder: "Select an option",
-//                 canPickMany: false,
-//             }),
-//         ).to.be.true;
-
-//         expect(result).to.be.undefined;
-//     });
-
-//     it("should handle empty items array", async () => {
-//         const items: vscode.QuickPickItem[] = [];
-
-//         showQuickPickStub.resolves(undefined);
-
-//         const result = await QuickPick.showQuickPick(items, "Select an option");
-
-//         expect(
-//             showQuickPickStub.calledOnceWith(items, {
-//                 placeHolder: "Select an option",
-//                 canPickMany: false,
-//             }),
-//         ).to.be.true;
-
-//         expect(result).to.be.undefined;
-//     });
-// });
+        expect(showQuickPickStub.firstCall.args[1].canPickMany).to.be.true;
+    });
+});

@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { errorHandler, Logger, globalStore, commonHelper, indexHelper, SentryHelper } from "./helpers";
 import { DebrickedCommand } from "./commands";
 import { DebrickedCommandsTreeDataProvider, providers } from "./providers";
-import { MessageStatus, Organization } from "./constants/index";
+import { Environment, MessageStatus, Organization } from "./constants/index";
 import { BaseCommandService } from "services";
 import { watchers } from "watcher";
 
@@ -53,10 +53,12 @@ export async function activate(context: vscode.ExtensionContext) {
                     await BaseCommandService.installCommand();
                 }
 
-                if (debrickedData.isFirstActivation === undefined || debrickedData.isFirstActivation) {
-                    await BaseCommandService.login(true);
-                } else {
-                    await BaseCommandService.login(false);
+                if (Organization.environment !== Environment.TEST) {
+                    if (debrickedData.isFirstActivation === undefined || debrickedData.isFirstActivation) {
+                        await BaseCommandService.login(true);
+                    } else {
+                        await BaseCommandService.login(false);
+                    }
                 }
 
                 // Add file watcher for all files found from 'debricked files find'
