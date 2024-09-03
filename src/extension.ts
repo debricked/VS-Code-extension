@@ -52,8 +52,9 @@ export async function activate(context: vscode.ExtensionContext) {
                     });
                     await BaseCommandService.installCommand();
                 }
-
+                console.log("outside the login");
                 if (Organization.environment !== Environment.TEST) {
+                    console.log("inside the login");
                     if (debrickedData.isFirstActivation === undefined || debrickedData.isFirstActivation) {
                         await BaseCommandService.login(true);
                     } else {
