@@ -52,7 +52,6 @@ export async function activate(context: vscode.ExtensionContext) {
                     });
                     await BaseCommandService.installCommand();
                 }
-
                 if (Organization.environment !== Environment.TEST) {
                     if (debrickedData.isFirstActivation === undefined || debrickedData.isFirstActivation) {
                         await BaseCommandService.login(true);
