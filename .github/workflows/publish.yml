@@ -2,10 +2,6 @@ name: Publish to VS Code MarketPlace
 
 on:
     workflow_dispatch:
-        inputs:
-            version:
-                description: "Version number to update in package.json"
-                required: true
 
 jobs:
     deploy:
@@ -13,6 +9,12 @@ jobs:
         if: github.ref == 'refs/heads/main'
         steps:
             - uses: actions/checkout@v4
+
+            - name: Get latest tag
+              run: |
+                  latest-tag=$(git describe --tags --abbrev=0)
+                  echo "Latest tag: $latest-tag"
+                  echo "LATEST_TAG=$latest-tag" >> $GITHUB_ENV
 
             - name: Set up Node.js
               uses: actions/setup-node@v4
@@ -26,8 +28,7 @@ jobs:
 
             - name: Update version in package.json
               run: |
-                  version="${{ github.event.inputs.version }}"
-                  jq --arg version "$version" '.version = $version' package.json > package.tmp.json
+                  jq --arg version "$LATEST_TAG" '.version = $version' package.json > package.tmp.json
                   mv package.tmp.json package.json
               shell: bash
 
@@ -44,6 +45,6 @@ jobs:
                   path: "*.vsix"
 
             # - name: Publish to VS Code Marketplace
-            # env:
+            #   env:
             #     VSCE_PAT: ${{ secrets.VSCE_PAT }}
-            # run: vsce publish -p $VSCE_PAT
+            #   run: vsce publish -p $VSCE_PAT
