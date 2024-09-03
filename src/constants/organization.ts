@@ -65,17 +65,4 @@ export class Organization {
     private static getPlatformSpecificCommand(): string {
         return os.platform() === Organization.osWin32 ? "debricked.exe" : "debricked";
     }
-
-    // Utility methods
-    public static isWindows(): boolean {
-        return Organization.osPlatform === Organization.osWin32;
-    }
-
-    public static isLinux(): boolean {
-        return Organization.osPlatform === Organization.osLinux;
-    }
-
-    public static isMac(): boolean {
-        return Organization.osPlatform === Organization.osDarwin;
-    }
 }
