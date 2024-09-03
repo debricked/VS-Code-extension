@@ -44,8 +44,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
                 const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
                 const debrickedData: any = globalState?.getGlobalData(Organization.debrickedDataKey, {});
-
-                if (currentVersion !== debrickedData.extensionVersion || debrickedData.isFirstActivation) {
+                if (
+                    currentVersion !== debrickedData.extensionVersion ||
+                    debrickedData.isFirstActivation ||
+                    !Organization.isDebrickedExistInCliPath()
+                ) {
                     progress.report({
                         message: "Installing Debricked cli",
                         increment: (progressCount += 20),
