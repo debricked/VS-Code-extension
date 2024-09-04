@@ -15,11 +15,11 @@ export class Organization {
     static readonly sentry_dns = "https://5427545a2216287c2e4e0fc546172a6a@sentry.debricked.com/20";
     static readonly nameCaps = "Debricked";
     // Command and OS-specific constants
-    static readonly command = Organization.getPlatformSpecificCommand();
     static readonly osPlatform = os.platform();
     static readonly osWin32 = "win32";
     static readonly osLinux = "linux";
     static readonly osDarwin = "darwin";
+    static readonly command = Organization.getPlatformSpecificCommand();
 
     // Directory and file paths
     static readonly workspace = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || path.join(__dirname, "../../");
@@ -63,6 +63,10 @@ export class Organization {
 
     // Method to get platform-specific command
     private static getPlatformSpecificCommand(): string {
-        return os.platform() === Organization.osWin32 ? "debricked.exe" : "debricked";
+        return Organization.osPlatform === Organization.osWin32 ? "debricked.exe" : "debricked";
+    }
+
+    public static isDebrickedExistInCliPath() {
+        return fs.existsSync(Organization.debrickedCli);
     }
 }
