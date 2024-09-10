@@ -5,6 +5,7 @@ import { Organization } from "./organization";
 import { SecondService } from "./secondService";
 import { Regex } from "./regex";
 import { PolicyRules, PolicyTriggerEvents } from "./policyRulesEnum";
+import { Icons } from "./icons";
 
 export {
     DebrickedCommands,
@@ -17,4 +18,5 @@ export {
     PolicyTriggerEvents,
     Environment,
     TokenType,
+    Icons,
 };
