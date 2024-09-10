@@ -19,7 +19,7 @@ export class Logger {
         await vscode.window.showTextDocument(document);
     }
 
-    private static async writeLog(message: string) {
+    public static async writeLog(message: string) {
         const timestamp = new Date().toISOString();
         const userId = GlobalStore.getInstance().getUserId() || "";
         const sequenceId = GlobalStore.getInstance().getSequenceID()
