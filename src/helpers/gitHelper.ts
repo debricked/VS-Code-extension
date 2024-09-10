@@ -1,5 +1,5 @@
 import * as path from "path";
-import { MessageStatus } from "../constants/index";
+import { Messages, MessageStatus } from "../constants/index";
 import { Command } from "./commandHelper";
 import { GlobalStore } from "./globalStore";
 import { Logger } from "./loggerHelper";
@@ -85,7 +85,7 @@ export class GitHelper {
             repoData.currentBranch = await this.getCurrentBranch();
             repoData.commitID = await this.getCommitHash();
         } else {
-            this.statusBarMessageHelper.showInformationMessage("No repository selected");
+            this.statusBarMessageHelper.showWarningMessage(Messages.NO_REPO);
         }
 
         await this.globalStore.getGlobalStateInstance()?.setGlobalData(currentRepo, repoData);

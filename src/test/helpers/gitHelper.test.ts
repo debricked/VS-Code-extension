@@ -5,7 +5,7 @@ import { GitHelper } from "../../helpers/gitHelper";
 import { ShowInputBoxHelper } from "../../helpers/showInputBoxHelper";
 import { GlobalStore } from "../../helpers/globalStore";
 import { StatusBarMessageHelper } from "../../helpers/statusBarMessageHelper";
-import { MessageStatus } from "../../constants";
+import { Messages, MessageStatus } from "../../constants";
 
 describe("GitHelper", () => {
     let gitHelper: GitHelper;
@@ -184,7 +184,7 @@ describe("GitHelper", () => {
 
             await gitHelper.setupGit();
 
-            expect(statusBarMessageHelperStub.showInformationMessage.calledWith("No repository selected")).to.be.true;
+            expect(statusBarMessageHelperStub.showWarningMessage.calledWith(Messages.NO_REPO)).to.be.true;
         });
     });
 });

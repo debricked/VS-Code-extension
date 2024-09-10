@@ -1,92 +1,82 @@
-import { Organization } from "../constants";
 import { Vulnerabilities, Package } from "../types";
 import * as vscode from "vscode";
-import { SecondService, PolicyRules } from "../constants";
+import { SecondService, PolicyRules, Icons } from "../constants";
 
 export class Template {
     constructor() {}
 
     public licenseContent(license: string, contents: vscode.MarkdownString) {
-        contents.appendText(Organization.separator);
-        contents.appendMarkdown(`License: **${license}**`);
-        contents.appendText(Organization.separator);
+        this.appendMarkdown(contents, `${Icons.license} **License** : ${license}\n\n`);
     }
 
     public vulnerableContent(vulnerabilities: Vulnerabilities, contents: vscode.MarkdownString): void {
+        this.appendMarkdown(contents, `${Icons.shield} **Vulnerability Report**\n\n`);
         // direct vulnerabilities
         if (vulnerabilities.directVulnerabilities.length === 0) {
-            contents.appendMarkdown("No vulnerabilities found\n\n");
-        } else {
-            contents.appendMarkdown(
-                `Direct Vulnerabilities Found: **${vulnerabilities.directVulnerabilities.length}**\n\n`,
+            this.appendMarkdown(
+                contents,
+                `&nbsp;&nbsp;${Icons.debugBreakpoint} Direct Vulnerabilities : ${Icons.check} None found\n\n`,
             );
-
-            const vulnerabilitiesToShow = vulnerabilities.directVulnerabilities.slice(0, 2);
-            vulnerabilitiesToShow.forEach((vulnerability) => {
-                contents.appendMarkdown(
-                    `[**${vulnerability.cveId}**](${SecondService.debrickedBaseUrl + vulnerability.name.link})`,
-                );
-
-                if (vulnerability.cvss) {
-                    contents.appendMarkdown(` - CVSS: ${vulnerability.cvss.text} (${vulnerability.cvss.type})`);
-                }
-
-                contents.appendMarkdown("\n\n");
+        } else {
+            this.appendMarkdown(
+                contents,
+                `&nbsp;&nbsp;${Icons.debugBreakpoint} Direct Vulnerabilities Found : ${vulnerabilities.directVulnerabilities.length}\n\n`,
+            );
+            vulnerabilities.directVulnerabilities.slice(0, 2).forEach((vulnerability) => {
+                this.appendVulnerability(contents, vulnerability);
             });
         }
-
-        contents.appendText(Organization.separator);
 
         // transitive vulnerabilities
         if (vulnerabilities.indirectVulnerabilities.length === 0) {
-            contents.appendMarkdown("No transitive vulnerabilities found");
-        } else {
-            contents.appendMarkdown(
-                `Transitive Vulnerabilities Found: **${vulnerabilities.indirectVulnerabilities.length}**`,
+            this.appendMarkdown(
+                contents,
+                `&nbsp;&nbsp;${Icons.debugBreakpoint} Transitive Vulnerabilities Found : ${Icons.check} None found\n\n`,
             );
-            contents.appendMarkdown("\n\n");
+        } else {
+            this.appendMarkdown(
+                contents,
+                `&nbsp;&nbsp;${Icons.debugBreakpoint} Transitive Vulnerabilities Found : ${vulnerabilities.indirectVulnerabilities.length}\n\n`,
+            );
             vulnerabilities.indirectVulnerabilities.forEach((indirectVulnerability) => {
-                const vulnerabilitiesToShow = indirectVulnerability;
-                contents.appendMarkdown(`${indirectVulnerability.dependencyName}`);
-                contents.appendMarkdown("\n\n");
-
-                vulnerabilitiesToShow.transitiveVulnerabilities.forEach((vulnerability) => {
-                    contents.appendMarkdown(
-                        `[**${vulnerability.cveId}**](${SecondService.debrickedBaseUrl + vulnerability.name.link})`,
-                    );
-
-                    if (vulnerability.cvss) {
-                        contents.appendMarkdown(` - CVSS: ${vulnerability.cvss.text} (${vulnerability.cvss.type})`);
-                    }
-
-                    contents.appendMarkdown("\n\n");
+                this.appendMarkdown(contents, `${indirectVulnerability.dependencyName}\n\n`);
+                indirectVulnerability.transitiveVulnerabilities.forEach((vulnerability) => {
+                    this.appendVulnerability(contents, vulnerability);
                 });
             });
         }
-
-        contents.appendText(Organization.separator);
     }
 
     public policyViolationContent(policyViolationData: Package, contents: vscode.MarkdownString) {
-        if (policyViolationData?.policyRules === undefined) {
-            contents.appendMarkdown("No policy violations found.\n");
-            contents.appendText(Organization.separator);
+        if (!policyViolationData?.policyRules) {
+            this.appendMarkdown(contents, `${Icons.violation} **Policy Violations** : ${Icons.check} None found\n\n`);
             return;
         }
 
-        contents.appendMarkdown("Policy Violations\n\n");
-
-        contents.appendMarkdown("\n");
-        policyViolationData.policyRules?.forEach((rule, index) => {
-            if (index < 2) {
-                rule.ruleActions?.forEach((ruleAction: string, index: number) => {
-                    contents.appendMarkdown(
-                        `  ${index + 1}. **${PolicyRules[ruleAction as keyof typeof PolicyRules]}** - [View rule](${rule.ruleLink})`,
-                    );
-                });
-                contents.appendMarkdown("\n\n");
-            }
+        this.appendMarkdown(contents, `${Icons.violation} **Policy Violations**\n\n`);
+        policyViolationData.policyRules?.slice(0, 2).forEach((rule) => {
+            rule.ruleActions?.forEach((ruleAction: string) => {
+                this.appendMarkdown(
+                    contents,
+                    `&nbsp;&nbsp;${Icons.debugBreakpoint} ${PolicyRules[ruleAction as keyof typeof PolicyRules]} - [View rule](${rule.ruleLink})`,
+                );
+            });
+            this.appendMarkdown(contents, "\n\n");
         });
-        contents.appendText(Organization.separator);
+    }
+
+    private appendMarkdown(contents: vscode.MarkdownString, markdown: string) {
+        contents.appendMarkdown(markdown);
+    }
+
+    private appendVulnerability(contents: vscode.MarkdownString, vulnerability: any) {
+        this.appendMarkdown(
+            contents,
+            `&nbsp;&nbsp;&nbsp;&nbsp;${Icons.chevronRight} [${vulnerability.cveId}](${SecondService.debrickedBaseUrl + vulnerability.name.link})`,
+        );
+        if (vulnerability.cvss) {
+            this.appendMarkdown(contents, ` - CVSS: ${vulnerability.cvss.text} (${vulnerability.cvss.type})`);
+        }
+        this.appendMarkdown(contents, "\n\n");
     }
 }

@@ -55,9 +55,6 @@ export class Organization {
     static readonly debrickedDataKey = "debrickedData";
     static readonly userId = "userId";
 
-    // Markdown
-    static readonly separator = "\n______________________________\n";
-
     // Messages
     static readonly UNSUPPORTED_OS = "Unsupported operating system";
 

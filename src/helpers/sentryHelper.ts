@@ -1,10 +1,11 @@
 import * as Sentry from "@sentry/node";
 import { Environment, MessageStatus, Organization } from "../constants";
-import * as vscode from "vscode";
 import { GlobalStore } from "./globalStore";
+import { StatusBarMessageHelper } from "./statusBarMessageHelper";
 
 export class SentryHelper {
     private static instance: SentryHelper;
+    private static statusBarMessageHelper = new StatusBarMessageHelper();
 
     private constructor() {}
 
@@ -158,15 +159,18 @@ export class SentryHelper {
                 `${Organization.packageJson.name}@${Organization.packageJson.version}`,
                 Organization.environment,
             );
-            vscode.window.showWarningMessage("Logs are being sent to Sentry");
+            SentryHelper.statusBarMessageHelper.showWarningMessage("Logs are being sent to Sentry");
         } else {
             SentryHelper.close();
-            vscode.window.showInformationMessage("Sentry Logs are disabled");
+            SentryHelper.statusBarMessageHelper.showInformationMessage("Sentry Logs are disabled");
         }
     }
 
     public static async reConfigureSentry(): Promise<void> {
-        const response = await vscode.window.showInformationMessage("Do you want to enable Sentry?", "Yes", "No");
+        const response = await SentryHelper.statusBarMessageHelper.showInformationMessageWithItems(
+            "Do you want to enable Sentry?",
+            ["Yes", "No"],
+        );
 
         GlobalStore.getInstance().getGlobalStateInstance()?.setGlobalData("sentry_enabled", response);
 
@@ -177,7 +181,10 @@ export class SentryHelper {
         let storedState = GlobalStore.getInstance().getGlobalStateInstance()?.getGlobalData("sentry_enabled");
 
         if (storedState === undefined) {
-            storedState = await vscode.window.showInformationMessage("Do you want to enable Sentry?", "Yes", "No");
+            storedState = await SentryHelper.statusBarMessageHelper.showInformationMessageWithItems(
+                "Do you want to enable Sentry?",
+                ["Yes", "No"],
+            );
             GlobalStore.getInstance().getGlobalStateInstance()?.setGlobalData("sentry_enabled", storedState);
         }
 

@@ -13,6 +13,7 @@ export class Messages {
 
     // Workspace Messages
     static readonly WS_NOT_FOUND = "No workspace folder found. Please open a workspace to proceed.";
+    static readonly NO_REPO = "No repository selected";
 
     // Quick Pick Messages
     static readonly QUICK_PICK_FLAG = "Select a flag to use (optional).";

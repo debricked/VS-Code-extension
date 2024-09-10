@@ -9,7 +9,7 @@ import {
     commandHelper,
     authHelper,
 } from "../helpers";
-import { DebrickedCommands, MessageStatus, Organization, SecondService, TokenType } from "../constants/index";
+import { DebrickedCommands, Icons, MessageStatus, Organization, SecondService, TokenType } from "../constants/index";
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import * as fs from "fs";
@@ -59,7 +59,7 @@ export class ScanService {
                     cancellable: false,
                 },
                 async (progress) => {
-                    progress.report({ message: "Scanning Manifest Files🚀" });
+                    progress.report({ message: `${Icons.magnifier} Scanning Manifest Files` });
                     const output = await commandHelper.executeAsyncCommand(
                         `${Organization.debrickedCli} ${cmdParams.join(" ")}`,
                         true,
@@ -81,7 +81,7 @@ export class ScanService {
                             throw new Error("No reports file exists");
                         }
                     }
-                    statusBarMessageHelper.setStatusBarMessage(`Debricked: Scanning Completed $(pass-filled)`, 1000);
+                    statusBarMessageHelper.setStatusBarMessage(`Debricked: ${Icons.check} Scanning Completed`, 1000);
                 },
             );
         } catch (error: any) {

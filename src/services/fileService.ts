@@ -8,7 +8,7 @@ import {
     commonHelper,
     fileHelper,
 } from "../helpers";
-import { DebrickedCommands, Messages, MessageStatus, Organization, Regex } from "../constants/index";
+import { DebrickedCommands, Icons, Messages, MessageStatus, Organization, Regex } from "../constants/index";
 import { Package } from "../types";
 import * as vscode from "vscode";
 
@@ -67,7 +67,7 @@ export class FileService {
                         }
                     }
 
-                    progress.report({ message: "🚀Finding Files..." });
+                    progress.report({ message: `${Icons.rocket} Finding Files...` });
 
                     const foundFiles = JSON.parse(
                         await commandHelper.executeAsyncCommand(`${Organization.debrickedCli} ${cmdParams.join(" ")}`),
@@ -85,7 +85,7 @@ export class FileService {
                     }
 
                     repoData.filesToScan = foundFilesArray;
-                    progress.report({ message: `$(pass) Found Files` });
+                    progress.report({ message: `${Icons.check} Found Files` });
 
                     await globalStore.getGlobalStateInstance()?.setGlobalData(selectedRepoName, repoData);
 
