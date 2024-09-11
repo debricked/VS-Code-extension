@@ -30,20 +30,6 @@ describe("ApiClient", () => {
         sandbox.restore();
     });
 
-    // describe.only("constructor", () => {
-    //     it("should set up request interceptor", () => {
-    //         const interceptorSpy = sinon.spy(axiosInstance.interceptors.request, "use");
-    //         // Call the code that sets up the interceptor
-    //         expect(interceptorSpy.calledOnce).to.be.true;
-    //     });
-
-    //     it("should set up response interceptor", () => {
-    //         const interceptorSpy = sinon.spy(axiosInstance.interceptors.request, "use");
-    //         // Call the code that sets up the interceptor
-    //         sinon.assert.calledOnce(interceptorSpy);
-    //     });
-    // });
-
     describe("get", () => {
         it("should make a GET request with the correct URL and config", async () => {
             const url = "/test";
