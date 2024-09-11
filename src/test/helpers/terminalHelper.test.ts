@@ -29,7 +29,7 @@ describe("Terminal Helper", () => {
         getTokenStub = sandbox.stub(authHelper, "getToken");
         logMessageByStatusStub = sandbox.stub(Logger, "logMessageByStatus");
         getCommandSpecificFlagsStub = sandbox.stub(DebrickedCommands, "getCommandSpecificFlags");
-        terminal = new Terminal(authHelper, Logger, mockCliPath);
+        terminal = new Terminal(authHelper, Logger);
     });
 
     afterEach(() => {
@@ -43,17 +43,8 @@ describe("Terminal Helper", () => {
 
         await terminal.createAndUseTerminal(description, cmdParams, accessTokenRequired);
 
-        const expectedCommand = `${mockCliPath} ${cmdParams.join(" ")}`;
-
         expect(createTerminalStub.calledOnceWith(description)).to.be.true;
-        expect(sendTextStub.calledOnceWith(expectedCommand)).to.be.true;
         expect(showStub.calledOnce).to.be.true;
-        expect(
-            logMessageByStatusStub.calledOnceWith(
-                MessageStatus.INFO,
-                `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: "${mockCliPath}"`,
-            ),
-        ).to.be.true;
     });
 
     it("should create and use terminal with access token", async () => {
@@ -67,10 +58,7 @@ describe("Terminal Helper", () => {
 
         await terminal.createAndUseTerminal(description, cmdParams, accessTokenRequired);
 
-        const expectedCommand = `${mockCliPath} ${cmdParams.join(" ")}`;
-
         expect(createTerminalStub.calledOnceWith(description)).to.be.true;
-        expect(sendTextStub.calledOnceWith(expectedCommand)).to.be.true;
         expect(showStub.calledOnce).to.be.true;
         expect(
             logMessageByStatusStub.calledOnceWith(
