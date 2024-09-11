@@ -6,7 +6,7 @@ import { TokenType } from "../constants";
 import * as Sentry from "@sentry/node";
 
 export class ApiClient {
-    private axiosInstance: AxiosInstance;
+    public axiosInstance: AxiosInstance;
 
     constructor(
         authHelper: AuthHelper,
