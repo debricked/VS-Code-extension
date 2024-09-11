@@ -8,7 +8,6 @@ export class Terminal {
     constructor(
         private authHelper: AuthHelper,
         private logger: typeof Logger,
-        private command: string = Organization.debrickedCli,
     ) {}
 
     public async createAndUseTerminal(
@@ -17,6 +16,7 @@ export class Terminal {
         accessTokenRequired: boolean = false,
         useDefaultAccessToken: boolean = true,
     ): Promise<vscode.Terminal> {
+        let command: string = Organization.debrickedCli;
         if (accessTokenRequired) {
             const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
             const accessToken = await this.authHelper.getToken(useDefaultAccessToken, TokenType.ACCESS);
@@ -24,7 +24,7 @@ export class Terminal {
             if (accessToken) {
                 this.logger.logMessageByStatus(
                     MessageStatus.INFO,
-                    `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: "${this.command} ${cmdParams.join(" ")}"`,
+                    `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: "${command} ${cmdParams.join(" ")}"`,
                 );
                 cmdParams.push(flags[0].flag);
                 cmdParams.push(accessToken);
@@ -32,10 +32,10 @@ export class Terminal {
         } else {
             this.logger.logMessageByStatus(
                 MessageStatus.INFO,
-                `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: "${this.command}"`,
+                `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: "${command}"`,
             );
         }
-        this.command = `${this.command} ${cmdParams.join(" ")}`;
+        command = `${command} ${cmdParams.join(" ")}`;
 
         let terminal: vscode.Terminal;
         if (vscode.window.activeTerminal) {
@@ -44,7 +44,7 @@ export class Terminal {
             terminal = vscode.window.createTerminal(description);
         }
 
-        terminal.sendText(this.command);
+        terminal.sendText(command);
         terminal.show();
         return terminal;
     }
