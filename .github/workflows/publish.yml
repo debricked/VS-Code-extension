@@ -43,8 +43,13 @@ jobs:
               with:
                   name: vsce-package
                   path: "*.vsix"
-
             # - name: Publish to VS Code Marketplace
             #   env:
             #     VSCE_PAT: ${{ secrets.VSCE_PAT }}
             #   run: vsce publish -p $VSCE_PAT
+            - name: Trigger Sentry Release
+              uses: ./.github/workflows/sentry-release.yml
+              with:
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                
+            
