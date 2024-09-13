@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/node";
-import { Environment, MessageStatus, Organization } from "../constants";
+import { nodeProfilingIntegration } from "@sentry/profiling-node";
+import { Environment, MessageStatus, Organization, SecondService } from "../constants";
 import { GlobalStore } from "./globalStore";
 import { StatusBarMessageHelper } from "./statusBarMessageHelper";
 
@@ -35,6 +36,12 @@ export class SentryHelper {
                     }
                     return 1;
                 },
+                tracePropagationTargets: [SecondService.debrickedBaseUrl],
+                integrations: [
+                    // Add our Profiling integration
+                    nodeProfilingIntegration(),
+                ],
+                profilesSampleRate: 1.0,
             });
             SentryHelper.instance = new SentryHelper();
         }
