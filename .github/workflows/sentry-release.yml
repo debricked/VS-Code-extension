@@ -11,6 +11,12 @@ jobs:
               with:
                   fetch-depth: 0
 
+            - name: Get latest tag
+              run: |
+                  latest-tag=$(git describe --tags --abbrev=0)
+                  echo "Latest tag: $latest-tag"
+                  echo "LATEST_TAG=$latest-tag" >> $GITHUB_ENV
+                  
             - name: Create Sentry release
               uses: getsentry/action-release@v1
               env:
@@ -20,4 +26,4 @@ jobs:
                   SENTRY_URL: ${{ secrets.SENTRY_URL }}
               with:
                   environment: production
-                  version: "v0.0.101"
+                  version: "$LATEST_TAG"
