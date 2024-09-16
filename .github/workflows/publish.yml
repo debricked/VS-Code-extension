@@ -35,6 +35,14 @@ jobs:
             - name: Verify updated package.json
               run: cat package.json
 
+            - name: Replace sentry_dns with SENTRY_URL from secrets
+              run: |
+                  sed -i "s#https://5427545a2216287c2e4e0fc546172a6a@sentry.debricked.com/20#${{ secrets.SENTRY_URL }}#g" ./src/constants/organization.ts
+              shell: bash
+
+            - name: Verify updated organization.ts
+              run: cat ./src/constants/organization.ts
+              
             - name: Package VS Code Extension
               run: vsce package
 
