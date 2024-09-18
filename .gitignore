@@ -8,3 +8,5 @@ coverage
 .debricked
 resources/debricked-cli/debricked_download.log
 resources/debricked-cli/cli
+# Sentry Config File
+.sentryclirc

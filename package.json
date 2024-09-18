@@ -113,7 +113,7 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run package",
-        "compile": "npm run check-types && npm run lint && node esbuild.js",
+        "compile": "npm run check-types && npm run lint && node esbuild.js && npm run sentry:sourcemaps",
         "watch": "npm-run-all -p watch:*",
         "watch:esbuild": "node esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
@@ -128,7 +128,8 @@
         "clean": "rimraf out && rimraf dist && rimraf coverage && rimraf .debricked",
         "clean-all": "rimraf out && rimraf dist && rimraf coverage && rimraf .vscode-test",
         "vsce": "vsce package",
-        "madge": "npm run compile-tests && rimraf out\\test && madge --include-npm --image graph.svg out"
+        "madge": "npm run compile-tests && rimraf out\\test && madge --include-npm --image graph.svg out",
+        "sentry:sourcemaps": "sentry-cli sourcemaps inject --org debricked --project visual-studio-code-extensions ./out && sentry-cli --url https://sentry.debricked.com/ sourcemaps upload --org debricked --project visual-studio-code-extensions ./out"
     },
     "devDependencies": {
         "@types/chai": "^4.3.16",
@@ -157,6 +158,7 @@
         "typescript": "^5.4.5"
     },
     "dependencies": {
+        "@sentry/cli": "^2.36.1",
         "@sentry/node": "^8.27.0",
         "mock-fs": "^5.2.0",
         "proxyquire": "^2.1.3"
