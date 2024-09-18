@@ -1,4 +1,4 @@
-name: Publish to VS Code MarketPlace
+name: Publish to VS Code MarketPlace & update sentry
 
 on:
     workflow_dispatch:
