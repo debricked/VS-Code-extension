@@ -65,7 +65,7 @@ jobs:
 
             - name: Get latest commit
               run: |
-                  LAT_COMMIT=$(git log --format=%H --branches --max-count=1 2>/dev/null || echo "0")
+                  LAT_COMMIT=$(git log --format=%H --branches --max-count=1 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || echo "${GITHUB_PULL_REQUEST_NUMBER:-0}")
                   echo "LAT_COMMIT=$LAT_COMMIT" >> $GITHUB_ENV
               shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
 
