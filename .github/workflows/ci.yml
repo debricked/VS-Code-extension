@@ -20,7 +20,7 @@ jobs:
               with:
                   node-version: "22"
             - name: Install dependencies
-              run: npm ci && npm install -g vsce
+              run: npm ci
             - name: Calculate package-lock.json hash
               id: hash
               run: echo "hash=$(sha256sum package-lock.json | awk '{ print $1 }')" >> "$GITHUB_OUTPUT"
@@ -53,6 +53,9 @@ jobs:
                   path: .
                   key: ${{ needs.setup.outputs.package-lock-hash }}
                   fail-on-cache-miss: true
+
+            - name: Install vsce
+              run: npm install -g vsce
 
             - name: Get latest commit
               run: |
