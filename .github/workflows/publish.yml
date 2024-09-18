@@ -75,4 +75,4 @@ jobs:
               LATEST_TAG: $LATEST_TAG
             with:
               environment: production
-              version: $LATEST_TAG
+              version: "$LATEST_TAG"
