@@ -20,7 +20,9 @@ jobs:
               with:
                   node-version: "22"
             - name: Install dependencies
-              run: npm ci
+              run: |
+                  npm ci
+                  npm install -g vsce
             - name: Calculate package-lock.json hash
               id: hash
               run: echo "hash=$(sha256sum package-lock.json | awk '{ print $1 }')" >> "$GITHUB_OUTPUT"
@@ -42,6 +44,41 @@ jobs:
                   fail-on-cache-miss: true
             - name: Compile
               run: npm run compile
+
+    package:
+        runs-on: ubuntu-latest
+        needs: setup
+        steps:
+            - name: Restore repository cache
+              uses: actions/cache@v4
+              with:
+                  path: .
+                  key: ${{ needs.setup.outputs.package-lock-hash }}
+                  fail-on-cache-miss: true
+
+            - name: Get latest commit
+              run: |
+                  latest-commit=$(git log --format=%H --branches --max-count=1)
+                  echo "Latest commit: $latest-commit"
+                  echo "LAT_COMMIT=$latest-commit" >> $GITHUB_ENV
+
+            - name: Update version in package.json
+              run: |
+                  jq --arg version "$LAT_COMMIT" '.version = $version' package.json > package.tmp.json
+                  mv package.tmp.json package.json
+              shell: bash
+
+            - name: Verify updated package.json
+              run: cat package.json
+
+            - name: Package VS Code Extension
+              run: vsce package
+
+            - name: Upload VSIX artifact
+              uses: actions/upload-artifact@v3
+              with:
+                  name: vsce-package
+                  path: "*.vsix"
 
     test:
         runs-on: ubuntu-latest
@@ -69,7 +106,7 @@ jobs:
               with:
                   name: coverage
                   path: coverage/
-                  retention-days: 1
+                  retention-days: 10
 
     cleanup:
         runs-on: ubuntu-latest
