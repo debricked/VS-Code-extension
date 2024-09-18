@@ -132,6 +132,7 @@
         "sentry:sourcemaps": "sentry-cli sourcemaps inject --org debricked --project visual-studio-code-extensions ./out && sentry-cli --url https://sentry.debricked.com/ sourcemaps upload --org debricked --project visual-studio-code-extensions ./out"
     },
     "devDependencies": {
+        "@sentry/cli": "^2.36.1",
         "@types/chai": "^4.3.16",
         "@types/chai-as-promised": "^7.1.8",
         "@types/mocha": "^10.0.6",
@@ -158,7 +159,6 @@
         "typescript": "^5.4.5"
     },
     "dependencies": {
-        "@sentry/cli": "^2.36.1",
         "@sentry/node": "^8.27.0",
         "mock-fs": "^5.2.0",
         "proxyquire": "^2.1.3"
