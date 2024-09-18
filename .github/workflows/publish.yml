@@ -51,5 +51,5 @@ jobs:
 
             - name: Run Sentry Release
               run: |
-                  ./github/workflows/sentry-release.yml
+                  ./.github/workflows/sentry-release.yml
               shell: bash
