@@ -70,7 +70,7 @@ jobs:
 
             - name: Update version in package.json
               run: |
-                  jq --arg version "$LAT_COMMIT" '.version = "\($LATEST_TAG)+\($version)"' package.json > package.tmp.json
+                  jq ".version = \"$LATEST_TAG+$LAT_COMMIT\"" package.json > package.tmp.json
                   mv package.tmp.json package.json
               shell: bash
 
