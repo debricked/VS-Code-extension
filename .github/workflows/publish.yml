@@ -53,21 +53,24 @@ jobs:
         runs-on: ubuntu-latest
         needs: deploy
         steps:
-          - uses: actions/checkout@v4
+            - uses: actions/checkout@v4
 
-          - name: Get latest tag
-            run: |
+            - name: Get latest tag
+              run: |
                   LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
                   echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-            shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
-              
-          - name: Create Sentry release
-            uses: getsentry/action-release@v1
-            env:
-              SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-              SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-              SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-              SENTRY_URL: ${{ secrets.SENTRY_URL }}
-            with:
-              environment: production
-              version: ${{ env.LATEST_TAG }}
+              shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+
+            - name: Create Sentry release
+              uses: getsentry/action-release@v1
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+                  SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+                  SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+                  SENTRY_URL: ${{ secrets.SENTRY_URL }}
+              with:
+                  environment: production
+                  version: ${{ env.LATEST_TAG }}
+
+            - name: upload sourcemaps to sentry
+              run: npm run sentry:sourcemaps
