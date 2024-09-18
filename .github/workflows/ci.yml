@@ -43,6 +43,52 @@ jobs:
             - name: Compile
               run: npm run compile
 
+    package:
+        runs-on: ubuntu-latest
+        needs: setup
+        if: github.event_name != 'pull_request'
+        steps:
+            - name: Restore repository cache
+              uses: actions/cache@v4
+              with:
+                  path: .
+                  key: ${{ needs.setup.outputs.package-lock-hash }}
+                  fail-on-cache-miss: true
+
+            - name: Install vsce
+              run: npm install -g vsce
+
+            - name: Get latest tag
+              run: |
+                  LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
+                  echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+              shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+
+            - name: Get latest commit
+              run: |
+                  LAT_COMMIT=$(git log --format=%H --branches --max-count=1 || echo "0")
+                  echo "LAT_COMMIT=$LAT_COMMIT" >> $GITHUB_ENV
+              shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+
+            - name: Update version in package.json
+              run: |
+                  jq ".version = \"$LATEST_TAG+$LAT_COMMIT\"" package.json > package.tmp.json
+                  mv package.tmp.json package.json
+              shell: bash
+
+            - name: Verify updated package.json
+              run: cat package.json
+
+            - name: Package VS Code Extension
+              run: vsce package
+
+            - name: Upload VSIX artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: vsce-package
+                  path: "*.vsix"
+                  retention-days: 10
+
     test:
         runs-on: ubuntu-latest
         needs: setup
@@ -69,7 +115,7 @@ jobs:
               with:
                   name: coverage
                   path: coverage/
-                  retention-days: 1
+                  retention-days: 10
 
     cleanup:
         runs-on: ubuntu-latest
