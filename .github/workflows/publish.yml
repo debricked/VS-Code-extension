@@ -70,7 +70,7 @@ jobs:
               run: npm ci
 
             - name: compile src
-              run: npm run compile
+              run: npm run compile-tests
             
             - name: Install Sentry CLI
               run: npm install -g @sentry/cli
