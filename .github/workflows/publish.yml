@@ -72,7 +72,6 @@ jobs:
               SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
               SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
               SENTRY_URL: ${{ secrets.SENTRY_URL }}
-              VERSION: $LATEST_TAG
             with:
               environment: production
-              version: ${{ env.VERSION }}
+              version: ${{ env.LATEST_TAG }}
