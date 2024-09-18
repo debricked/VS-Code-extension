@@ -69,7 +69,7 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
-            - name: Install dependencies
+            - name: compile src
               run: npm run compile
             
             - name: Install Sentry CLI
@@ -86,6 +86,10 @@ jobs:
                   environment: production
                   version: ${{ env.LATEST_TAG }}
 
+            - name: List folders
+              run: |
+                ls -l
+                
             - name: upload sourcemaps to sentry
               run: npm run sentry:sourcemaps
               env:
