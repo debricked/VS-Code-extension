@@ -48,3 +48,8 @@ jobs:
             #   env:
             #     VSCE_PAT: ${{ secrets.VSCE_PAT }}
             #   run: vsce publish -p $VSCE_PAT
+
+            - name: Run Sentry Release
+              run: |
+                  ./sentry-release.yml
+              shell: bash
