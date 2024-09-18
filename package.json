@@ -129,7 +129,7 @@
         "clean-all": "rimraf out && rimraf dist && rimraf coverage && rimraf .vscode-test",
         "vsce": "vsce package",
         "madge": "npm run compile-tests && rimraf out\\test && madge --include-npm --image graph.svg out",
-        "sentry:sourcemaps": "sentry-cli sourcemaps inject --org debricked --project visual-studio-code-extensions ./out && sentry-cli --url https://sentry.debricked.com/ sourcemaps upload --org debricked --project visual-studio-code-extensions ./out"
+        "sentry:sourcemaps": "sentry-cli sourcemaps inject --org debricked --project visual-studio-code-extensions out && sentry-cli --url https://sentry.debricked.com/ sourcemaps upload --org debricked --project visual-studio-code-extensions out"
     },
     "devDependencies": {
         "@sentry/cli": "^2.36.1",
