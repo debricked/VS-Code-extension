@@ -68,6 +68,9 @@ jobs:
 
             - name: Install dependencies
               run: npm ci
+
+            - name: Install dependencies
+              run: npm run compile
             
             - name: Install Sentry CLI
               run: npm install -g @sentry/cli
@@ -85,3 +88,5 @@ jobs:
 
             - name: upload sourcemaps to sentry
               run: npm run sentry:sourcemaps
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
