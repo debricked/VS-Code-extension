@@ -7,15 +7,12 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         if: github.ref == 'refs/heads/main'
-        outputs:
-          LATEST_TAG: ${{ steps.get-latest-tag.outputs.LATEST_TAG }}
         steps:
             - uses: actions/checkout@v4
 
             - name: Get latest tag
               run: |
                   LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
-                  echo "::set-output name=LATEST_TAG::$LATEST_TAG"
                   echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
               shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
 
@@ -62,8 +59,8 @@ jobs:
     
           - name: Print latest tag
             run: |
-              echo "LATEST_TAG: ${{ needs.deploy.outputs.LATEST_TAG }}"
-    
+              echo "The value of LATEST_TAG: $LATEST_TAG"
+              
           - name: Create Sentry release
             uses: getsentry/action-release@v1
             env:
@@ -71,7 +68,7 @@ jobs:
               SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
               SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
               SENTRY_URL: ${{ secrets.SENTRY_URL }}
-              LATEST_TAG: ${{ needs.deploy.outputs.LATEST_TAG }}
+              LATEST_TAG: $LATEST_TAG
             with:
               environment: production
               version: $LATEST_TAG
