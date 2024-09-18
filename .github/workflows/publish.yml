@@ -60,10 +60,6 @@ jobs:
                   LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
                   echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
             shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
-    
-          - name: Print latest tag
-            run: |
-              echo "The value of LATEST_TAG: $LATEST_TAG"
               
           - name: Create Sentry release
             uses: getsentry/action-release@v1
