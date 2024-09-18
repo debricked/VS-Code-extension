@@ -61,6 +61,7 @@ jobs:
                   latest-commit=$(git log --format=%H --branches --max-count=1)
                   echo "Latest commit: $latest-commit"
                   echo "LAT_COMMIT=$latest-commit" >> $GITHUB_ENV
+              shell: bash
 
             - name: Update version in package.json
               run: |
