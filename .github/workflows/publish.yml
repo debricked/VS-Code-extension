@@ -54,8 +54,12 @@ jobs:
         needs: deploy
         steps:
           - uses: actions/checkout@v4
-            with:
-              fetch-depth: 0
+
+          - name: Get latest tag
+            run: |
+                  LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
+                  echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+            shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
     
           - name: Print latest tag
             run: |
