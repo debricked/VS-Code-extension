@@ -85,6 +85,7 @@ jobs:
               with:
                   name: vsce-package
                   path: "*.vsix"
+                  retention-days: 10
 
     test:
         runs-on: ubuntu-latest
