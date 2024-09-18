@@ -57,6 +57,12 @@ jobs:
             - name: Install vsce
               run: npm install -g vsce
 
+            - name: Get latest tag
+              run: |
+                  LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
+                  echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+              shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+
             - name: Get latest commit
               run: |
                   echo "LAT_COMMIT=$(git log --format=%H --branches --max-count=1)" >> $GITHUB_ENV
@@ -64,7 +70,7 @@ jobs:
 
             - name: Update version in package.json
               run: |
-                  jq --arg version "$LAT_COMMIT" '.version = ("0.0." + $version)' package.json > package.tmp.json
+                  jq --arg version "$LAT_COMMIT" '.version = "\($LATEST_TAG)+\($version)"' package.json > package.tmp.json
                   mv package.tmp.json package.json
               shell: bash
 
