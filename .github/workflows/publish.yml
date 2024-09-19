@@ -58,7 +58,7 @@ jobs:
               uses: actions/cache@v4
               with:
                   path: .
-                  key: ${{ runner.os }}-repo-${{ needs.setup.outputs.package-lock-hash }}
+                  key: ${{ needs.setup.outputs.package-lock-hash }}
 
     package:
         runs-on: ubuntu-latest
