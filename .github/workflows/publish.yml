@@ -16,17 +16,13 @@ jobs:
               with:
                   node-version: "22"
 
-            - name: Get latest tag
-              run: |
-                  LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
-                  echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-              shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
-
             - name: Install dependencies
               run: |
                   npm ci
                   npm install -g vsce
                   npm install -g @sentry/cli
+                  npm run compile-tests
+                  npm run compile
 
             - name: Calculate package-lock.json hash
               id: hash
@@ -48,14 +44,16 @@ jobs:
                   path: .
                   key: ${{ needs.setup.outputs.package-lock-hash }}
                   fail-on-cache-miss: true
-            - name: Compile
-              run: |
-                  npm run compile-tests
-                  npm run compile
 
             - name: List all folders
               run: |
                   ls -l
+
+            - name: Get latest tag
+              run: |
+                  LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
+                  echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+              shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
 
             - name: Update version in package.json
               run: |
@@ -74,9 +72,3 @@ jobs:
               with:
                   name: vsce-package
                   path: "*.vsix"
-
-            - name: Cache repository
-              uses: actions/cache@v4
-              with:
-                  path: .
-                  key: ${{ needs.setup.outputs.package-lock-hash }}
