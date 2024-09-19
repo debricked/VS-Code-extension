@@ -19,7 +19,6 @@ jobs:
             - name: Install dependencies
               run: |
                   npm ci
-                  npm install -g vsce
                   npm install -g @sentry/cli
                   npm run compile-tests
                   npm run compile
@@ -65,7 +64,9 @@ jobs:
               run: cat package.json
 
             - name: Package VS Code Extension
-              run: vsce package
+              run: |
+                  npm install -g vsce
+                  vsce package
 
             - name: Upload VSIX artifact
               uses: actions/upload-artifact@v4
