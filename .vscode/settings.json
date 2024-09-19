@@ -13,7 +13,7 @@
         ".github": true,
         ".prettierrc.json": true,
         ".eslintrc.json": true,
-        "esbuild.js": false
+        "esbuild.js": true
     },
     "search.exclude": {
         "out": true,
