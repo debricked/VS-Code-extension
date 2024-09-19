@@ -45,7 +45,7 @@ async function main() {
                 project: "visual-studio-code-extensions",
                 url: "https://sentry.debricked.com/",
                 release: {
-                    name: process.env.LATEST_TAG,
+                    name: "vs-code-extension@"+process.env.LATEST_TAG,
                 },
             }),
         ],
