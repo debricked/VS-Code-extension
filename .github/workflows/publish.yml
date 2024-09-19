@@ -62,7 +62,9 @@ jobs:
               run: |
                   npm install -g vsce
                   vsce package
-
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+                  
             - name: Upload VSIX artifact
               uses: actions/upload-artifact@v4
               with:
