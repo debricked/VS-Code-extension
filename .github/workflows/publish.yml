@@ -9,7 +9,6 @@ jobs:
         if: github.ref == 'refs/heads/main'
         outputs:
             package-lock-hash: ${{ runner.os }}-repo-${{ steps.hash.outputs.hash }}
-            latest-tag: ${{ steps.hash.outputs.latest-tag }}
         steps:
             - uses: actions/checkout@v4
             - name: Set up Node.js
@@ -20,7 +19,7 @@ jobs:
             - name: Get latest tag
               run: |
                   LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
-                  echo "latest-tag=$LATEST_TAG" >> "$GITHUB_OUTPUT"
+                  echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
               shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
 
             - name: Install dependencies
@@ -54,14 +53,15 @@ jobs:
                   npm run compile-tests
                   npm run compile
 
-            - name: Update version in package.json
-              run: |
-                  jq --arg version ${{ needs.setup.outputs.latest-tag }} '.version = $version' -i package.json
-              shell: bash
-
             - name: List all folders
               run: |
                   ls -l
+
+            - name: Update version in package.json
+              run: |
+                  jq --arg version "$LATEST_TAG" '.version = $version' package.json > package.tmp.json
+                  mv package.tmp.json package.json
+              shell: bash
 
             - name: Verify updated package.json
               run: cat package.json
