@@ -10,3 +10,6 @@ resources/debricked-cli/debricked_download.log
 resources/debricked-cli/cli
 # Sentry Config File
 .sentryclirc
+
+# Sentry Config File
+.env.sentry-build-plugin

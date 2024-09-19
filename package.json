@@ -120,7 +120,7 @@
         "package": "npm run check-types && npm run lint && node esbuild.js --production",
         "compile-tests": "npm run clean && tsc -p . --outDir out",
         "watch-tests": "tsc -p . -w --outDir out",
-        "pretest": "npm run compile-tests && npm run compile && npm run lint",
+        "pretest": "npm run compile-tests && npm run compile",
         "check-types": "tsc --noEmit",
         "lint": "eslint src --ext ts",
         "lint:fix": "eslint --fix src --ext ts",
@@ -159,6 +159,7 @@
         "typescript": "^5.4.5"
     },
     "dependencies": {
+        "@sentry/esbuild-plugin": "^2.22.4",
         "@sentry/node": "^8.27.0",
         "mock-fs": "^5.2.0",
         "proxyquire": "^2.1.3"
