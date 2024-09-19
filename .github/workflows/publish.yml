@@ -104,7 +104,7 @@ jobs:
                   SENTRY_URL: ${{ secrets.SENTRY_URL }}
               with:
                   environment: production
-                  version: ${{ env.LATEST_TAG }}
+                  version: vs-code-extension@${{ env.LATEST_TAG }}
 
     cleanup:
         runs-on: ubuntu-latest
