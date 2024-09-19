@@ -1,4 +1,4 @@
-name: Publish to VS Code MarketPlace & update sentry
+name: Publish to VS Code MarketPlace & update Sentry
 
 on:
     workflow_dispatch:
@@ -25,6 +25,7 @@ jobs:
               run: |
                   npm ci
                   npm install -g vsce
+                  npm install -g @sentry/cli
 
             - name: Update version in package.json
               run: |
@@ -44,10 +45,12 @@ jobs:
                   name: vsce-package
                   path: "*.vsix"
 
-            # - name: Publish to VS Code Marketplace
-            #   env:
-            #     VSCE_PAT: ${{ secrets.VSCE_PAT }}
-            #   run: vsce publish -p $VSCE_PAT
+            - name: Compile src
+              run: npm run compile-tests
+
+            - name: List folders
+              run: |
+                  ls -l
 
     sentry-release:
         runs-on: ubuntu-latest
@@ -55,26 +58,6 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - name: Get latest tag
-              run: |
-                  LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
-                  echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
-              shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
-
-            - name: Set up Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: "22"
-
-            - name: Install dependencies
-              run: npm ci
-
-            - name: compile src
-              run: npm run compile-tests
-            
-            - name: Install Sentry CLI
-              run: npm install -g @sentry/cli
-    
             - name: Create Sentry release
               uses: getsentry/action-release@v1
               env:
@@ -86,11 +69,7 @@ jobs:
                   environment: production
                   version: ${{ env.LATEST_TAG }}
 
-            - name: List folders
-              run: |
-                ls -l
-                
-            - name: upload sourcemaps to sentry
+            - name: Upload sourcemaps to Sentry
               run: npm run sentry:sourcemaps
               env:
                   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
