@@ -49,7 +49,7 @@ export class SentryHelper {
      * @param error - The error object to capture.
      */
     public static captureException(error: Error): void {
-        Sentry.captureException(new Error(error.message, error));
+        Sentry.captureException(error);
     }
 
     /**
