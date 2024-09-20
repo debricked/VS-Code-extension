@@ -46,6 +46,8 @@ async function main() {
                 url: "https://sentry.debricked.com/",
                 release: {
                     name: "vs-code-extension@" + process.env.LATEST_TAG,
+                    dist: process.env.LATEST_TAG,
+                    cleanArtifacts: true,
                 },
             }),
         ],
