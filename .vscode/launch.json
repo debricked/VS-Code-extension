@@ -13,7 +13,8 @@
             "outFiles": ["${workspaceFolder}/dist/**/*.js"],
             "preLaunchTask": "${defaultBuildTask}",
             "env": {
-                "NODE_ENV": "development"
+                "NODE_ENV": "development",
+                "LATEST_TAG": "0.0.0"
             }
         },
         {
@@ -27,7 +28,8 @@
             ],
             "outFiles": ["${workspaceFolder}/dist/**/*.js"],
             "env": {
-                "NODE_ENV": "test"
+                "NODE_ENV": "test",
+                "LATEST_TAG": "0.0.0"
             }
         }
     ]
