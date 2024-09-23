@@ -1,12 +1,14 @@
 import { ErrorHandler } from "../../helpers/errorHandler";
-import { Logger } from "../../helpers";
+import { Logger } from "../../helpers/loggerHelper";
 import { StatusBarMessageHelper } from "../../helpers/statusBarMessageHelper";
+import { SentryHelper } from "../../helpers/sentryHelper";
 import { expect, sinon } from "../setup";
 
 describe("ErrorHandler", () => {
     let errorHandler: ErrorHandler;
     let loggerStub: sinon.SinonStubbedInstance<typeof Logger>;
     let statusBarMessageHelperStub: sinon.SinonStubbedInstance<StatusBarMessageHelper>;
+    let sentryHelperStub: sinon.SinonStubbedInstance<typeof SentryHelper>;
     let sandbox: sinon.SinonSandbox;
 
     beforeEach(() => {
@@ -18,8 +20,11 @@ describe("ErrorHandler", () => {
         statusBarMessageHelperStub = {
             showErrorMessage: sandbox.stub(),
         } as any;
+        sentryHelperStub = {
+            captureException: sandbox.stub(),
+        } as any;
 
-        errorHandler = new ErrorHandler(statusBarMessageHelperStub, loggerStub);
+        errorHandler = new ErrorHandler(statusBarMessageHelperStub, loggerStub, sentryHelperStub);
     });
 
     afterEach(() => {

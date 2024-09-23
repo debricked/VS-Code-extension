@@ -96,6 +96,7 @@ export class GitHelper {
             return await this.command.executeAsyncCommand(command);
         } catch (error: any) {
             Logger.logError(error);
+            this.sentryHelper.captureException(new Error(`Git Error : ${command}`, error));
             return MessageStatus.UNKNOWN;
         }
     }

@@ -64,12 +64,17 @@ jobs:
                   vsce package
               env:
                   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-                  
+
             - name: Upload VSIX artifact
               uses: actions/upload-artifact@v4
               with:
                   name: vsce-package
                   path: "*.vsix"
+
+            # - name: Publish to VS Code Marketplace
+            #   env:
+            #     VSCE_PAT: ${{ secrets.VSCE_PAT }}
+            #   run: vsce publish -p $VSCE_PAT
 
     sentry-release:
         runs-on: ubuntu-latest

@@ -15,12 +15,14 @@ export class SentryHelper {
      * @param dsn - Your Sentry DSN.
      * @param release - The release version of your extension.
      * @param environment - The environment (e.g., production, development).
+     * @param transactionName - The transaction name (optional).
      * @param tracesSampleRate - The sample rate for capturing transactions (performance monitoring).
      */
     public static initialize(
         dsn: string,
         release: string,
         environment: Environment,
+        transactionName?: string,
         tracesSampleRate: number = 1.0,
     ): void {
         if (!SentryHelper.instance) {
@@ -39,6 +41,11 @@ export class SentryHelper {
                 integrations: [],
                 profilesSampleRate: 1.0,
             });
+
+            if (transactionName) {
+                SentryHelper.setTransactionName(transactionName);
+            }
+
             SentryHelper.instance = new SentryHelper();
         }
     }
@@ -161,6 +168,7 @@ export class SentryHelper {
                 Organization.sentry_dns,
                 `${Organization.packageJson.name}@${Organization.packageJson.version}`,
                 Organization.environment,
+                `Initialize ${Organization.packageJson.name}`, // Set default transaction name
             );
             SentryHelper.statusBarMessageHelper.showWarningMessage("Logs are being sent to Sentry");
         } else {
@@ -192,5 +200,14 @@ export class SentryHelper {
         }
 
         return storedState;
+    }
+
+    /**
+     * Sets the transaction name.
+     *
+     * @param transactionName - The transaction name.
+     */
+    public static setTransactionName(transactionName: string): void {
+        Sentry.getCurrentScope().setTransactionName(transactionName);
     }
 }

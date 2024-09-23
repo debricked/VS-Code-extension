@@ -116,6 +116,7 @@ export class BaseCommandService {
     static async installCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
+            SentryHelper.setTransactionName("Install CLI");
             globalStore.setSequenceID(commonHelper.generateHashCode());
 
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
@@ -148,6 +149,7 @@ export class BaseCommandService {
     static async login(updateCredentials: boolean = true) {
         try {
             Logger.logInfo("Register login");
+            SentryHelper.setTransactionName("Login");
             globalStore.setSequenceID(commonHelper.generateHashCode());
 
             const debrickedData: any = await globalStore
@@ -200,6 +202,7 @@ export class BaseCommandService {
     static async updateCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register UpdateCommand");
+            SentryHelper.setTransactionName("Update Token");
             globalStore.setSequenceID(commonHelper.generateHashCode());
             let subCommand: DebrickedCommandNode[] | undefined;
             if (DebrickedCommands.BASE_COMMAND.sub_commands) {
