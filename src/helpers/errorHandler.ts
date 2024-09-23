@@ -14,7 +14,7 @@ export class ErrorHandler {
 
         this.logError(errorMessage, errorStack);
         this.showUserErrorMessage(errorMessage);
-        this.sentryHelper.captureException(new Error(`Error :`, error));
+        this.sentryHelper.captureException(new Error(`Error Found :`, error));
     }
 
     private extractErrorMessage(error: unknown): string {
