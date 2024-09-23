@@ -1,17 +1,20 @@
 import { Logger } from "./loggerHelper";
 import { StatusBarMessageHelper } from "./statusBarMessageHelper";
+import { SentryHelper } from "./sentryHelper";
 
 export class ErrorHandler {
     constructor(
         private statusBarMessageHelper: StatusBarMessageHelper,
         private logger: typeof Logger,
+        private sentryHelper: typeof SentryHelper,
     ) {}
-    public handleError(error: unknown) {
+    public handleError(error: any) {
         const errorMessage = this.extractErrorMessage(error);
         const errorStack = error instanceof Error ? error.stack : "";
 
         this.logError(errorMessage, errorStack);
         this.showUserErrorMessage(errorMessage);
+        this.sentryHelper.captureException(new Error(`Error :`, error));
     }
 
     private extractErrorMessage(error: unknown): string {
