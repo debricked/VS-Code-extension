@@ -16,7 +16,7 @@ describe("SentryHelper", () => {
 
     it("should initialize Sentry with the provided configuration", () => {
         const initStub = sandbox.stub(Sentry, "init");
-        SentryHelper.initialize("dsn", "release", Environment.PROD, 1.0);
+        SentryHelper.initialize("dsn", "release", Environment.PROD, "init", 1.0);
 
         expect(initStub.calledOnce).to.be.true;
     });
