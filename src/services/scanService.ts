@@ -22,7 +22,6 @@ export class ScanService {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register ScanCommand");
 
             debrickedDataHelper.createDir(Organization.reportsFolderPath);
-            globalStore.setSequenceID(commonHelper.generateHashCode());
             const cmdParams: string[] = [];
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 

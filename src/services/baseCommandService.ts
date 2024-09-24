@@ -11,7 +11,6 @@ import {
     errorHandler,
     globalStore,
     showInputBoxHelper,
-    commonHelper,
     SentryHelper,
 } from "../helpers";
 import * as vscode from "vscode";
@@ -22,7 +21,6 @@ export class BaseCommandService {
     static async baseCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register BaseCommand");
-            globalStore.setSequenceID(commonHelper.generateHashCode());
             const subCommand: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
 
             let selectedSubCommand: any;
@@ -80,7 +78,6 @@ export class BaseCommandService {
     static async help() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register HelpCommand");
-            globalStore.setSequenceID(commonHelper.generateHashCode());
             const cmdParams = [];
             const subCommand: any = DebrickedCommands.BASE_COMMAND;
 
@@ -117,7 +114,6 @@ export class BaseCommandService {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
             SentryHelper.setTransactionName("Install CLI");
-            globalStore.setSequenceID(commonHelper.generateHashCode());
 
             const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
             Logger.logMessageByStatus(
@@ -150,7 +146,6 @@ export class BaseCommandService {
         try {
             Logger.logInfo("Register login");
             SentryHelper.setTransactionName("Login");
-            globalStore.setSequenceID(commonHelper.generateHashCode());
 
             const debrickedData: any = await globalStore
                 .getGlobalStateInstance()
@@ -177,7 +172,7 @@ export class BaseCommandService {
             }
             const execAsync = promisify(exec);
             const { stdout } = await execAsync(
-                `curl -X POST https://debricked.com/api/login_check -d _username=${debrickedData["debricked_username"]} -d _password=${debrickedData["debricked_password"]}`,
+                `curl -X POST https://debricked.com/api/login_check -d _username=${debrickedData["debricked_username"]} -d _password=${debrickedData["debricked_username"]}`,
                 {},
             );
             const bearerToken = JSON.parse(stdout.trim());
@@ -203,7 +198,6 @@ export class BaseCommandService {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register UpdateCommand");
             SentryHelper.setTransactionName("Update Token");
-            globalStore.setSequenceID(commonHelper.generateHashCode());
             let subCommand: DebrickedCommandNode[] | undefined;
             if (DebrickedCommands.BASE_COMMAND.sub_commands) {
                 subCommand = DebrickedCommands.BASE_COMMAND.sub_commands[1].sub_commands;

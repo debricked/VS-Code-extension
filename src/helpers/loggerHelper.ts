@@ -22,16 +22,9 @@ export class Logger {
     public static async writeLog(message: string) {
         const timestamp = new Date().toISOString();
         const userId = GlobalStore.getInstance().getUserId() || "";
-        const sequenceId = GlobalStore.getInstance().getSequenceID()
-            ? `[seq_id:${GlobalStore.getInstance().getSequenceID()}]`
-            : "";
 
-        const logEntry = `[${timestamp}] [user_id:${userId}] ${sequenceId} ${message}\n`;
+        const logEntry = `[${timestamp}] [user_id:${userId}] ${message}\n`;
         await fs.appendFileSync(Logger.logFilePath, logEntry, "utf-8");
-
-        if (sequenceId) {
-            SentryHelper.setTag("sequence_id", GlobalStore.getInstance().getSequenceID());
-        }
     }
 
     public static async logMessage(message: string) {
