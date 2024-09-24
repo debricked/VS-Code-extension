@@ -55,6 +55,7 @@ export class Command {
                     span.end(new Date());
                     return stdout.trim();
                 } catch (error: any) {
+                    this.logger.logError("Error in executeAsyncCommand");
                     throw error;
                 }
             },

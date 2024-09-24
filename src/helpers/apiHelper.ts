@@ -41,6 +41,7 @@ export class ApiHelper {
             const response = await this.apiClient.get<any>(url);
             return response;
         } catch (error: any) {
+            this.logger.logError("Error in ApiHelper->get");
             throw error;
         }
     }

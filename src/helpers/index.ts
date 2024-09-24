@@ -41,6 +41,7 @@ class IndexHelper {
             await this.commonHelper.checkUserId();
             await this.gitHelper.setupGit();
         } catch (error: any) {
+            Logger.logError("Error in setupDebricked");
             throw error;
         }
     }

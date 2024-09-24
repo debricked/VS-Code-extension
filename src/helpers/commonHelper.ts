@@ -50,6 +50,7 @@ export class Common {
             }
             this.globalStore.setUserId(userId);
         } catch (error: any) {
+            this.logger.logError("Error in checkUserId");
             throw error;
         }
     }

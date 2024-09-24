@@ -94,14 +94,6 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
                 break;
             }
 
-            case "go.mod": {
-                const match = commonHelper.extractValueFromStringUsingRegex(lineText, Regex.goMod);
-                if (match) {
-                    return match + " (Go)";
-                }
-                break;
-            }
-
             default:
                 break;
         }

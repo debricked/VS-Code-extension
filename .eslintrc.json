@@ -1,12 +1,15 @@
 {
     "root": true,
     "parser": "@typescript-eslint/parser",
+    "env": {
+        "node": true
+    },
     "parserOptions": {
         "ecmaVersion": 6,
         "sourceType": "module"
     },
-    "plugins": ["@typescript-eslint"],
-    "extends": ["plugin:@typescript-eslint/recommended"],
+    "plugins": ["@typescript-eslint", "eslint-plugin-security", "security"],
+    "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
     "rules": {
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/naming-convention": [
@@ -26,7 +29,9 @@
             {
                 "max": 1
             }
-        ]
+        ],
+        "@typescript-eslint/no-unused-vars": "error",
+        "security/detect-non-literal-fs-filename": "off"
     },
     "ignorePatterns": ["out", "dist", "**/*.d.ts"]
 }
