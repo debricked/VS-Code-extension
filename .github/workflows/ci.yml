@@ -119,7 +119,7 @@ jobs:
 
     cleanup:
         runs-on: ubuntu-latest
-        needs: [setup, build, vulnerabilities-scan]
+        needs: [setup, build]
         if: always()
         steps:
             - name: Cleanup
@@ -164,15 +164,8 @@ jobs:
     vulnerabilities-scan:
         if: github.event_name == 'pull_request'
         runs-on: ubuntu-latest
-        needs: setup
         steps:
-            - name: Restore repository cache
-              uses: actions/cache@v4
-              with:
-                  path: .
-                  key: ${{ needs.setup.outputs.package-lock-hash }}
-                  fail-on-cache-miss: true
-            - name: Run debricked vulnerabilities-scan
-              uses: debricked/actions@v4
+            - uses: actions/checkout@v4
+            - uses: debricked/actions@v4
               env:
                   DEBRICKED_TOKEN: ${{ secrets.DEBRICKED_TOKEN }}
