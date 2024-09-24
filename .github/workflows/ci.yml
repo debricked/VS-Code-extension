@@ -160,3 +160,12 @@ jobs:
                   else
                     echo "Main branch not deleted"
                   fi
+
+    vulnerabilities-scan:
+        if: github.event_name == 'pull_request'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: debricked/actions@v4
+              env:
+                  DEBRICKED_TOKEN: ${{ secrets.DEBRICKED_TOKEN }}
