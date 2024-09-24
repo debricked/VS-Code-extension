@@ -99,6 +99,24 @@
                 "title": "Find all dependency files in inputted path",
                 "category": "debricked",
                 "icon": "$(search)"
+            },
+            {
+                "command": "debricked.auth.login",
+                "title": "Authenticate debricked user",
+                "category": "debricked",
+                "icon": "$(account)"
+            },
+            {
+                "command": "debricked.auth.logout",
+                "title": "Logout debricked user",
+                "category": "debricked",
+                "icon": "$(account)"
+            },
+            {
+                "command": "debricked.auth.token",
+                "title": "Retrieve access token",
+                "category": "debricked",
+                "icon": "$(account)"
             }
         ],
         "menus": {

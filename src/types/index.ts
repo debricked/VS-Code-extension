@@ -11,6 +11,7 @@ import {
 } from "./vulnerability";
 import { Dependency, DependencyResponse, IndirectDependency } from "./dependency";
 import { Package } from "./package";
+import { AuthToken } from "./auth";
 
 export {
     DebrickedCommandNode,
@@ -26,4 +27,5 @@ export {
     DependencyResponse,
     IndirectDependency,
     Package,
+    AuthToken,
 };

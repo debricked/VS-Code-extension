@@ -35,7 +35,7 @@ export class ErrorHandler {
     }
 
     private showUserErrorMessage(errorMessage: string) {
-        this.statusBarMessageHelper.showErrorMessage(`Error: ${errorMessage}`);
+        this.statusBarMessageHelper.showErrorMessage(`${errorMessage}`);
     }
 
     public setupGlobalErrorHandlers() {
