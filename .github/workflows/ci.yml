@@ -119,7 +119,7 @@ jobs:
 
     cleanup:
         runs-on: ubuntu-latest
-        needs: [setup, build]
+        needs: [setup, build, vulnerabilities-scan]
         if: always()
         steps:
             - name: Cleanup
