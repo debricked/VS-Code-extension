@@ -1,10 +1,9 @@
 name: CI
 
 on:
-    push:
-        branches: ["**"]
     pull_request:
         branches: [main]
+        types: [opened, synchronize, reopened]
     pull_request_target:
         types: [closed]
 
@@ -46,7 +45,6 @@ jobs:
     package:
         runs-on: ubuntu-latest
         needs: setup
-        if: github.event_name != 'pull_request'
         steps:
             - name: Restore repository cache
               uses: actions/cache@v4
@@ -66,9 +64,8 @@ jobs:
 
             - name: Get latest commit
               run: |
-                  LAT_COMMIT=$(git log --format=%H --branches --max-count=1 || echo "0")
+                  LAT_COMMIT=${{ github.event.pull_request.head.sha }}
                   echo "LAT_COMMIT=$LAT_COMMIT" >> $GITHUB_ENV
-              shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
 
             - name: Update version in package.json
               run: |
@@ -160,3 +157,11 @@ jobs:
                   else
                     echo "Main branch not deleted"
                   fi
+
+    vulnerabilities-scan:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: debricked/actions@v4
+              env:
+                  DEBRICKED_TOKEN: ${{ secrets.DEBRICKED_TOKEN }}

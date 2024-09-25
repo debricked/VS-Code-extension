@@ -29,7 +29,7 @@ class IndexHelper {
     ) {}
 
     /**
-     * Set up the Debricked environment by generating a sequence ID and checking the user ID.
+     * Set up the Debricked environment by checking the user ID.
      */
     public async setupDebricked(context: vscode.ExtensionContext): Promise<void> {
         try {
@@ -41,6 +41,7 @@ class IndexHelper {
             await this.commonHelper.checkUserId();
             await this.gitHelper.setupGit();
         } catch (error: any) {
+            Logger.logError("Error in setupDebricked");
             throw error;
         }
     }

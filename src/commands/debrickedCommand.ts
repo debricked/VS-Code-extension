@@ -1,14 +1,13 @@
 import * as vscode from "vscode";
 import { DebrickedCommands } from "../constants/index";
 import { BaseCommandService, ScanService, FileService } from "../services";
-import { Logger, SentryHelper, commonHelper, errorHandler, globalStore } from "../helpers";
+import { Logger, SentryHelper, errorHandler } from "../helpers";
 
 export class DebrickedCommand {
     public static async commands(context: vscode.ExtensionContext) {
         try {
             Logger.logInfo("Started registering commands");
 
-            globalStore.setSequenceID(commonHelper.generateHashCode());
             const baseSubCommands = DebrickedCommands.BASE_COMMAND.sub_commands;
             const fileSubCommands = DebrickedCommands.FILES.sub_commands;
 

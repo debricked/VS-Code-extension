@@ -44,6 +44,7 @@ export class AuthHelper {
 
             return token;
         } catch (error: any) {
+            this.logger.logError("Error in getToken");
             throw error;
         }
     }

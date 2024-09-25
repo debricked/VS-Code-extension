@@ -5,7 +5,6 @@ import { DependencyVulnerability, Package } from "../types";
 export class GlobalStore {
     private static instance: GlobalStore;
     private userId: string | undefined;
-    private sequenceID: string | undefined;
     private globalStateInstance: GlobalState | undefined;
     private repositoryName: string = MessageStatus.UNKNOWN;
     private repoId!: number;
@@ -21,21 +20,6 @@ export class GlobalStore {
             GlobalStore.instance = new GlobalStore();
         }
         return GlobalStore.instance;
-    }
-
-    /**
-     * Set a new sequence ID.
-     */
-    public setSequenceID(sequenceID: string): void {
-        this.sequenceID = sequenceID;
-    }
-
-    /**
-     * Get the current sequence ID.
-     * @returns The current sequence ID.
-     */
-    public getSequenceID(): string | undefined {
-        return this.sequenceID;
     }
 
     /**

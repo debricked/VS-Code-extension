@@ -16,7 +16,6 @@ export class FileService {
     static async filesService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register FileCommand");
-            globalStore.setSequenceID(commonHelper.generateHashCode());
 
             const command = DebrickedCommands.FILES;
 
@@ -55,7 +54,6 @@ export class FileService {
             async (progress) => {
                 try {
                     Logger.logMessageByStatus(MessageStatus.INFO, "Register Find File Command");
-                    globalStore.setSequenceID(commonHelper.generateHashCode());
 
                     const command = DebrickedCommands.FILES;
                     const cmdParams = [command.cli_command];

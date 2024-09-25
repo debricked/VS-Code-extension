@@ -58,6 +58,7 @@ export class InstallHelper {
                     this.logger.logMessageByStatus(MessageStatus.INFO, `${Messages.INSTALLATION_SUCCESS}`);
                     this.statusBarMessageHelper.showInformationMessage("CLI installed successfully");
                 } catch (error: any) {
+                    this.logger.logError("Error in runInstallScript");
                     throw error;
                 }
             },

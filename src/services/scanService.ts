@@ -22,7 +22,6 @@ export class ScanService {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register ScanCommand");
 
             debrickedDataHelper.createDir(Organization.reportsFolderPath);
-            globalStore.setSequenceID(commonHelper.generateHashCode());
             const cmdParams: string[] = [];
             const command: DebrickedCommandNode = DebrickedCommands.SCAN;
 
@@ -95,7 +94,7 @@ export class ScanService {
         Logger.logMessageByStatus(MessageStatus.INFO, `Handling flag: ${selectedFlags.flag}(${selectedFlags.label})`);
         cmdParams.push(selectedFlags.flag);
         switch (selectedFlags.flag) {
-            case "-r":
+            case "-r": {
                 const providedRepo = await showInputBoxHelper.promptForInput({
                     title: "Enter Repository name",
                     prompt: "Enter repository name",
@@ -107,6 +106,7 @@ export class ScanService {
                     Logger.logMessageByStatus(MessageStatus.INFO, `Selected repo: ${providedRepo}`);
                 }
                 break;
+            }
 
             case "-i":
                 if (selectedFlags.flagValue) {
@@ -122,12 +122,13 @@ export class ScanService {
                 }
                 break;
 
-            case "-a":
+            case "-a": {
                 const username = currentRepoData.userName;
                 const email = currentRepoData.email;
                 cmdParams.push(`"${username} (${email})"`);
                 Logger.logMessageByStatus(MessageStatus.INFO, `User info added: ${username} (${email})`);
                 break;
+            }
 
             case "-b":
                 if (selectedFlags.flagValue) {
@@ -146,13 +147,14 @@ export class ScanService {
                 }
                 break;
 
-            case "-t":
+            case "-t": {
                 const accessToken = await authHelper.getToken(true, TokenType.ACCESS);
                 if (accessToken) {
                     cmdParams.push(accessToken);
                     Logger.logMessageByStatus(MessageStatus.INFO, "Access token added");
                 }
                 break;
+            }
             default:
                 Logger.logMessageByStatus(MessageStatus.WARN, `Unrecognized flag: ${selectedFlags.flag}`);
                 break;

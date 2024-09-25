@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { errorHandler, Logger, globalStore, commonHelper, indexHelper, SentryHelper } from "./helpers";
+import { errorHandler, Logger, globalStore, indexHelper, SentryHelper } from "./helpers";
 import { DebrickedCommand } from "./commands";
 import { DebrickedCommandsTreeDataProvider, providers } from "./providers";
 import { Environment, MessageStatus, Organization } from "./constants/index";
@@ -23,7 +23,6 @@ export async function activate(context: vscode.ExtensionContext) {
                 const globalState = globalStore.getGlobalStateInstance();
                 // For dev - Clears the globalData - uncomment to clear the globalData
                 // await globalState?.clearAllGlobalData();
-                globalStore.setSequenceID(commonHelper.generateHashCode());
                 progress.report({
                     message: "Activating VS Code Extension",
                     increment: (progressCount += 20),
@@ -79,7 +78,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 // This method is called when your extension is deactivated
 export async function deactivate() {
+    SentryHelper.setTransactionName(`Deactivate ${Organization.name}`);
     Logger.logMessageByStatus(MessageStatus.INFO, "Deactivate Debricked VS Code Extension");
-    globalStore.setSequenceID(commonHelper.generateHashCode());
     SentryHelper.close();
 }

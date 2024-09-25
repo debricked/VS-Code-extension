@@ -7,7 +7,7 @@ import { Environment } from "./enums";
 export class Organization {
     static readonly debrickedRootDir = path.join(__dirname, "../");
     static readonly packageJson = JSON.parse(
-        fs.readFileSync(`${Organization.debrickedRootDir}\package.json`).toString(),
+        fs.readFileSync(path.join(Organization.debrickedRootDir, "package.json")).toString(),
     );
 
     static readonly name = Organization.packageJson.displayName;
