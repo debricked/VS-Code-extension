@@ -45,7 +45,6 @@ jobs:
     package:
         runs-on: ubuntu-latest
         needs: setup
-        if: github.event_name != 'pull_request'
         steps:
             - name: Restore repository cache
               uses: actions/cache@v4
@@ -63,15 +62,15 @@ jobs:
                   echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
               shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
 
-            - name: Get latest commit
+            - name: Get Current PR Number
               run: |
-                  LAT_COMMIT=$(git log --format=%H --branches --max-count=1 || echo "0")
-                  echo "LAT_COMMIT=$LAT_COMMIT" >> $GITHUB_ENV
-              shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+                  PR_NUMBER=$(github.event.pull_request.number)
+                  echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+              if: github.event.action == 'opened' || github.event.action == 'synchronize'
 
             - name: Update version in package.json
               run: |
-                  jq ".version = \"$LATEST_TAG+$LAT_COMMIT\"" package.json > package.tmp.json
+                  jq ".version = \"$LATEST_TAG+$PR_NUMBER\"" package.json > package.tmp.json
                   mv package.tmp.json package.json
               shell: bash
 
@@ -161,7 +160,6 @@ jobs:
                   fi
 
     vulnerabilities-scan:
-        if: github.event_name == 'pull_request'
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
