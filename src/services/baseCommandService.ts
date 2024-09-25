@@ -172,7 +172,7 @@ export class BaseCommandService {
             }
             const execAsync = promisify(exec);
             const { stdout } = await execAsync(
-                `curl -X POST https://debricked.com/api/login_check -d _username=${debrickedData["debricked_username"]} -d _password=${debrickedData["debricked_username"]}`,
+                `curl -X POST https://debricked.com/api/login_check -d _username=${debrickedData["debricked_username"]} -d _password=${debrickedData["debricked_password"]}`,
                 {},
             );
             const bearerToken = JSON.parse(stdout.trim());
