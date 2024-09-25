@@ -16,6 +16,7 @@ describe("ApiHelper", () => {
         apiClientStub = sandbox.createStubInstance(ApiClient);
         loggerStub = {
             logInfo: sandbox.stub(),
+            logError: sandbox.stub(),
         } as sinon.SinonStubbedInstance<typeof Logger>;
 
         apiHelper = new ApiHelper(apiClientStub as any, loggerStub);

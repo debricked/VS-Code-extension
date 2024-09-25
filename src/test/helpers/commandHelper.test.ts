@@ -5,12 +5,26 @@ import { Logger } from "../../helpers/loggerHelper";
 import * as vscode from "vscode";
 
 describe("Command", () => {
+    let loggerStub: sinon.SinonStubbedInstance<typeof Logger>;
+    let sandbox: sinon.SinonSandbox;
+
+    beforeEach(() => {
+        sandbox = sinon.createSandbox();
+        loggerStub = {
+            logInfo: sandbox.stub(),
+            logMessageByStatus: sandbox.stub(),
+            logError: sandbox.stub(),
+        } as any;
+    });
+
+    afterEach(() => {
+        sandbox.restore();
+    });
+
     describe("executeAsyncCommand", () => {
         it("should throw an error if no workspace folder is open", async () => {
             const authHelperStub = sinon.createStubInstance(AuthHelper);
-            const loggerStub = {
-                logMessageByStatus: sinon.stub(),
-            } as sinon.SinonStubbedInstance<typeof Logger>;
+
             const vscodeWorkspaceStub = sinon.stub(vscode.workspace, "workspaceFolders");
             vscodeWorkspaceStub.get(() => undefined);
 

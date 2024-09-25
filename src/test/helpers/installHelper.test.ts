@@ -18,6 +18,7 @@ describe("InstallHelper", () => {
         loggerStub = {
             logInfo: sandbox.stub(),
             logMessageByStatus: sandbox.stub(),
+            logError: sandbox.stub(),
         } as any;
 
         statusBarMessageHelperStub = {
@@ -105,6 +106,7 @@ describe("InstallHelper", () => {
             }
 
             expect(loggerStub.logMessageByStatus.calledWith(MessageStatus.INFO, "Starting installation...")).to.be.true;
+            expect(loggerStub.logError.calledOnceWith("Error in runInstallScript")).to.be.true;
             expect(commandHelperStub.executeAsyncCommand.calledOnce).to.be.true;
             expect(statusBarMessageHelperStub.showInformationMessage.called).to.be.false;
         });
