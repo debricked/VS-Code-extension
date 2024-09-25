@@ -11,7 +11,11 @@ export class Command {
         private authHelper: AuthHelper,
         private logger: typeof Logger,
     ) {}
-    public async executeAsyncCommand(command: string, accessTokenRequired: boolean = false): Promise<string> {
+    public async executeAsyncCommand(
+        command: string,
+        accessTokenRequired: boolean = false,
+        sensitive: boolean = false,
+    ): Promise<string> {
         return Sentry.startSpan(
             {
                 name: `execute_async_command`,
@@ -30,7 +34,7 @@ export class Command {
                     const cwd = workspaceFolders[0].uri.fsPath;
 
                     if (accessTokenRequired) {
-                        const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
+                        const globalFlags = DebrickedCommands.getCommandSpecificFlags("Debricked", true) || [];
                         const accessToken = await this.authHelper.getToken(true, TokenType.ACCESS);
 
                         if (accessToken) {
@@ -38,7 +42,7 @@ export class Command {
                                 MessageStatus.INFO,
                                 `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: "${command} "`,
                             );
-                            command = `${command} ${flags[0].flag} ${accessToken}`;
+                            command = `${command} ${globalFlags[0].flag} ${accessToken}`;
                         }
                     } else {
                         this.logger.logMessageByStatus(
@@ -51,7 +55,9 @@ export class Command {
                     if (stderr) {
                         this.logger.logMessageByStatus(MessageStatus.ERROR, `command error: ${stderr}`);
                     }
-                    this.logger.logMessageByStatus(MessageStatus.INFO, stdout);
+                    if (!sensitive) {
+                        this.logger.logMessageByStatus(MessageStatus.INFO, stdout);
+                    }
                     span.end(new Date());
                     return stdout.trim();
                 } catch (error: any) {

@@ -18,10 +18,12 @@ describe("Debricked CLI: Test Suite", () => {
         it("should return all commands", () => {
             const commands = DebrickedCommands.getAllCommands();
             expect(commands).to.be.an("array");
-            expect(commands).to.have.lengthOf(3);
+            expect(commands).to.have.lengthOf(4);
             expect(commands[0]).to.have.property("label", "Debricked");
             expect(commands[1]).to.have.property("label", "Scan");
             expect(commands[2]).to.have.property("label", "Files");
+            expect(commands[3]).to.have.property("label", "Auth");
+
         });
 
         it("should get a specific command", () => {

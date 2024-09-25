@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import { MessageStatus, DebrickedCommands } from "../constants";
-import { ScanService, FileService, DependencyService } from "../services";
-import { errorHandler, Logger, StatusMessage, statusBarMessageHelper, globalStore } from "../helpers";
+import { scanService, fileService, dependencyService } from "../services";
+import { errorHandler, Logger, globalStore } from "../helpers";
 
 export class ManifestWatcher {
     private static instance: ManifestWatcher;
@@ -28,22 +28,15 @@ export class ManifestWatcher {
                 this.workSpaceWatcher(context);
             }
             this.reportsWatcher(context);
-            const filesToScan = (await FileService.findFilesService()) || [];
+            const filesToScan = (await fileService.findFilesService()) || [];
             let diffScan: string[] = [];
             diffScan = filesToScan.filter((file) => !ManifestWatcher.files.includes(file));
             ManifestWatcher.files = filesToScan;
 
             await this.updateManifestWatchers(diffScan, context);
-
-            statusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.SCAN.cli_command),
-            );
         } catch (error: any) {
             errorHandler.handleError(error);
         } finally {
-            statusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.SCAN.cli_command),
-            );
             Logger.logMessageByStatus(MessageStatus.INFO, "Watchers for Manifest files are now ready to scan.");
         }
     }
@@ -78,7 +71,7 @@ export class ManifestWatcher {
             filesToScan.forEach((file: string) => {
                 const watcher = vscode.workspace.createFileSystemWatcher(`**/${file}`);
                 const runScan = async () => {
-                    await ScanService.scanService();
+                    await scanService.scan();
                 };
 
                 watcher.onDidChange(runScan);
@@ -101,13 +94,13 @@ export class ManifestWatcher {
         if (scannedFilePath) {
             watcher = vscode.workspace.createFileSystemWatcher(scannedFilePath);
             watcher.onDidChange(async () => {
-                await FileService.setRepoScannedData();
+                await fileService.setRepoScannedData();
 
                 const repoId = await globalStore.getRepoId();
                 const commitId = await globalStore.getCommitId();
 
-                await DependencyService.getDependencyData(repoId, commitId);
-                await DependencyService.getVulnerableData();
+                await dependencyService.getDependencyData(repoId, commitId);
+                await dependencyService.getVulnerableData();
             });
             context.subscriptions.push(watcher);
         }

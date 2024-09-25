@@ -6,7 +6,7 @@ describe("DebrickedCommands", () => {
         it("should return an array of DebrickedCommandNode objects", () => {
             const allCommands = DebrickedCommands.getAllCommands();
             expect(allCommands).to.be.an("array");
-            expect(allCommands).to.have.lengthOf(3);
+            expect(allCommands).to.have.lengthOf(4);
             allCommands.forEach((command) => {
                 expect(command).to.have.property("label");
                 expect(command).to.have.property("command");

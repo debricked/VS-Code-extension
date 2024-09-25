@@ -64,12 +64,6 @@ export class DebrickedCommands {
         ],
         flags: [
             {
-                label: "Access Token",
-                flag: "-t",
-                description:
-                    "Debricked access token. Read more: https://portal.debricked.com/administration-47/how-do-i-generate-an-access-token-130",
-            },
-            {
                 label: "Help",
                 flag: "-h",
                 description: "help for debricked",
@@ -78,6 +72,14 @@ export class DebrickedCommands {
                 label: "Version",
                 flag: "-v",
                 description: "version for debricked",
+            },
+        ],
+        global_flags: [
+            {
+                label: "Access token",
+                flag: "-t",
+                description:
+                    "Debricked access token. Read more: https://portal.debricked.com/administration-47/how-do-i-generate-an-access-token-130",
             },
         ],
     };
@@ -263,8 +265,55 @@ export class DebrickedCommands {
         ],
     };
 
+    static readonly AUTH: DebrickedCommandNode = {
+        label: "Auth",
+        command: "",
+        cli_command: "auth",
+        description: "Authenticate using cli",
+        sub_commands: [
+            {
+                label: "Login",
+                command: "debricked.auth.login",
+                cli_command: "login",
+                description: "Login debricked user",
+            },
+            {
+                label: "Logout",
+                command: "debricked.auth.logout",
+                cli_command: "logout",
+                description: "Logout debricked user",
+            },
+            {
+                label: "Token",
+                command: "debricked.auth.token",
+                cli_command: "token",
+                description: "Retrieve access token",
+                flags: [
+                    {
+                        label: "JSON",
+                        flag: "-j",
+                        description: "Print token output in JSON format",
+                    },
+                ],
+            },
+        ],
+        global_flags: [
+            {
+                label: "Access Token",
+                flag: "-t",
+                description:
+                    "Debricked access token.\nRead more: https://portal.debricked.com/administration-47/how-do-i-generate-an-access-token-130",
+            },
+        ],
+    };
+
     static getAllCommands(): DebrickedCommandNode[] {
-        return [DebrickedCommands.BASE_COMMAND, DebrickedCommands.SCAN, DebrickedCommands.FILES];
+        return [
+            DebrickedCommands.BASE_COMMAND,
+            DebrickedCommands.SCAN,
+            DebrickedCommands.FILES,
+            DebrickedCommands.AUTH,
+        ];
     }
 
     static getCommand(commandName: string): DebrickedCommandNode | undefined {
@@ -291,8 +340,11 @@ export class DebrickedCommands {
         return undefined;
     }
 
-    static getCommandSpecificFlags(commandName: string): Flag[] | undefined {
+    static getCommandSpecificFlags(commandName: string, globalFlags: boolean = false): Flag[] | undefined {
         const command = this.getCommand(commandName);
+        if (globalFlags) {
+            return command?.global_flags;
+        }
         return command?.flags || undefined;
     }
 }

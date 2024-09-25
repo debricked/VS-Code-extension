@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 import { errorHandler, Logger, globalStore, indexHelper, SentryHelper } from "./helpers";
-import { DebrickedCommand } from "./commands";
+import { debrickedCommand } from "./commands";
 import { DebrickedCommandsTreeDataProvider, providers } from "./providers";
 import { Environment, MessageStatus, Organization } from "./constants/index";
-import { BaseCommandService } from "services";
+import { baseCommandService } from "./services";
 import { watchers } from "watcher";
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -34,14 +34,14 @@ export async function activate(context: vscode.ExtensionContext) {
                     increment: (progressCount += 20),
                 });
 
-                await DebrickedCommand.commands(context);
+                await debrickedCommand.commands(context);
                 await providers.registerHover(context);
                 await providers.registerDependencyPolicyProvider(context);
 
                 const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
                 vscode.window.registerTreeDataProvider(Organization.debrickedCommand, debCommandsProvider);
 
-                const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
+                const currentVersion = await baseCommandService.getCurrentExtensionVersion();
                 const debrickedData: any = globalState?.getGlobalData(Organization.debrickedDataKey, {});
                 if (
                     currentVersion !== debrickedData.extensionVersion ||
@@ -52,13 +52,13 @@ export async function activate(context: vscode.ExtensionContext) {
                         message: "Installing Debricked cli",
                         increment: (progressCount += 20),
                     });
-                    await BaseCommandService.installCommand();
+                    await baseCommandService.installCommand();
                 }
                 if (Organization.environment !== Environment.TEST) {
                     if (debrickedData.isFirstActivation === undefined || debrickedData.isFirstActivation) {
-                        await BaseCommandService.login(true);
+                        await baseCommandService.login(true);
                     } else {
-                        await BaseCommandService.login(false);
+                        await baseCommandService.login(false);
                     }
                 }
 

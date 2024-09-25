@@ -39,7 +39,7 @@ describe("ErrorHandler", () => {
 
             expect(loggerStub.logError.calledOnceWith(`Error: ${error.message}`)).to.be.true;
             expect(loggerStub.logException.calledOnceWith(error.stack)).to.be.true;
-            expect(statusBarMessageHelperStub.showErrorMessage.calledOnceWith(`Error: ${error.message}`)).to.be.true;
+            expect(statusBarMessageHelperStub.showErrorMessage.calledOnceWith(`${error.message}`)).to.be.true;
         });
 
         it("should log and show an error message for a string error", () => {
@@ -49,7 +49,7 @@ describe("ErrorHandler", () => {
 
             expect(loggerStub.logError.calledOnceWith(`Error: ${error}`)).to.be.true;
             expect(loggerStub.logException.called).to.be.false;
-            expect(statusBarMessageHelperStub.showErrorMessage.calledOnceWith(`Error: ${error}`)).to.be.true;
+            expect(statusBarMessageHelperStub.showErrorMessage.calledOnceWith(`${error}`)).to.be.true;
         });
 
         it("should log and show a default error message for an unknown error type", () => {
@@ -59,8 +59,7 @@ describe("ErrorHandler", () => {
 
             expect(loggerStub.logError.calledOnceWith("Error: An unknown error occurred")).to.be.true;
             expect(loggerStub.logException.called).to.be.false;
-            expect(statusBarMessageHelperStub.showErrorMessage.calledOnceWith("Error: An unknown error occurred")).to.be
-                .true;
+            expect(statusBarMessageHelperStub.showErrorMessage.calledOnceWith("An unknown error occurred")).to.be.true;
         });
     });
 
@@ -78,7 +77,7 @@ describe("ErrorHandler", () => {
             // expect(loggerStub.logError.calledOnceWith(`Uncaught Exception: ${error}`)).to.be.true;
 
             expect(loggerStub.logException.calledOnceWith(error.stack)).to.be.true;
-            expect(statusBarMessageHelperStub.showErrorMessage.calledOnceWith(`Error: ${error.message}`)).to.be.true;
+            expect(statusBarMessageHelperStub.showErrorMessage.calledOnceWith(`${error.message}`)).to.be.true;
         });
 
         it("should handle unhandled rejections", () => {

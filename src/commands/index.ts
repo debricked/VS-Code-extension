@@ -1,3 +1,4 @@
 import { DebrickedCommand } from "./debrickedCommand";
 
-export { DebrickedCommand };
+const debrickedCommand = new DebrickedCommand();
+export { debrickedCommand };
