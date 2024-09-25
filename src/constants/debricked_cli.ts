@@ -64,12 +64,6 @@ export class DebrickedCommands {
         ],
         flags: [
             {
-                label: "Access Token",
-                flag: "-t",
-                description:
-                    "Debricked access token. Read more: https://portal.debricked.com/administration-47/how-do-i-generate-an-access-token-130",
-            },
-            {
                 label: "Help",
                 flag: "-h",
                 description: "help for debricked",
@@ -78,6 +72,14 @@ export class DebrickedCommands {
                 label: "Version",
                 flag: "-v",
                 description: "version for debricked",
+            },
+        ],
+        global_flags: [
+            {
+                label: "Access token",
+                flag: "-t",
+                description:
+                    "Debricked access token. Read more: https://portal.debricked.com/administration-47/how-do-i-generate-an-access-token-130",
             },
         ],
     };
@@ -338,8 +340,11 @@ export class DebrickedCommands {
         return undefined;
     }
 
-    static getCommandSpecificFlags(commandName: string): Flag[] | undefined {
+    static getCommandSpecificFlags(commandName: string, globalFlags: boolean = false): Flag[] | undefined {
         const command = this.getCommand(commandName);
+        if (globalFlags) {
+            return command?.global_flags;
+        }
         return command?.flags || undefined;
     }
 }

@@ -8,12 +8,12 @@ export class ErrorHandler {
         private logger: typeof Logger,
         private sentryHelper: typeof SentryHelper,
     ) {}
-    public handleError(error: any) {
+    public handleError(error: any, customErrorMessage?: string) {
         const errorMessage = this.extractErrorMessage(error);
         const errorStack = error instanceof Error ? error.stack : "";
 
         this.logError(errorMessage, errorStack);
-        this.showUserErrorMessage(errorMessage);
+        this.showUserErrorMessage(customErrorMessage ?? errorMessage);
         this.sentryHelper.captureException(new Error(`Error Found :`, error));
     }
 

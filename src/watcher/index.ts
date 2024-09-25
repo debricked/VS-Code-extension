@@ -3,7 +3,7 @@ import { WorkSpaceWatcher } from "./workspaceWatcher";
 import * as vscode from "vscode";
 import { MessageStatus } from "../constants/index";
 import { Logger, errorHandler, globalStore } from "../helpers";
-import { ScanService } from "../services";
+import { scanService } from "../services";
 
 class Watchers {
     public async registerWatcher(context: vscode.ExtensionContext) {
@@ -12,7 +12,7 @@ class Watchers {
 
             if (selectedRepoName !== MessageStatus.UNKNOWN) {
                 await ManifestWatcher.getInstance().setupWatchers(context);
-                await ScanService.scanService();
+                await scanService.scan();
             }
         } catch (error) {
             errorHandler.handleError(error);

@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
 import { DebrickedCommands } from "../constants/index";
-import { BaseCommandService, ScanService, FileService, AuthService } from "../services";
+import { baseCommandService, scanService, fileService, authService } from "../services";
 import { Logger, SentryHelper, errorHandler } from "../helpers";
 
 export class DebrickedCommand {
-    public static async commands(context: vscode.ExtensionContext) {
+    public async commands(context: vscode.ExtensionContext) {
         try {
             Logger.logInfo("Started registering commands");
 
@@ -13,41 +13,37 @@ export class DebrickedCommand {
             const authSubCommands = DebrickedCommands.AUTH.sub_commands;
 
             // Register base command
-            DebrickedCommand.registerCommand(
-                context,
-                DebrickedCommands.BASE_COMMAND.command,
-                BaseCommandService.baseCommand,
-            );
+            this.registerCommand(context, DebrickedCommands.BASE_COMMAND.command, baseCommandService.baseCommand);
 
             // Register base sub-commands
             if (baseSubCommands) {
-                DebrickedCommand.registerCommand(context, baseSubCommands[0].command, async () => {
-                    await BaseCommandService.installCommand();
+                this.registerCommand(context, baseSubCommands[0].command, async () => {
+                    await baseCommandService.installCommand();
                 });
-                DebrickedCommand.registerCommand(context, baseSubCommands[1].command, BaseCommandService.updateCommand);
-                DebrickedCommand.registerCommand(context, baseSubCommands[2].command, BaseCommandService.help);
-                DebrickedCommand.registerCommand(context, baseSubCommands[3].command, Logger.openLogFile);
-                DebrickedCommand.registerCommand(context, baseSubCommands[4].command, BaseCommandService.login);
-                DebrickedCommand.registerCommand(context, baseSubCommands[5].command, SentryHelper.reConfigureSentry);
+                this.registerCommand(context, baseSubCommands[1].command, baseCommandService.updateCommand);
+                this.registerCommand(context, baseSubCommands[2].command, baseCommandService.help);
+                this.registerCommand(context, baseSubCommands[3].command, Logger.openLogFile);
+                this.registerCommand(context, baseSubCommands[4].command, baseCommandService.login);
+                this.registerCommand(context, baseSubCommands[5].command, SentryHelper.reConfigureSentry);
             }
 
             //Register auth sub-commands
             if (authSubCommands) {
                 SentryHelper.setTransactionName("Auth Service");
-                DebrickedCommand.registerCommand(context, authSubCommands[0].command, AuthService.login);
-                DebrickedCommand.registerCommand(context, authSubCommands[1].command, AuthService.logout);
-                DebrickedCommand.registerCommand(context, authSubCommands[2].command, AuthService.token);
+                this.registerCommand(context, authSubCommands[0].command, authService.login);
+                this.registerCommand(context, authSubCommands[1].command, authService.logout);
+                this.registerCommand(context, authSubCommands[2].command, authService.token);
             }
 
             // Register scan command
-            DebrickedCommand.registerCommand(context, DebrickedCommands.SCAN.command, ScanService.scanService);
+            this.registerCommand(context, DebrickedCommands.SCAN.command, scanService.scan);
 
             // Register files command
-            DebrickedCommand.registerCommand(context, DebrickedCommands.FILES.command, FileService.filesService);
+            this.registerCommand(context, DebrickedCommands.FILES.command, fileService.filesService);
 
             // Register file sub-commands
             if (fileSubCommands) {
-                DebrickedCommand.registerCommand(context, fileSubCommands[0].command, FileService.findFilesService);
+                this.registerCommand(context, fileSubCommands[0].command, fileService.findFilesService);
             }
         } catch (error) {
             errorHandler.handleError(error);
@@ -56,11 +52,7 @@ export class DebrickedCommand {
         }
     }
 
-    private static registerCommand(
-        context: vscode.ExtensionContext,
-        command: string,
-        callback: (...args: any[]) => any,
-    ) {
+    private registerCommand(context: vscode.ExtensionContext, command: string, callback: (...args: any[]) => any) {
         context.subscriptions.push(vscode.commands.registerCommand(command, callback));
     }
 }

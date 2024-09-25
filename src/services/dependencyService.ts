@@ -10,7 +10,8 @@ import {
 import { SecondService } from "../constants";
 
 export class DependencyService {
-    static async getDependencyData(repoID: number, commitId: number) {
+    constructor() {}
+    public async getDependencyData(repoID: number, commitId: number) {
         Logger.logInfo("Started fetching the Dependency Data");
         const requestParam: RequestParam = {
             endpoint: SecondService.dependencyUrl,
@@ -56,7 +57,7 @@ export class DependencyService {
         globalStore.setPackages(packageData);
     }
 
-    static async getVulnerableData() {
+    public async getVulnerableData() {
         Logger.logInfo("Started fetching the Vulnerable Data");
         const repoId = await globalStore.getRepoId();
         const commitId = await globalStore.getCommitId();

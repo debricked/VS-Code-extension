@@ -18,7 +18,15 @@ import { exec } from "child_process";
 import { promisify } from "util";
 
 export class BaseCommandService {
-    static async baseCommand() {
+    constructor() {
+        this.baseCommand = this.baseCommand.bind(this);
+        this.getCurrentExtensionVersion = this.getCurrentExtensionVersion.bind(this);
+        this.help = this.help.bind(this);
+        this.installCommand = this.installCommand.bind(this);
+        this.login = this.login.bind(this);
+        this.updateCommand = this.updateCommand.bind(this);
+    }
+    public async baseCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register BaseCommand");
             const subCommand: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
@@ -30,15 +38,15 @@ export class BaseCommandService {
 
             switch (selectedSubCommand?.cli_command) {
                 case "install":
-                    BaseCommandService.installCommand();
+                    this.installCommand();
                     break;
 
                 case "token":
-                    BaseCommandService.updateCommand();
+                    this.updateCommand();
                     break;
 
                 case "help":
-                    BaseCommandService.help();
+                    this.help();
                     break;
 
                 case "log":
@@ -50,7 +58,7 @@ export class BaseCommandService {
                     break;
 
                 case "login":
-                    BaseCommandService.login();
+                    this.login();
                     break;
 
                 default:
@@ -75,7 +83,7 @@ export class BaseCommandService {
         }
     }
 
-    static async help() {
+    public async help() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register HelpCommand");
             const cmdParams = [];
@@ -86,36 +94,24 @@ export class BaseCommandService {
                 selectedFlags = await showQuickPickHelper.showQuickPick(subCommand.flags, Messages.QUICK_PICK_FLAG);
             }
 
-            let accessTokenRequired: boolean = false;
-            if (selectedFlags && selectedFlags.flag) {
-                accessTokenRequired = selectedFlags.flag === "-t" ? true : false;
-                if (!accessTokenRequired) {
-                    cmdParams.push(selectedFlags.flag);
-                }
+            if (selectedFlags) {
+                cmdParams.push(selectedFlags.flag);
+                await terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams);
+                statusBarMessageHelper.setStatusBarMessage(
+                    StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.BASE_COMMAND.cli_command),
+                );
             }
-
-            statusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.START, DebrickedCommands.BASE_COMMAND.cli_command),
-            );
-            terminal.createAndUseTerminal(DebrickedCommands.BASE_COMMAND.description, cmdParams, accessTokenRequired);
-            statusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.COMPLETE, DebrickedCommands.BASE_COMMAND.cli_command),
-            );
         } catch (error: any) {
             errorHandler.handleError(error);
-        } finally {
-            statusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.cli_command),
-            );
         }
     }
 
-    static async installCommand() {
+    public async installCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
             SentryHelper.setTransactionName("Install CLI");
 
-            const currentVersion = await BaseCommandService.getCurrentExtensionVersion();
+            const currentVersion = await this.getCurrentExtensionVersion();
             Logger.logMessageByStatus(
                 MessageStatus.INFO,
                 `${Organization.isFirstActivationKey}: ${globalStore.getGlobalStateInstance()?.getGlobalData(Organization.isFirstActivationKey, "")} - ${Organization.extensionVersionKey}: ${currentVersion}`,
@@ -142,7 +138,7 @@ export class BaseCommandService {
         }
     }
 
-    static async login(updateCredentials: boolean = true) {
+    public async login(updateCredentials: boolean = true) {
         try {
             Logger.logInfo("Register login");
             SentryHelper.setTransactionName("Login");
@@ -194,7 +190,7 @@ export class BaseCommandService {
         }
     }
 
-    static async updateCommand() {
+    public async updateCommand() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register UpdateCommand");
             SentryHelper.setTransactionName("Update Token");
@@ -224,7 +220,7 @@ export class BaseCommandService {
         }
     }
 
-    static async getCurrentExtensionVersion(): Promise<string> {
+    public async getCurrentExtensionVersion(): Promise<string> {
         const extension = vscode.extensions.getExtension(`${Organization.name}.${Organization.packageJson.name}`);
         return extension ? extension.packageJSON.version : Organization.packageJson.version;
     }

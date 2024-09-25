@@ -13,11 +13,14 @@ import { DebrickedCommands, Icons, MessageStatus, Organization, SecondService, T
 import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { DependencyService } from "./dependencyService";
-import { FileService } from "./fileService";
+import { fileService, dependencyService } from "./index";
 
 export class ScanService {
-    static async scanService() {
+    constructor() {
+        this.handleFlags = this.handleFlags.bind(this);
+        this.scan = this.scan.bind(this);
+    }
+    public async scan() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register ScanCommand");
 
@@ -34,20 +37,20 @@ export class ScanService {
 
             if (currentRepoData?.repositoryName !== MessageStatus.UNKNOWN) {
                 if (command.flags && command.global_flags && command.flags.length > 0) {
-                    await ScanService.handleFlags(command.flags[1], cmdParams, currentRepoData);
-                    await ScanService.handleFlags(command.flags[2], cmdParams, currentRepoData);
-                    await ScanService.handleFlags(command.flags[3], cmdParams, currentRepoData);
-                    await ScanService.handleFlags(command.flags[4], cmdParams, currentRepoData);
+                    await this.handleFlags(command.flags[1], cmdParams, currentRepoData);
+                    await this.handleFlags(command.flags[2], cmdParams, currentRepoData);
+                    await this.handleFlags(command.flags[3], cmdParams, currentRepoData);
+                    await this.handleFlags(command.flags[4], cmdParams, currentRepoData);
                 }
             } else {
                 Logger.logMessageByStatus(MessageStatus.WARN, `No default repo selected`);
 
                 if (command.flags && command.global_flags && command.flags.length > 0) {
-                    await ScanService.handleFlags(command.flags[0], cmdParams, currentRepoData);
-                    await ScanService.handleFlags(command.flags[2], cmdParams, currentRepoData);
-                    await ScanService.handleFlags(command.flags[3], cmdParams, currentRepoData);
-                    await ScanService.handleFlags(command.flags[4], cmdParams, currentRepoData);
-                    await ScanService.handleFlags(command.flags[5], cmdParams, currentRepoData);
+                    await this.handleFlags(command.flags[0], cmdParams, currentRepoData);
+                    await this.handleFlags(command.flags[2], cmdParams, currentRepoData);
+                    await this.handleFlags(command.flags[3], cmdParams, currentRepoData);
+                    await this.handleFlags(command.flags[4], cmdParams, currentRepoData);
+                    await this.handleFlags(command.flags[5], cmdParams, currentRepoData);
                 }
             }
 
@@ -69,13 +72,13 @@ export class ScanService {
                             DebrickedCommands.SCAN.flags[2].report &&
                             fs.existsSync(DebrickedCommands.SCAN.flags[2].report)
                         ) {
-                            await FileService.setRepoScannedData();
+                            await fileService.setRepoScannedData();
 
                             const repoId = await globalStore.getRepoId();
                             const commitId = await globalStore.getCommitId();
 
-                            await DependencyService.getDependencyData(repoId, commitId);
-                            await DependencyService.getVulnerableData();
+                            await dependencyService.getDependencyData(repoId, commitId);
+                            await dependencyService.getVulnerableData();
                         } else {
                             throw new Error("No reports file exists");
                         }
@@ -90,7 +93,7 @@ export class ScanService {
         }
     }
 
-    static async handleFlags(selectedFlags: Flag, cmdParams: string[], currentRepoData: RepositoryInfo) {
+    private async handleFlags(selectedFlags: Flag, cmdParams: string[], currentRepoData: RepositoryInfo) {
         Logger.logMessageByStatus(MessageStatus.INFO, `Handling flag: ${selectedFlags.flag}(${selectedFlags.label})`);
         cmdParams.push(selectedFlags.flag);
         switch (selectedFlags.flag) {

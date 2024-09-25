@@ -13,7 +13,14 @@ import { Package } from "../types";
 import * as vscode from "vscode";
 
 export class FileService {
-    static async filesService() {
+    constructor() {
+        this.filesService = this.filesService.bind(this);
+        this.findFilesService = this.findFilesService.bind(this);
+        this.getFilesToScan = this.getFilesToScan.bind(this);
+        this.processPackages = this.processPackages.bind(this);
+        this.setRepoScannedData = this.setRepoScannedData.bind(this);
+    }
+    public async filesService() {
         try {
             Logger.logMessageByStatus(MessageStatus.INFO, "Register FileCommand");
 
@@ -34,7 +41,7 @@ export class FileService {
 
             switch (selectedSubCommand.cli_command) {
                 case "find":
-                    await FileService.findFilesService();
+                    await this.findFilesService();
                     break;
                 default:
                     throw new Error(`Unsupported sub-command: ${selectedSubCommand.cli_command}`);
@@ -44,7 +51,7 @@ export class FileService {
         }
     }
 
-    static async findFilesService(): Promise<string[] | undefined> {
+    public async findFilesService(): Promise<string[] | undefined> {
         return vscode.window.withProgress<string[] | undefined>(
             {
                 location: vscode.ProgressLocation.Window,
@@ -104,7 +111,7 @@ export class FileService {
         );
     }
 
-    static async getFilesToScan() {
+    public async getFilesToScan() {
         const debrickedData: any = await globalStore
             .getGlobalStateInstance()
             ?.getGlobalData(Organization.debrickedDataKey, {});
@@ -116,7 +123,7 @@ export class FileService {
         }
     }
 
-    static async setRepoScannedData() {
+    public async setRepoScannedData() {
         const scannedFilePath = DebrickedCommands.SCAN.flags ? DebrickedCommands.SCAN.flags[2].report : "";
         let data;
         if (scannedFilePath) {
@@ -130,11 +137,11 @@ export class FileService {
         repoId ? globalStore.setRepoId(repoId) : null;
         commitId ? globalStore.setCommitId(commitId) : null;
 
-        FileService.processPackages(data.automationRules);
+        this.processPackages(data.automationRules);
         Logger.logInfo("Found the repoId and commitId");
     }
 
-    static processPackages(automationRules: any[]) {
+    public processPackages(automationRules: any[]) {
         const actions = ["warnPipeline", "failPipeline"];
 
         const triggerEventsMap = automationRules

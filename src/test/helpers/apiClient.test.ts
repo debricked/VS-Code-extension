@@ -36,20 +36,6 @@ describe("ApiClient", () => {
             const config = { headers: { Accept: "*/*" } };
             const mockResponse = { data: "test data" };
 
-            const getStub = sinon.stub(axiosInstance, "get");
-            getStub.resolves(mockResponse);
-
-            const result = await apiClient.get(url, config);
-
-            expect(getStub.calledOnceWith(url, config)).to.be.true;
-            expect(result).to.deep.equal(mockResponse.data);
-        });
-
-        it("should make a GET request with the correct URL and config", async () => {
-            const url = "/test";
-            const config = { headers: { Accept: "*/*" } };
-            const mockResponse = { data: "test data" };
-
             const getStub = sinon.stub(axiosInstance, "get").resolves(mockResponse);
 
             const result = await apiClient.get(url, config);
