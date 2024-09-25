@@ -64,9 +64,8 @@ jobs:
 
             - name: Get latest commit
               run: |
-                  LAT_COMMIT=$(git log --format=%H --branches --max-count=1 || echo "0")
+                  LAT_COMMIT=${{ github.event.pull_request.head.sha }}
                   echo "LAT_COMMIT=$LAT_COMMIT" >> $GITHUB_ENV
-              shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
 
             - name: Update version in package.json
               run: |
