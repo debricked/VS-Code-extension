@@ -340,7 +340,7 @@ export class DebrickedCommands {
         return undefined;
     }
 
-    static getCommandSpecificFlags(commandName: string, globalFlags: boolean = false): Flag[] | undefined {
+    static getCommandSpecificFlags(commandName: string, globalFlags = false): Flag[] | undefined {
         const command = this.getCommand(commandName);
         if (globalFlags) {
             return command?.global_flags;
