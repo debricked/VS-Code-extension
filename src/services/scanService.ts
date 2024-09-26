@@ -54,7 +54,7 @@ export class ScanService {
                 }
             }
 
-            vscode.window.withProgress(
+            await vscode.window.withProgress(
                 {
                     location: vscode.ProgressLocation.Window,
                     title: Organization.nameCaps,
@@ -66,7 +66,7 @@ export class ScanService {
                         `${Organization.debrickedCli} ${cmdParams.join(" ")}`,
                         true,
                     );
-                    if (!output.includes(SecondService.repositoryBaseUrl)) {
+                    if (output.includes(SecondService.repositoryBaseUrl)) {
                         if (
                             DebrickedCommands.SCAN.flags &&
                             DebrickedCommands.SCAN.flags[2].report &&

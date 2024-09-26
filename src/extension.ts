@@ -36,7 +36,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
                 await debrickedCommand.commands(context);
                 await providers.registerHover(context);
-                await providers.registerDependencyPolicyProvider(context);
 
                 const debCommandsProvider = new DebrickedCommandsTreeDataProvider();
                 vscode.window.registerTreeDataProvider(Organization.debrickedCommand, debCommandsProvider);
@@ -64,6 +63,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
                 // Add file watcher for all files found from 'debricked files find'
                 await watchers.registerWatcher(context);
+                await providers.registerDependencyPolicyProvider(context); // after adding watcher and scanning we should add the policy provider
 
                 progress.report({ message: "Debricked extension is ready to use", increment: 100 - progressCount });
                 await new Promise((resolve) => setTimeout(resolve, 1000)); // added for showing the last progress info

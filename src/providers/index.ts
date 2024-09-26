@@ -37,6 +37,10 @@ class Providers {
                 context.subscriptions.push(diagnosticCollection);
 
                 const provider = new DependencyPolicyProvider(diagnosticCollection);
+                //added to activate the policy violation provider when the manifest file is already open
+                if (vscode.window.activeTextEditor?.document) {
+                    provider.checkPolicyViolation(vscode.window.activeTextEditor?.document);
+                }
 
                 context.subscriptions.push(
                     vscode.languages.registerCodeActionsProvider({ scheme: "file" }, provider, {
