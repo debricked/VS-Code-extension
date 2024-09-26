@@ -20,7 +20,7 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
         }
 
         const lineText = document.lineAt(position.line).text;
-        const dependencyName = this.parseDependencyName(lineText, currentManifestFile);
+        const dependencyName = this.parseDependencyName(lineText, currentManifestFile, document.getText());
 
         if (!dependencyName) {
             return null;
@@ -82,13 +82,19 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
         return contents;
     }
 
-    private parseDependencyName(lineText: string, fileName: string): string | null {
+    private parseDependencyName(lineText: string, fileName: string, documentText: string): string | null {
         lineText = lineText.trim();
 
         switch (fileName) {
             case "package.json": {
+                const manifestData = JSON.parse(documentText) || {};
+                const allDependencies = {
+                    ...manifestData.dependencies,
+                    ...manifestData.devDependencies,
+                };
                 const match = commonHelper.extractValueFromStringUsingRegex(lineText, Regex.packageJson);
-                if (match) {
+
+                if (match && match in allDependencies) {
                     return match;
                 }
                 break;
