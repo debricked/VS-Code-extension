@@ -3,8 +3,6 @@ import * as vscode from "vscode";
 import { SecondService, PolicyRules, Icons } from "../constants";
 
 export class Template {
-    constructor() {}
-
     public licenseContent(license: string, contents: vscode.MarkdownString) {
         this.appendMarkdown(contents, `${Icons.license} **License** : ${license}\n\n`);
     }

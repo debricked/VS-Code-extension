@@ -10,8 +10,6 @@ export class ManifestWatcher {
     private globalWatcher: vscode.FileSystemWatcher | null = null;
     private manifestWatchers: vscode.FileSystemWatcher[] = [];
 
-    private constructor() {}
-
     public static getInstance(): ManifestWatcher {
         if (!ManifestWatcher.instance) {
             ManifestWatcher.instance = new ManifestWatcher();

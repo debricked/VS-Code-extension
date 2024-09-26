@@ -13,8 +13,8 @@ export class Terminal {
     public async createAndUseTerminal(
         description: string,
         cmdParams: string[] = [],
-        accessTokenRequired: boolean = false,
-        useDefaultAccessToken: boolean = true,
+        accessTokenRequired = false,
+        useDefaultAccessToken = true,
     ): Promise<vscode.Terminal> {
         let command: string = Organization.debrickedCli;
         if (accessTokenRequired) {

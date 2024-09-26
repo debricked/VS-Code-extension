@@ -10,10 +10,7 @@ export class GlobalStore {
     private repoId!: number;
     private commitId!: number;
     private packages!: Map<string, Package>;
-
     private vulnerableData!: Map<string, DependencyVulnerability[]>;
-
-    private constructor() {}
 
     public static getInstance(): GlobalStore {
         if (!GlobalStore.instance) {

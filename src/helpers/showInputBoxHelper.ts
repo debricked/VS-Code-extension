@@ -2,8 +2,6 @@ import { InputBoxOptions } from "../types";
 import * as vscode from "vscode";
 
 export class ShowInputBoxHelper {
-    constructor() {}
-
     public async promptForInput(options: InputBoxOptions, defaultValue?: string): Promise<string | undefined> {
         const inputBoxOptions: vscode.InputBoxOptions = {
             prompt: options.prompt,

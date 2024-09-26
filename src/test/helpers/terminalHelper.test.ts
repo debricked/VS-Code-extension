@@ -15,14 +15,19 @@ describe("Terminal Helper", () => {
     let terminal: Terminal;
     let sandbox: sinon.SinonSandbox;
 
-    const mockTerminal: vscode.Terminal = {
-        sendText: () => {},
-        show: () => {},
-    } as any;
+    let mockTerminal: vscode.Terminal;
     const mockCliPath = "/mock/path/to/debricked";
 
     beforeEach(() => {
         sandbox = sinon.createSandbox();
+        mockTerminal = {
+            sendText: () => {
+                console.log("sendText not implemented");
+            },
+            show: () => {
+                console.log("show not implemented");
+            },
+        } as any;
         createTerminalStub = sandbox.stub(vscode.window, "createTerminal").returns(mockTerminal);
         sendTextStub = sandbox.stub(mockTerminal, "sendText");
         showStub = sandbox.stub(mockTerminal, "show");

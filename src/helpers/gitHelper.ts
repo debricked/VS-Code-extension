@@ -33,7 +33,7 @@ export class GitHelper {
         return await this.executeAsyncCommand("git status --short");
     }
 
-    public async getLog(n: number = 10): Promise<string> {
+    public async getLog(n = 10): Promise<string> {
         return await this.executeAsyncCommand(`git log -n ${n} --pretty=format:"%h - %an, %ar : %s"`);
     }
 

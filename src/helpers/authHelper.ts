@@ -17,7 +17,7 @@ export class AuthHelper {
      * @param void
      * @returns Promise<string | undefined>
      */
-    async getToken(useDefaultToken: boolean = true, tokenKey: TokenType): Promise<string | undefined> {
+    async getToken(useDefaultToken = true, tokenKey: TokenType): Promise<string | undefined> {
         try {
             let token: string | undefined;
             const defaultToken: any = await this.globalStore.getGlobalStateInstance()?.getSecretData(tokenKey);
@@ -43,7 +43,7 @@ export class AuthHelper {
             }
 
             return token;
-        } catch (error: any) {
+        } catch (error) {
             this.logger.logError("Error in getToken");
             throw error;
         }

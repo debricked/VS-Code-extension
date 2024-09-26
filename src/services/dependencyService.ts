@@ -10,7 +10,6 @@ import {
 import { SecondService } from "../constants";
 
 export class DependencyService {
-    constructor() {}
     public async getDependencyData(repoID: number, commitId: number) {
         Logger.logInfo("Started fetching the Dependency Data");
         const requestParam: RequestParam = {

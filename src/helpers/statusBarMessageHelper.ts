@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 export class StatusBarMessageHelper {
     private statusBarMessage: vscode.Disposable | undefined;
 
-    public setStatusBarMessage(message: string, timeout: number = 3000): void {
+    public setStatusBarMessage(message: string, timeout = 3000): void {
         if (this.statusBarMessage) {
             this.statusBarMessage.dispose();
         }
