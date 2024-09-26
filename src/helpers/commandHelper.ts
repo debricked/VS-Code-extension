@@ -11,11 +11,7 @@ export class Command {
         private authHelper: AuthHelper,
         private logger: typeof Logger,
     ) {}
-    public async executeAsyncCommand(
-        command: string,
-        accessTokenRequired: boolean = false,
-        sensitive: boolean = false,
-    ): Promise<string> {
+    public async executeAsyncCommand(command: string, accessTokenRequired = false, sensitive = false): Promise<string> {
         return Sentry.startSpan(
             {
                 name: `execute_async_command`,
@@ -60,7 +56,7 @@ export class Command {
                     }
                     span.end(new Date());
                     return stdout.trim();
-                } catch (error: any) {
+                } catch (error) {
                     this.logger.logError("Error in executeAsyncCommand");
                     throw error;
                 }

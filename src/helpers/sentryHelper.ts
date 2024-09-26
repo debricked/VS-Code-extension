@@ -7,8 +7,6 @@ export class SentryHelper {
     private static instance: SentryHelper;
     private static statusBarMessageHelper = new StatusBarMessageHelper();
 
-    private constructor() {}
-
     /**
      * Initializes Sentry with the provided configuration.
      *
@@ -23,7 +21,7 @@ export class SentryHelper {
         release: string,
         environment: Environment,
         transactionName?: string,
-        tracesSampleRate: number = 1.0,
+        tracesSampleRate = 1.0,
     ): void {
         if (!SentryHelper.instance) {
             Sentry.init({
@@ -106,7 +104,7 @@ export class SentryHelper {
      * @param key - The key for the tag.
      * @param value - The value for the tag.
      */
-    public static setTag(key: string, value: string = ""): void {
+    public static setTag(key: string, value = ""): void {
         Sentry.setTag(key, value);
     }
 

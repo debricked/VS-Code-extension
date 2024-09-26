@@ -4,7 +4,7 @@ export class ShowQuickPickHelper {
     public async showQuickPick<T extends vscode.QuickPickItem>(
         items: T[],
         placeHolder: string,
-        canPickMany: boolean = false,
+        canPickMany = false,
     ): Promise<T | undefined> {
         return vscode.window.showQuickPick(items, {
             placeHolder,

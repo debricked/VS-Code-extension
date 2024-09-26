@@ -31,7 +31,10 @@
             }
         ],
         "@typescript-eslint/no-unused-vars": "error",
-        "security/detect-non-literal-fs-filename": "off"
+        "security/detect-non-literal-fs-filename": "off",
+        "@typescript-eslint/no-empty-function": "error",
+        "@typescript-eslint/no-inferrable-types": "error",
+        "security/detect-child-process": "error"
     },
     "ignorePatterns": ["out", "dist", "**/*.d.ts"]
 }

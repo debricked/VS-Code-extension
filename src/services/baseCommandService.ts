@@ -138,7 +138,7 @@ export class BaseCommandService {
         }
     }
 
-    public async login(updateCredentials: boolean = true) {
+    public async login(updateCredentials = true) {
         try {
             Logger.logInfo("Register login");
             SentryHelper.setTransactionName("Login");
