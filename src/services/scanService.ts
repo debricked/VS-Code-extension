@@ -54,7 +54,7 @@ export class ScanService {
                 }
             }
 
-            vscode.window.withProgress(
+            await vscode.window.withProgress(
                 {
                     location: vscode.ProgressLocation.Window,
                     title: Organization.nameCaps,
