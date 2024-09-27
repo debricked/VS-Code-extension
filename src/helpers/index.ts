@@ -56,7 +56,7 @@ const globalStore = GlobalStore.getInstance();
 const authHelper = new AuthHelper(showInputBoxHelper, statusBarMessageHelper, Logger, globalStore);
 const errorHandler = new ErrorHandler(statusBarMessageHelper, Logger, SentryHelper);
 const commandHelper = new Command(authHelper, Logger);
-const commonHelper = new Common(Logger, showInputBoxHelper, globalStore);
+const commonHelper = new Common(Logger, showInputBoxHelper, globalStore, statusBarMessageHelper);
 const gitHelper = new GitHelper(
     commandHelper,
     Logger,

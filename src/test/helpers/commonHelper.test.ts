@@ -5,12 +5,14 @@ import { ShowInputBoxHelper } from "../../helpers/showInputBoxHelper";
 import { GlobalStore } from "../../helpers/globalStore";
 import { MessageStatus, Organization } from "../../constants";
 import { expect, sinon } from "../setup";
+import { StatusBarMessageHelper } from "../../helpers/statusBarMessageHelper";
 
 describe("Common Helper", () => {
     let common: Common;
     let loggerStub: sinon.SinonStubbedInstance<typeof Logger>;
     let showInputBoxHelperStub: sinon.SinonStubbedInstance<ShowInputBoxHelper>;
     let globalStoreStub: sinon.SinonStubbedInstance<GlobalStore>;
+    let statusBarMessageHelperStub: sinon.SinonStubbedInstance<StatusBarMessageHelper>;
     let sandbox: sinon.SinonSandbox;
 
     beforeEach(() => {
@@ -27,7 +29,7 @@ describe("Common Helper", () => {
             getRepository: sandbox.stub(),
         } as any;
 
-        common = new Common(loggerStub, showInputBoxHelperStub, globalStoreStub);
+        common = new Common(loggerStub, showInputBoxHelperStub, globalStoreStub, statusBarMessageHelperStub);
     });
 
     afterEach(() => {

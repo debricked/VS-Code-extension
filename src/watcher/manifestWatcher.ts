@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { MessageStatus, DebrickedCommands } from "../constants";
 import { scanService, fileService, dependencyService } from "../services";
-import { errorHandler, Logger, globalStore } from "../helpers";
+import { errorHandler, Logger, globalStore, commonHelper } from "../helpers";
 
 export class ManifestWatcher {
     private static instance: ManifestWatcher;
@@ -26,8 +26,11 @@ export class ManifestWatcher {
                 this.workSpaceWatcher(context);
             }
             this.reportsWatcher(context);
-            const filesToScan = (await fileService.findFilesService()) || [];
+
+            const isRepoSupported = await commonHelper.isCurrentRepoSupported(false);
+            const filesToScan = isRepoSupported ? (await fileService.findFilesService()) || [] : [];
             let diffScan: string[] = [];
+
             diffScan = filesToScan.filter((file) => !ManifestWatcher.files.includes(file));
             ManifestWatcher.files = filesToScan;
 

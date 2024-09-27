@@ -5,12 +5,14 @@ import { ShowInputBoxHelper } from "./showInputBoxHelper";
 import { GlobalStore } from "./globalStore";
 import path from "path";
 import * as vscode from "vscode";
+import { StatusBarMessageHelper } from "./statusBarMessageHelper";
 
 export class Common {
     constructor(
         private logger: typeof Logger,
         private showInputBoxHelper: ShowInputBoxHelper,
         private globalStore: GlobalStore,
+        private statusBarMessageHelper: StatusBarMessageHelper,
     ) {}
 
     /**
@@ -105,5 +107,23 @@ export class Common {
 
         // Return the first capturing group if the regular expression matches
         return match && match[groupIndex] ? match[groupIndex] : null;
+    }
+    /**
+     * Checks if the current repository is supported by looking for a package.json file.
+     * @param showMsg Whether to show an information message if the repository is not supported. Defaults to true.
+     * @returns A promise that resolves to true if the repository is supported (contains a package.json file), false otherwise.
+     */
+    public async isCurrentRepoSupported(showMsg = true): Promise<boolean> {
+        const uri = (await vscode.workspace.findFiles("**/package.json", "**/node_modules/**", 1)).length;
+        if (!uri) {
+            if (showMsg) {
+                this.statusBarMessageHelper.showInformationMessage(
+                    "Node project not detected. Please open a repo or folder containing a package.json file.",
+                );
+            }
+            return false;
+        }
+
+        return true;
     }
 }
