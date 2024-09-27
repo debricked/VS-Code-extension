@@ -24,6 +24,10 @@ export class ScanService {
     }
     public async scan() {
         try {
+            if (!(await commonHelper.isCurrentRepoSupported())) {
+                return;
+            }
+
             Logger.logMessageByStatus(MessageStatus.INFO, "Register ScanCommand");
 
             debrickedDataHelper.createDir(Organization.reportsFolderPath);

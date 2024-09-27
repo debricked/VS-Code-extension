@@ -23,6 +23,9 @@ export class FileService {
     }
     public async filesService() {
         try {
+            if (!(await commonHelper.isCurrentRepoSupported())) {
+                return;
+            }
             Logger.logMessageByStatus(MessageStatus.INFO, "Register FileCommand");
 
             const command = DebrickedCommands.FILES;
@@ -53,6 +56,9 @@ export class FileService {
     }
 
     public async findFilesService(): Promise<string[] | undefined> {
+        if (!(await commonHelper.isCurrentRepoSupported())) {
+            return;
+        }
         return vscode.window.withProgress<string[] | undefined>(
             {
                 location: vscode.ProgressLocation.Window,

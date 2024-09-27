@@ -5,6 +5,7 @@ import { ShowInputBoxHelper } from "../../helpers/showInputBoxHelper";
 import { GlobalStore } from "../../helpers/globalStore";
 import { MessageStatus, Organization } from "../../constants";
 import { expect, sinon } from "../setup";
+import { statusBarMessageHelper } from "helpers";
 
 describe("Common Helper", () => {
     let common: Common;
@@ -27,7 +28,7 @@ describe("Common Helper", () => {
             getRepository: sandbox.stub(),
         } as any;
 
-        common = new Common(loggerStub, showInputBoxHelperStub, globalStoreStub);
+        common = new Common(loggerStub, showInputBoxHelperStub, globalStoreStub, statusBarMessageHelper);
     });
 
     afterEach(() => {
