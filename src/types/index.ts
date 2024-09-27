@@ -12,6 +12,7 @@ import {
 import { Dependency, DependencyResponse, IndirectDependency } from "./dependency";
 import { Package } from "./package";
 import { AuthToken } from "./auth";
+import { Repository } from "./repository";
 
 export {
     DebrickedCommandNode,
@@ -28,4 +29,5 @@ export {
     IndirectDependency,
     Package,
     AuthToken,
+    Repository,
 };

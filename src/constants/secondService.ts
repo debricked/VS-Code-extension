@@ -6,4 +6,5 @@ export class SecondService {
     static readonly dependencyUrl = "open/dependencies/get-dependencies-hierarchy";
     static readonly vulnerableUrl = "open/vulnerabilities/get-vulnerabilities";
     static readonly repositoryBaseUrl = "https://debricked.com/app/en/repository/";
+    static readonly repositories = "open/repository-settings/repositories";
 }

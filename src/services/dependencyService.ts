@@ -1,4 +1,4 @@
-import { apiHelper, globalStore, Logger } from "../helpers";
+import { debrickedServiceHelper, globalStore, Logger } from "../helpers";
 import { Package, RequestParam } from "../types";
 import {
     DependencyVulnerability,
@@ -17,7 +17,8 @@ export class DependencyService {
             repoId: repoID,
             commitId: commitId,
         };
-        const response: DependencyResponse = await apiHelper.get(requestParam);
+
+        const response: DependencyResponse = await debrickedServiceHelper.fetchDependenciesHierarchy(requestParam);
         const packageData = globalStore.getPackages();
 
         response.dependencies.forEach((dependency: Dependency) => {
@@ -66,7 +67,8 @@ export class DependencyService {
             repoId: repoId,
             commitId: commitId,
         };
-        const response: DependencyVulnerabilityWrapper = await apiHelper.get(requestParam);
+        const response: DependencyVulnerabilityWrapper =
+            await await debrickedServiceHelper.fetchVulnerabilities(requestParam);
         const vulnerabilityMap = new Map<string, DependencyVulnerability[]>();
 
         response.vulnerabilities.forEach((vul: DependencyVulnerability) => {
