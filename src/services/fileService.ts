@@ -7,6 +7,7 @@ import {
     globalStore,
     commonHelper,
     fileHelper,
+    SentryHelper,
 } from "../helpers";
 import { DebrickedCommands, Icons, Messages, MessageStatus, Organization, Regex } from "../constants/index";
 import { Package } from "../types";
@@ -101,8 +102,9 @@ export class FileService {
 
                     return foundFilesArray;
                 } catch (error) {
-                    errorHandler.handleError(error);
-                    throw error;
+                    const errorObj = new Error("Error in finding manifest files");
+                    SentryHelper.captureException(errorObj);
+                    throw errorObj;
                 } finally {
                     Logger.logMessageByStatus(MessageStatus.INFO, "Files service finished.");
                     await new Promise((resolve) => setTimeout(resolve, 1000));

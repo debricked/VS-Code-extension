@@ -8,9 +8,11 @@ import {
     commonHelper,
     commandHelper,
     authHelper,
+    debrickedServiceHelper,
+    showQuickPickHelper,
 } from "../helpers";
 import { DebrickedCommands, Icons, MessageStatus, Organization, SecondService, TokenType } from "../constants/index";
-import { DebrickedCommandNode, Flag, RepositoryInfo } from "../types";
+import { DebrickedCommandNode, Flag, Repository, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import * as fs from "fs";
 import { fileService, dependencyService } from "./index";
@@ -98,11 +100,24 @@ export class ScanService {
         cmdParams.push(selectedFlags.flag);
         switch (selectedFlags.flag) {
             case "-r": {
-                const providedRepo = await showInputBoxHelper.promptForInput({
-                    title: "Enter Repository name",
-                    prompt: "Enter repository name",
-                    ignoreFocusOut: false,
-                });
+                const repoResponse: Repository[] = await debrickedServiceHelper.fetchRepositories();
+
+                let providedRepo;
+                if (repoResponse && repoResponse.length > 0) {
+                    const repoData = repoResponse.map((item: Repository) => ({
+                        label: item.name.name,
+                        description: `Repository: ${item.name.name}, Repo ID: ${item.name.repoId}`,
+                    }));
+
+                    const selectedRepo = await showQuickPickHelper.showQuickPick(repoData, "Select Repository to Scan");
+                    providedRepo = selectedRepo?.label;
+                } else {
+                    providedRepo = await showInputBoxHelper.promptForInput({
+                        title: "Enter Repository name",
+                        prompt: "Enter repository name",
+                        ignoreFocusOut: false,
+                    });
+                }
 
                 if (providedRepo) {
                     cmdParams.push(providedRepo);

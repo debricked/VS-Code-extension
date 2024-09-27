@@ -20,6 +20,7 @@ import { GlobalStore } from "./globalStore";
 import { Organization } from "../constants";
 import { Template } from "./template";
 import { SentryHelper } from "./sentryHelper";
+import { DebrickedServiceHelper } from "./debrickedServiceHelper";
 
 class IndexHelper {
     constructor(
@@ -72,6 +73,7 @@ const fileHelper = new FileHelper(debrickedDataHelper, Logger);
 const indexHelper = new IndexHelper(debrickedDataHelper, commonHelper, gitHelper);
 const showQuickPickHelper = new ShowQuickPickHelper();
 const template = new Template();
+const debrickedServiceHelper = new DebrickedServiceHelper(apiHelper, Logger);
 
 export {
     authHelper,
@@ -94,4 +96,5 @@ export {
     indexHelper,
     template,
     SentryHelper,
+    debrickedServiceHelper,
 };

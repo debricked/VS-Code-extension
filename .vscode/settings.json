@@ -28,6 +28,6 @@
     },
     "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
     "editor.formatOnSave": true,
-    "cSpell.words": ["CALLGRAPH", "debricked", "uninstallation"],
+    "cSpell.words": ["automations", "CALLGRAPH", "debricked", "uninstallation"],
     "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
