@@ -8,6 +8,6 @@ const authService = new AuthService();
 const fileService = new FileService();
 const dependencyService = new DependencyService();
 const baseCommandService = new BaseCommandService();
-const scanService = new ScanService();
+const scanService = new ScanService(fileService, dependencyService);
 
 export { baseCommandService, scanService, fileService, dependencyService, authService };
