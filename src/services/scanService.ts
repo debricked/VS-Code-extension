@@ -15,10 +15,16 @@ import { DebrickedCommands, Icons, MessageStatus, Organization, SecondService, T
 import { DebrickedCommandNode, Flag, Repository, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { fileService, dependencyService } from "./index";
+import { FileService } from "./fileService";
+import { DependencyService } from "./dependencyService";
 
 export class ScanService {
-    constructor() {
+    private readonly fileService: FileService;
+    private readonly dependencyService: DependencyService;
+
+    constructor(fileService: FileService, dependencyService: DependencyService) {
+        this.fileService = fileService;
+        this.dependencyService = dependencyService;
         this.handleFlags = this.handleFlags.bind(this);
         this.scan = this.scan.bind(this);
     }
@@ -78,13 +84,13 @@ export class ScanService {
                             DebrickedCommands.SCAN.flags[2].report &&
                             fs.existsSync(DebrickedCommands.SCAN.flags[2].report)
                         ) {
-                            await fileService.setRepoScannedData();
+                            await this.fileService.setRepoScannedData();
 
                             const repoId = await globalStore.getRepoId();
                             const commitId = await globalStore.getCommitId();
 
-                            await dependencyService.getDependencyData(repoId, commitId);
-                            await dependencyService.getVulnerableData();
+                            await this.dependencyService.getDependencyData(repoId, commitId);
+                            await this.dependencyService.getVulnerableData();
                         } else {
                             throw new Error("No reports file exists");
                         }
