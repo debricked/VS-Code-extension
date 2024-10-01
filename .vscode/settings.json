@@ -6,11 +6,11 @@
         ".vscode-test": true,
         ".gitignore": true,
         ".vscodeignore": true,
-        "package-lock.json": true,
+        "package-lock.json": false,
         "tsconfig.json": true,
         "LICENSE": true,
         "*.md": true,
-        ".github": true,
+        ".github": false,
         ".prettierrc.json": true,
         ".eslintrc.json": true,
         "esbuild.js": true
