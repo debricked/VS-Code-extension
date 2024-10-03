@@ -117,9 +117,7 @@ export class Common {
         const uri = (await vscode.workspace.findFiles("**/package.json", "**/node_modules/**", 1)).length;
         if (!uri) {
             if (showMsg) {
-                this.statusBarMessageHelper.showInformationMessage(
-                    "Node project not detected. Please open a repo or folder containing a package.json file.",
-                );
+                this.statusBarMessageHelper.showInformationMessage("No files found to scan.");
             }
             return false;
         }
