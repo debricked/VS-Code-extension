@@ -1,6 +1,6 @@
 <h1 id="readme-top" align="center">
   <img align="left" src="./resources/assets/debricked-by-opentext-logo.png" alt="Debricked Logo">
-  Debricked: VS Code Extension
+  Debricked: VS Code Extension <em>(In Active Development 🚧)</em>
 </h1>
 <br>
 <div align="center">
