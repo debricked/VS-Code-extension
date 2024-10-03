@@ -58,7 +58,7 @@ jobs:
 
             - name: Get latest tag
               run: |
-                  LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0-beta")
+                  LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
                   echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
               shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
 
@@ -69,7 +69,7 @@ jobs:
 
             - name: Update version in package.json
               run: |
-                  jq ".version = \"$LATEST_TAG+$LAT_COMMIT\"" package.json > package.tmp.json
+                  jq ".version = \"$LATEST_TAG+$LAT_COMMIT-review\"" package.json > package.tmp.json
                   mv package.tmp.json package.json
               shell: bash
 
