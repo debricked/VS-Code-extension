@@ -89,18 +89,6 @@
                 "icon": "$(debug-start)"
             },
             {
-                "command": "debricked.files",
-                "title": "Analyze files",
-                "category": "debricked",
-                "icon": "$(files)"
-            },
-            {
-                "command": "debricked.files.find",
-                "title": "Find all dependency files in inputted path",
-                "category": "debricked",
-                "icon": "$(search)"
-            },
-            {
                 "command": "debricked.auth.login",
                 "title": "Authenticate debricked user",
                 "category": "debricked",
