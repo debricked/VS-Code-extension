@@ -43,7 +43,7 @@ export class ManifestWatcher {
     }
 
     private workSpaceWatcher(context: vscode.ExtensionContext): void {
-        this.globalWatcher = vscode.workspace.createFileSystemWatcher("**/*");
+        this.globalWatcher = vscode.workspace.createFileSystemWatcher(`**/${SupportedFilesToScan.PACKAGE_JSON}`);
         this.globalWatcher.onDidCreate(async (uri) => {
             const fileName = Object.values(SupportedFilesToScan).find((file) => uri.fsPath.endsWith(file));
             if (fileName) {
