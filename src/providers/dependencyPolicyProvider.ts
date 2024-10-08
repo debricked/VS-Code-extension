@@ -24,7 +24,7 @@ export class DependencyPolicyProvider implements vscode.CodeActionProvider {
                 const content = document.getText();
                 const packages: Map<string, Package> = globalStore.getPackages();
 
-                if (packages && packages.size > 0) {
+                if (content && packages && packages.size > 0) {
                     const manifestData = JSON.parse(content) || {};
                     const allDependencies = {
                         ...manifestData.dependencies,
