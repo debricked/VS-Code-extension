@@ -1,13 +1,13 @@
 import { BaseCommandService } from "./baseCommandService";
-import { FileService } from "./fileService";
 import { ScanService } from "./scanService";
 import { DependencyService } from "./dependencyService";
 import { AuthService } from "./authService";
+import { PolicyRuleService } from "./policyRuleService";
 
 const authService = new AuthService();
-const fileService = new FileService();
 const dependencyService = new DependencyService();
 const baseCommandService = new BaseCommandService();
-const scanService = new ScanService(fileService, dependencyService);
+const policyRuleService = new PolicyRuleService();
+const scanService = new ScanService(policyRuleService, dependencyService);
 
-export { baseCommandService, scanService, fileService, dependencyService, authService };
+export { baseCommandService, scanService, dependencyService, authService, policyRuleService };

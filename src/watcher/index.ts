@@ -11,7 +11,7 @@ class Watchers {
 
             if (selectedRepoName !== MessageStatus.UNKNOWN) {
                 const workSpaceWatcher = new WorkSpaceWatcher(context);
-                workSpaceWatcher.setup();
+                await workSpaceWatcher.setup();
 
                 const reportWatcher = new ReportWatcher();
                 await reportWatcher.start(context);

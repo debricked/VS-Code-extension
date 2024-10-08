@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { DebrickedCommands } from "../constants";
-import { dependencyService, fileService } from "../services";
+import { dependencyService, policyRuleService } from "../services";
 import { errorHandler, globalStore } from "../helpers";
 
 export class ReportWatcher {
@@ -27,7 +27,7 @@ export class ReportWatcher {
 
     private async handleReportChange(): Promise<void> {
         try {
-            await fileService.setRepoScannedData();
+            await policyRuleService.setScannedData();
             const repoId = await globalStore.getRepoId();
             const commitId = await globalStore.getCommitId();
             await dependencyService.getDependencyData(repoId, commitId);

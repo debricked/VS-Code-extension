@@ -12,9 +12,9 @@ export class WorkSpaceWatcher {
         this.context = context;
     }
 
-    public setup(): void {
+    public async setup(): Promise<void> {
         this.setupPackageJsonWatcher();
-        this.onPackageJsonChanged();
+        await this.onPackageJsonChanged();
     }
 
     private setupPackageJsonWatcher(): void {
