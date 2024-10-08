@@ -107,16 +107,11 @@ jobs:
             - name: Run tests
               run: xvfb-run -a npm run test
 
-            - name: Filter invalid files
-              run: |
-                  mkdir -p filtered-coverage
-                  find coverage/ -type f ! -name '*:*' ! -name '*?*' -exec cp --parents {} filtered-coverage/ \;
-
             - name: Upload coverage
               uses: actions/upload-artifact@v4
               with:
                   name: coverage
-                  path: filtered-coverage/
+                  path: coverage/
                   retention-days: 10
                   if-no-files-found: warn
                   compression-level: 6
