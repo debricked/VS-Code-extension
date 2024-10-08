@@ -14,7 +14,7 @@
         "hoverProvider": "true"
     },
     "activationEvents": [
-        "workspaceContains:package.json"
+        "workspaceContains:**/package.json"
     ],
     "main": "./dist/extension.js",
     "repository": {
