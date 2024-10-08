@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { MessageStatus, DebrickedCommands } from "../constants";
+import { MessageStatus, DebrickedCommands, SupportedFilesToScan } from "../constants";
 import { scanService, fileService, dependencyService } from "../services";
 import { errorHandler, Logger, globalStore, commonHelper } from "../helpers";
 
@@ -44,8 +44,11 @@ export class ManifestWatcher {
 
     private workSpaceWatcher(context: vscode.ExtensionContext): void {
         this.globalWatcher = vscode.workspace.createFileSystemWatcher("**/*");
-        this.globalWatcher.onDidCreate(async () => {
-            await this.setupWatchers(context);
+        this.globalWatcher.onDidCreate(async (uri) => {
+            const fileName = Object.values(SupportedFilesToScan).find((file) => uri.fsPath.endsWith(file));
+            if (fileName) {
+                await this.setupWatchers(context);
+            }
         });
         context.subscriptions.push(this.globalWatcher);
     }
