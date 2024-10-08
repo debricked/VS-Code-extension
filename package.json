@@ -14,7 +14,6 @@
         "hoverProvider": "true"
     },
     "activationEvents": [
-        "onLanguage:json",
         "workspaceContains:package.json"
     ],
     "main": "./dist/extension.js",
