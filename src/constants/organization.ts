@@ -2,12 +2,12 @@ import * as path from "path";
 import * as vscode from "vscode";
 import * as os from "os";
 import * as fs from "fs";
-import { Environment } from "./enums";
+import { Environment, SupportedFilesToScan } from "./enums";
 
 export class Organization {
     static readonly debrickedRootDir = path.join(__dirname, "../");
     static readonly packageJson = JSON.parse(
-        fs.readFileSync(path.join(Organization.debrickedRootDir, "package.json")).toString(),
+        fs.readFileSync(path.join(Organization.debrickedRootDir, SupportedFilesToScan.PACKAGE_JSON)).toString(),
     );
 
     static readonly name = Organization.packageJson.displayName;

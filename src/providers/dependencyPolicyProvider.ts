@@ -1,7 +1,7 @@
 import { Package } from "types";
 import { commonHelper, globalStore } from "../helpers";
 import * as vscode from "vscode";
-import { PolicyTriggerEvents, SecondService } from "../constants";
+import { PolicyTriggerEvents, SecondService, SupportedFilesToScan } from "../constants";
 
 export class DependencyPolicyProvider implements vscode.CodeActionProvider {
     constructor(private diagnosticCollection: vscode.DiagnosticCollection) {}
@@ -18,7 +18,7 @@ export class DependencyPolicyProvider implements vscode.CodeActionProvider {
             return;
         }
 
-        if (currentManifestFile === "package.json") {
+        if (currentManifestFile === SupportedFilesToScan.PACKAGE_JSON) {
             const diagnostics: vscode.Diagnostic[] = [];
             const content = document.getText();
             const packages: Map<string, Package> = globalStore.getPackages();
