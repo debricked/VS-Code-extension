@@ -29,6 +29,15 @@ export class ScanService {
         this.scan = this.scan.bind(this);
     }
     public async scan() {
+        const isRunning = globalStore.getScanningProgress();
+
+        if (isRunning) {
+            statusBarMessageHelper.showWarningMessage("Scan is still in process. Please wait...");
+            return;
+        } else {
+            globalStore.setScanningProgress(true);
+        }
+
         try {
             if (!(await commonHelper.isCurrentRepoSupported())) {
                 return;
@@ -101,6 +110,7 @@ export class ScanService {
         } catch (error: any) {
             errorHandler.handleError(error);
         } finally {
+            globalStore.setScanningProgress(false);
             Logger.logMessageByStatus(MessageStatus.INFO, "Scan service finished.");
         }
     }

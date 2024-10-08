@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
 import { SupportedFilesToScan } from "../constants";
 import { scanService } from "services";
-import { errorHandler, statusBarMessageHelper } from "../helpers";
+import { errorHandler, globalStore, statusBarMessageHelper } from "../helpers";
+import * as path from "path";
 
 export class WorkSpaceWatcher {
     private context: vscode.ExtensionContext;
     private packageJsonWatcher: vscode.FileSystemWatcher | null = null;
-    private isRunning = false;
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
@@ -14,6 +14,7 @@ export class WorkSpaceWatcher {
 
     public async setup(): Promise<void> {
         this.setupPackageJsonWatcher();
+        this.setupEditorListener();
         await this.onPackageJsonChanged();
     }
 
@@ -35,19 +36,30 @@ export class WorkSpaceWatcher {
         this.context.subscriptions.push(this.packageJsonWatcher);
     }
 
-    private async onPackageJsonChanged(): Promise<void> {
-        if (this.isRunning) {
+    private setupEditorListener(): void {
+        const filesPattern = new RegExp(SupportedFilesToScan.PACKAGE_JSON + "$");
+        vscode.window.onDidChangeActiveTextEditor((editor) => {
+            if (editor && filesPattern.test(path.basename(editor.document.fileName))) {
+                vscode.commands.executeCommand("setContext", "debrickedFilesToScan", true);
+            } else {
+                vscode.commands.executeCommand("setContext", "debrickedFilesToScan", false);
+            }
+        });
+    }
+
+    public async onPackageJsonChanged(): Promise<void> {
+        const isRunning = globalStore.getScanningProgress();
+        if (isRunning) {
             statusBarMessageHelper.showWarningMessage("Scan is still in process. Please wait...");
             return;
         }
 
         try {
-            this.isRunning = true;
             await scanService.scan();
         } catch (error) {
             errorHandler.handleError(error);
         } finally {
-            this.isRunning = false;
+            globalStore.setScanningProgress(false);
         }
     }
 }
