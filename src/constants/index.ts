@@ -1,6 +1,6 @@
 import { DebrickedCommands } from "./debricked_cli";
 import { Messages } from "./messages";
-import { MessageStatus, Environment, TokenType } from "./enums";
+import { MessageStatus, Environment, TokenType, SupportedFilesToScan } from "./enums";
 import { Organization } from "./organization";
 import { SecondService } from "./secondService";
 import { Regex } from "./regex";
@@ -19,4 +19,5 @@ export {
     Environment,
     TokenType,
     Icons,
+    SupportedFilesToScan,
 };

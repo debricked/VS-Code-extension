@@ -113,6 +113,10 @@ jobs:
                   name: coverage
                   path: coverage/
                   retention-days: 10
+                  if-no-files-found: warn
+                  compression-level: 6
+                  overwrite: false
+                  include-hidden-files: false
 
     cleanup:
         runs-on: ubuntu-latest

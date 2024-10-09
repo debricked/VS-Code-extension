@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { commonHelper, globalStore, template } from "../helpers";
 import { Vulnerabilities, Package } from "../types";
-import { Regex } from "../constants";
+import { Regex, SupportedFilesToScan } from "../constants";
 
 export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
     public async provideHover(
@@ -86,7 +86,7 @@ export class ManifestDependencyHoverProvider implements vscode.HoverProvider {
         lineText = lineText.trim();
 
         switch (fileName) {
-            case "package.json": {
+            case SupportedFilesToScan.PACKAGE_JSON: {
                 const manifestData = JSON.parse(documentText) || {};
                 const allDependencies = {
                     ...manifestData.dependencies,

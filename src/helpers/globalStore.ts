@@ -11,6 +11,7 @@ export class GlobalStore {
     private commitId!: number;
     private packages!: Map<string, Package>;
     private vulnerableData!: Map<string, DependencyVulnerability[]>;
+    private isScanningInProgress = false;
 
     public static getInstance(): GlobalStore {
         if (!GlobalStore.instance) {
@@ -94,5 +95,13 @@ export class GlobalStore {
 
     public getVulnerableData(): Map<string, DependencyVulnerability[]> {
         return this.vulnerableData;
+    }
+
+    public getScanningProgress() {
+        return this.isScanningInProgress;
+    }
+
+    public setScanningProgress(isScanningInProgress: boolean) {
+        this.isScanningInProgress = isScanningInProgress;
     }
 }

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { DebrickedCommands } from "../constants/index";
-import { baseCommandService, scanService, fileService, authService } from "../services";
+import { baseCommandService, scanService, authService } from "../services";
 import { Logger, SentryHelper, errorHandler } from "../helpers";
 
 export class DebrickedCommand {
@@ -9,7 +9,6 @@ export class DebrickedCommand {
             Logger.logInfo("Started registering commands");
 
             const baseSubCommands = DebrickedCommands.BASE_COMMAND.sub_commands;
-            const fileSubCommands = DebrickedCommands.FILES.sub_commands;
             const authSubCommands = DebrickedCommands.AUTH.sub_commands;
 
             // Register base command
@@ -37,14 +36,6 @@ export class DebrickedCommand {
 
             // Register scan command
             this.registerCommand(context, DebrickedCommands.SCAN.command, scanService.scan);
-
-            // Register files command
-            this.registerCommand(context, DebrickedCommands.FILES.command, fileService.filesService);
-
-            // Register file sub-commands
-            if (fileSubCommands) {
-                this.registerCommand(context, fileSubCommands[0].command, fileService.findFilesService);
-            }
         } catch (error) {
             errorHandler.handleError(error);
         } finally {

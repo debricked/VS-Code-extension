@@ -1,4 +1,4 @@
-import { MessageStatus, Organization } from "../constants/index";
+import { MessageStatus, Organization, SupportedFilesToScan } from "../constants/index";
 import * as crypto from "crypto";
 import { Logger } from "./loggerHelper";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
@@ -68,9 +68,7 @@ export class Common {
     }
 
     public async isCurrentDocManifestFile(document: vscode.TextDocument) {
-        const selectedRepoName = this.globalStore.getRepository();
-        const manifestFiles = await this.globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName)
-            .filesToScan;
+        const manifestFiles = Object.values(SupportedFilesToScan);
         let currentManifestFile = path.basename(document.fileName);
         currentManifestFile = currentManifestFile.endsWith(".git")
             ? currentManifestFile.slice(0, -4)
@@ -114,7 +112,9 @@ export class Common {
      * @returns A promise that resolves to true if the repository is supported (contains a package.json file), false otherwise.
      */
     public async isCurrentRepoSupported(showMsg = true): Promise<boolean> {
-        const uri = (await vscode.workspace.findFiles("**/package.json", "**/node_modules/**", 1)).length;
+        const uri = (
+            await vscode.workspace.findFiles(`**/${SupportedFilesToScan.PACKAGE_JSON}`, "**/node_modules/**", 1)
+        ).length;
         if (!uri) {
             if (showMsg) {
                 this.statusBarMessageHelper.showInformationMessage("No files found to scan.");

@@ -15,20 +15,29 @@ import { DebrickedCommands, Icons, MessageStatus, Organization, SecondService, T
 import { DebrickedCommandNode, Flag, Repository, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { FileService } from "./fileService";
+import { PolicyRuleService } from "./policyRuleService";
 import { DependencyService } from "./dependencyService";
 
 export class ScanService {
-    private readonly fileService: FileService;
+    private readonly policyRuleService: PolicyRuleService;
     private readonly dependencyService: DependencyService;
 
-    constructor(fileService: FileService, dependencyService: DependencyService) {
-        this.fileService = fileService;
+    constructor(policyRuleService: PolicyRuleService, dependencyService: DependencyService) {
+        this.policyRuleService = policyRuleService;
         this.dependencyService = dependencyService;
         this.handleFlags = this.handleFlags.bind(this);
         this.scan = this.scan.bind(this);
     }
     public async scan() {
+        const isRunning = globalStore.getScanningProgress();
+
+        if (isRunning) {
+            statusBarMessageHelper.showWarningMessage("Scan is still in process. Please wait...");
+            return;
+        } else {
+            globalStore.setScanningProgress(true);
+        }
+
         try {
             if (!(await commonHelper.isCurrentRepoSupported())) {
                 return;
@@ -84,7 +93,7 @@ export class ScanService {
                             DebrickedCommands.SCAN.flags[2].report &&
                             fs.existsSync(DebrickedCommands.SCAN.flags[2].report)
                         ) {
-                            await this.fileService.setRepoScannedData();
+                            await this.policyRuleService.setScannedData();
 
                             const repoId = await globalStore.getRepoId();
                             const commitId = await globalStore.getCommitId();
@@ -101,6 +110,7 @@ export class ScanService {
         } catch (error: any) {
             errorHandler.handleError(error);
         } finally {
+            globalStore.setScanningProgress(false);
             Logger.logMessageByStatus(MessageStatus.INFO, "Scan service finished.");
         }
     }

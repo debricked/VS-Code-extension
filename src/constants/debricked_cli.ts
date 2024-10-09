@@ -119,7 +119,7 @@ export class DebrickedCommands {
                         label: "JSON",
                         flag: "-j",
                         description:
-                            'Print files in JSON format\nFormat:\n[\n{\n"manifestFile": "package.json",\n"lockFiles": [\n"yarn.lock"\n]\n}]',
+                            'Print files in JSON format - Format:[{"manifestFile": "package.json","lockFiles": ["yarn.lock"]}]',
                     },
                     {
                         label: "Lockfile",
@@ -308,12 +308,7 @@ export class DebrickedCommands {
     };
 
     static getAllCommands(): DebrickedCommandNode[] {
-        return [
-            DebrickedCommands.BASE_COMMAND,
-            DebrickedCommands.SCAN,
-            DebrickedCommands.FILES,
-            DebrickedCommands.AUTH,
-        ];
+        return [DebrickedCommands.BASE_COMMAND, DebrickedCommands.SCAN, DebrickedCommands.AUTH];
     }
 
     static getCommand(commandName: string): DebrickedCommandNode | undefined {

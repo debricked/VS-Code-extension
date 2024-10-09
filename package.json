@@ -14,7 +14,7 @@
         "hoverProvider": "true"
     },
     "activationEvents": [
-        "workspaceContains:package.json"
+        "workspaceContains:**/package.json"
     ],
     "main": "./dist/extension.js",
     "repository": {
@@ -87,18 +87,6 @@
                 "title": "Start a Debricked dependency scan",
                 "category": "debricked",
                 "icon": "$(debug-start)"
-            },
-            {
-                "command": "debricked.files",
-                "title": "Analyze files",
-                "category": "debricked",
-                "icon": "$(files)"
-            },
-            {
-                "command": "debricked.files.find",
-                "title": "Find all dependency files in inputted path",
-                "category": "debricked",
-                "icon": "$(search)"
             },
             {
                 "command": "debricked.auth.login",

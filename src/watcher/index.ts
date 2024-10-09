@@ -1,9 +1,8 @@
-import { ManifestWatcher } from "./manifestWatcher";
 import { WorkSpaceWatcher } from "./workspaceWatcher";
 import * as vscode from "vscode";
 import { MessageStatus } from "../constants/index";
 import { Logger, errorHandler, globalStore } from "../helpers";
-import { scanService } from "../services";
+import { ReportWatcher } from "./reportWatcher";
 
 class Watchers {
     public async registerWatcher(context: vscode.ExtensionContext) {
@@ -11,8 +10,11 @@ class Watchers {
             const selectedRepoName = globalStore.getRepository();
 
             if (selectedRepoName !== MessageStatus.UNKNOWN) {
-                await ManifestWatcher.getInstance().setupWatchers(context);
-                await scanService.scan();
+                const workSpaceWatcher = new WorkSpaceWatcher(context);
+                await workSpaceWatcher.setup();
+
+                const reportWatcher = new ReportWatcher();
+                await reportWatcher.start(context);
             }
         } catch (error) {
             errorHandler.handleError(error);
@@ -23,4 +25,4 @@ class Watchers {
 }
 
 const watchers = new Watchers();
-export { ManifestWatcher, WorkSpaceWatcher, watchers };
+export { WorkSpaceWatcher, watchers, ReportWatcher };

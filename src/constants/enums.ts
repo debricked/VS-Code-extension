@@ -25,3 +25,7 @@ export enum TokenType {
     ACCESS = "access",
     BEARER = "bearer",
 }
+
+export enum SupportedFilesToScan {
+    PACKAGE_JSON = "package.json",
+}
