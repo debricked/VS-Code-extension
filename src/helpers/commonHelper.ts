@@ -68,9 +68,7 @@ export class Common {
     }
 
     public async isCurrentDocManifestFile(document: vscode.TextDocument) {
-        const selectedRepoName = this.globalStore.getRepository();
-        const manifestFiles = await this.globalStore.getGlobalStateInstance()?.getGlobalData(selectedRepoName)
-            .filesToScan;
+        const manifestFiles = Object.values(SupportedFilesToScan);
         let currentManifestFile = path.basename(document.fileName);
         currentManifestFile = currentManifestFile.endsWith(".git")
             ? currentManifestFile.slice(0, -4)

@@ -4,7 +4,7 @@ import { debrickedCommand } from "./commands";
 import { DebrickedCommandsTreeDataProvider, providers } from "./providers";
 import { Environment, MessageStatus, Organization } from "./constants/index";
 import { baseCommandService } from "./services";
-import { watchers } from "watcher";
+import { ReportWatcher, watchers, WorkSpaceWatcher } from "watcher";
 
 export async function activate(context: vscode.ExtensionContext) {
     await indexHelper.setupDebricked(context);
@@ -61,12 +61,11 @@ export async function activate(context: vscode.ExtensionContext) {
                     }
                 }
 
-                // Add file watcher for all files found from 'debricked files find'
-                await watchers.registerWatcher(context);
-                await providers.registerDependencyPolicyProvider(context); // after adding watcher and scanning we should add the policy provider
+                // Add file watcher for all manifest files
+                watchers.registerWatcher(context);
+                providers.registerDependencyPolicyProvider(context); // after adding watcher and scanning we should add the policy provider
 
-                progress.report({ message: "Debricked extension is ready to use", increment: 100 - progressCount });
-                await new Promise((resolve) => setTimeout(resolve, 1000)); // added for showing the last progress info
+                progress.report({ message: "Extension is ready to use", increment: (progressCount += 20) });
             } catch (error: any) {
                 errorHandler.handleError(error);
             } finally {
@@ -77,7 +76,13 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 // This method is called when your extension is deactivated
-export async function deactivate() {
+export async function deactivate(context: vscode.ExtensionContext) {
+    const workSpaceWatcher = new WorkSpaceWatcher(context);
+    await workSpaceWatcher.dispose();
+
+    const reportWatcher = new ReportWatcher();
+    await reportWatcher.stop();
+
     SentryHelper.setTransactionName(`Deactivate ${Organization.name}`);
     Logger.logMessageByStatus(MessageStatus.INFO, "Deactivate Debricked VS Code Extension");
     SentryHelper.close();

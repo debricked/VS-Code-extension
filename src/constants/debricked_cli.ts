@@ -308,12 +308,7 @@ export class DebrickedCommands {
     };
 
     static getAllCommands(): DebrickedCommandNode[] {
-        return [
-            DebrickedCommands.BASE_COMMAND,
-            DebrickedCommands.SCAN,
-            DebrickedCommands.FILES,
-            DebrickedCommands.AUTH,
-        ];
+        return [DebrickedCommands.BASE_COMMAND, DebrickedCommands.SCAN, DebrickedCommands.AUTH];
     }
 
     static getCommand(commandName: string): DebrickedCommandNode | undefined {

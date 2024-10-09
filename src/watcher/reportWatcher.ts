@@ -16,7 +16,11 @@ export class ReportWatcher {
         this.watcher = vscode.workspace.createFileSystemWatcher(reportFilePath);
 
         this.watcher.onDidChange(async () => {
-            await this.handleReportChange();
+            const isRunning = globalStore.getScanningProgress();
+
+            if (!isRunning) {
+                await this.handleReportChange();
+            }
         });
 
         this.watcher.onDidDelete(() => {

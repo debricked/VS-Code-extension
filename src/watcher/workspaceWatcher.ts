@@ -62,4 +62,10 @@ export class WorkSpaceWatcher {
             globalStore.setScanningProgress(false);
         }
     }
+
+    public dispose(): void {
+        if (this.packageJsonWatcher) {
+            this.packageJsonWatcher.dispose();
+        }
+    }
 }
