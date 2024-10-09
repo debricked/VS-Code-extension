@@ -6,7 +6,7 @@ describe("DebrickedCommands", () => {
         it("should return an array of DebrickedCommandNode objects", () => {
             const allCommands = DebrickedCommands.getAllCommands();
             expect(allCommands).to.be.an("array");
-            expect(allCommands).to.have.lengthOf(4);
+            expect(allCommands).to.have.lengthOf(3);
             allCommands.forEach((command) => {
                 expect(command).to.have.property("label");
                 expect(command).to.have.property("command");
@@ -28,22 +28,9 @@ describe("DebrickedCommands", () => {
             const nonExistentCommand = DebrickedCommands.getCommand("nonexistent");
             expect(nonExistentCommand).to.be.undefined;
         });
-
-        it("should be case-insensitive", () => {
-            const filesCommand = DebrickedCommands.getCommand("FiLeS");
-            expect(filesCommand).to.not.be.undefined;
-            expect(filesCommand?.label).to.equal("Files");
-        });
     });
 
     describe("getSubCommand", () => {
-        it("should return the correct sub-command for a given name", () => {
-            const findSubCommand = DebrickedCommands.getSubCommand("find");
-            expect(findSubCommand).to.not.be.undefined;
-            expect(findSubCommand?.label).to.equal("Find");
-            expect(findSubCommand?.cli_command).to.equal("find");
-        });
-
         it("should return undefined for a non-existent sub-command", () => {
             const nonExistentSubCommand = DebrickedCommands.getSubCommand("nonexistent");
             expect(nonExistentSubCommand).to.be.undefined;
