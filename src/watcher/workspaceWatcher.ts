@@ -37,14 +37,14 @@ export class WorkSpaceWatcher {
     }
 
     private setupEditorListener(): void {
+        this.updateContext(vscode.window.activeTextEditor);
+        vscode.window.onDidChangeActiveTextEditor(this.updateContext);
+    }
+
+    private updateContext(editor: vscode.TextEditor | undefined) {
         const filesPattern = new RegExp(SupportedFilesToScan.PACKAGE_JSON + "$");
-        vscode.window.onDidChangeActiveTextEditor((editor) => {
-            if (editor && filesPattern.test(path.basename(editor.document.fileName))) {
-                vscode.commands.executeCommand("setContext", "debrickedFilesToScan", true);
-            } else {
-                vscode.commands.executeCommand("setContext", "debrickedFilesToScan", false);
-            }
-        });
+        const shouldScan = editor && filesPattern.test(path.basename(editor.document.fileName));
+        vscode.commands.executeCommand("setContext", "debrickedFilesToScan", shouldScan);
     }
 
     public async onPackageJsonChanged(): Promise<void> {
