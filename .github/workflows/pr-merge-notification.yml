@@ -22,7 +22,7 @@ jobs:
 
       - name: Send Microsoft Teams Notification
         env:
-          TEAMS_WEBHOOK_URL: https://opentextcorporation.webhook.office.com/webhookb2/ed6b2dc3-fef1-47a4-a5c5-fb813e79a713@10a18477-d533-4ecd-a78d-916dbd849d7c/IncomingWebhook/8e304d081dab4769b9d54aaef90a54f6/be055931-5ce9-4c0a-ba25-f49c5b99c18f/V2DE0buolF-U_Vqlz6vaTXe6juCBfs1veoQlLOryiFgbw1
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
         run: |
           curl -H 'Content-Type: application/json' -d '{
             "@type": "MessageCard",
