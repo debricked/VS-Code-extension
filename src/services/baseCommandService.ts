@@ -182,7 +182,8 @@ export class BaseCommandService {
                 Logger.logInfo(`Token generated successfully`);
             }
         } catch (error: any) {
-            SentryHelper.captureException(new Error("Login failed"));
+            statusBarMessageHelper.showErrorMessage(error);
+            SentryHelper.captureException(new Error(error));
         } finally {
             statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),
