@@ -3,6 +3,7 @@ import { SupportedFilesToScan } from "../constants";
 import { scanService } from "services";
 import { errorHandler, globalStore, Logger, statusBarMessageHelper } from "../helpers";
 import * as path from "path";
+import { DependencyPolicyProvider } from "../providers";
 
 export class WorkSpaceWatcher {
     private context: vscode.ExtensionContext;
@@ -56,10 +57,22 @@ export class WorkSpaceWatcher {
 
         try {
             await scanService.scan();
+            this.updatePackageJsonContent(this.context);
         } catch (error) {
             errorHandler.handleError(error);
         } finally {
             globalStore.setScanningProgress(false);
+        }
+    }
+
+    private async updatePackageJsonContent(context: vscode.ExtensionContext): Promise<void> {
+        const diagnosticCollection = vscode.languages.createDiagnosticCollection("dependencyPolicyChecker");
+        context.subscriptions.push(diagnosticCollection);
+
+        const provider = new DependencyPolicyProvider(diagnosticCollection);
+        //added to activate the policy violation provider when the manifest file is already open
+        if (vscode.window.activeTextEditor?.document) {
+            await provider.checkPolicyViolation(vscode.window.activeTextEditor?.document);
         }
     }
 
