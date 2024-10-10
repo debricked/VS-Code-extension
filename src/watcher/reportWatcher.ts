@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { DebrickedCommands } from "../constants";
 import { dependencyService, policyRuleService } from "../services";
-import { errorHandler, globalStore } from "../helpers";
+import { errorHandler, globalStore, Logger } from "../helpers";
 
 export class ReportWatcher {
     private watcher: vscode.FileSystemWatcher | null = null;
@@ -24,7 +24,7 @@ export class ReportWatcher {
         });
 
         this.watcher.onDidDelete(() => {
-            console.log("Report file deleted");
+            Logger.logInfo(`Report file deleted`);
         });
         context.subscriptions.push(this.watcher);
     }
