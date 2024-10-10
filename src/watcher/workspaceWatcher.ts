@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { SupportedFilesToScan } from "../constants";
 import { scanService } from "services";
-import { errorHandler, globalStore, statusBarMessageHelper } from "../helpers";
+import { errorHandler, globalStore, Logger, statusBarMessageHelper } from "../helpers";
 import * as path from "path";
 
 export class WorkSpaceWatcher {
@@ -30,7 +30,7 @@ export class WorkSpaceWatcher {
         });
 
         this.packageJsonWatcher.onDidDelete((uri) => {
-            console.log(`package.json deleted: ${uri.fsPath}`);
+            Logger.logInfo(`deleted: ${uri.fsPath}`);
         });
 
         this.context.subscriptions.push(this.packageJsonWatcher);

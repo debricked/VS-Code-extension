@@ -24,6 +24,7 @@ export class DebrickedCommand {
                 this.registerCommand(context, baseSubCommands[3].command, Logger.openLogFile);
                 this.registerCommand(context, baseSubCommands[4].command, baseCommandService.login);
                 this.registerCommand(context, baseSubCommands[5].command, SentryHelper.reConfigureSentry);
+                this.registerCommand(context, baseSubCommands[6].command, baseCommandService.reset);
             }
 
             //Register auth sub-commands

@@ -21,8 +21,7 @@ export async function activate(context: vscode.ExtensionContext) {
                 progress.report({ increment: progressCount });
 
                 const globalState = globalStore.getGlobalStateInstance();
-                // For dev - Clears the globalData - uncomment to clear the globalData
-                // await globalState?.clearAllGlobalData();
+
                 progress.report({
                     message: "Activating VS Code Extension",
                     increment: (progressCount += 20),

@@ -3,7 +3,7 @@
     "displayName": "debricked",
     "description": "A fast and flexible software composition analysis VS Code Extension and CLI tool, given to you by Debricked.",
     "publisher": "debricked",
-    "version": "0.0.0",
+    "version": "0.0.0-dev",
     "engines": {
         "vscode": "^1.90.0"
     },
@@ -105,6 +105,12 @@
                 "title": "Retrieve access token",
                 "category": "debricked",
                 "icon": "$(account)"
+            },
+            {
+                "command": "debricked.debricked.reset",
+                "title": "Reset Debricked",
+                "category": "debricked",
+                "icon": "$(trash)"
             }
         ],
         "menus": {
@@ -121,12 +127,12 @@
         "vscode:prepublish": "npm run package",
         "compile": "npm run check-types && npm run lint && node esbuild.js",
         "watch": "npm-run-all -p watch:*",
-        "watch:esbuild": "set NODE_ENV=development && set LATEST_TAG=0.0.0&& node esbuild.js --watch",
+        "watch:esbuild": "set NODE_ENV=development && set LATEST_TAG=0.0.0-dev&& node esbuild.js --watch",
         "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
         "package": "npm run check-types && npm run lint && node esbuild.js --production",
         "compile-tests": "npm run clean && tsc -p . --outDir out",
         "watch-tests": "tsc -p . -w --outDir out",
-        "pretest": "set NODE_ENV=test && set LATEST_TAG=0.0.0&& npm run compile-tests && npm run compile",
+        "pretest": "set NODE_ENV=test && set LATEST_TAG=0.0.0-dev&& npm run compile-tests && npm run compile",
         "check-types": "tsc --noEmit",
         "lint": "eslint src --ext ts",
         "lint:fix": "eslint --fix src --ext ts",
@@ -135,7 +141,7 @@
         "clean-all": "rimraf out && rimraf dist && rimraf coverage && rimraf .vscode-test",
         "vsce": "vsce package",
         "madge": "npm run compile-tests && rimraf out\\test && madge --include-npm --image graph.svg out",
-        "sentry:sourcemaps": "sentry-cli --url https://sentry.debricked.com/ sourcemaps upload --org debricked --project visual-studio-code-extensions out --release vs-code-extension@0.0.0"
+        "sentry:sourcemaps": "sentry-cli --url https://sentry.debricked.com/ sourcemaps upload --org debricked --project visual-studio-code-extensions out --release vs-code-extension@0.0.0-dev"
     },
     "devDependencies": {
         "@sentry/cli": "^2.36.1",

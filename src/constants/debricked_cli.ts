@@ -61,6 +61,12 @@ export class DebrickedCommands {
                 cli_command: "sentry",
                 description: "Debricked sentry logs",
             },
+            {
+                label: "Reset",
+                command: "debricked.debricked.reset",
+                cli_command: "reset",
+                description: "Reset Debricked",
+            },
         ],
         flags: [
             {

@@ -1,3 +1,4 @@
+import { Secrets } from "../constants";
 import * as vscode from "vscode";
 
 export class GlobalState {
@@ -58,5 +59,12 @@ export class GlobalState {
 
     public deleteSecretData(key: string): Thenable<void> {
         return this.context.secrets.delete(key);
+    }
+
+    public async resetDebrickedData(): Promise<void> {
+        for (const secret in Secrets) {
+            this.context.secrets.delete(Secrets[secret as keyof typeof Secrets]);
+        }
+        await this.clearAllGlobalData();
     }
 }

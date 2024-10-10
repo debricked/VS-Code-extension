@@ -21,7 +21,7 @@ export enum Environment {
     TEST = "test",
 }
 
-export enum TokenType {
+export enum Secrets {
     ACCESS = "access",
     BEARER = "bearer",
 }

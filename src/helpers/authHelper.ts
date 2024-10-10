@@ -1,4 +1,4 @@
-import { Messages, TokenType } from "../constants/index";
+import { Messages, Secrets } from "../constants/index";
 import { ShowInputBoxHelper } from "./showInputBoxHelper";
 import { StatusBarMessageHelper } from "./statusBarMessageHelper";
 import { Logger } from "./loggerHelper";
@@ -17,7 +17,7 @@ export class AuthHelper {
      * @param void
      * @returns Promise<string | undefined>
      */
-    async getToken(useDefaultToken = true, tokenKey: TokenType): Promise<string | undefined> {
+    async getToken(useDefaultToken = true, tokenKey: Secrets): Promise<string | undefined> {
         try {
             let token: string | undefined;
             const defaultToken: any = await this.globalStore.getGlobalStateInstance()?.getSecretData(tokenKey);
@@ -31,12 +31,12 @@ export class AuthHelper {
                 this.logger.logInfo("InputBox Opened for tokens");
 
                 token = await this.showInputBoxHelper.promptForInput({
-                    prompt: tokenKey === TokenType.ACCESS ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
+                    prompt: tokenKey === Secrets.ACCESS ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
                     ignoreFocusOut: true,
                     password: true,
-                    title: tokenKey === TokenType.ACCESS ? Messages.ACCESS_TOKEN : Messages.BEARER_TOKEN,
+                    title: tokenKey === Secrets.ACCESS ? Messages.ACCESS_TOKEN : Messages.BEARER_TOKEN,
                     placeHolder:
-                        tokenKey === TokenType.ACCESS ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
+                        tokenKey === Secrets.ACCESS ? Messages.ENTER_ACCESS_TOKEN : Messages.ENTER_BEARER_TOKEN,
                 });
 
                 this.setToken(tokenKey, token);
@@ -49,13 +49,13 @@ export class AuthHelper {
         }
     }
 
-    async setToken(tokenKey: TokenType, token: string | undefined): Promise<void> {
+    async setToken(tokenKey: Secrets, token: string | undefined): Promise<void> {
         if (token) {
             await this.globalStore.getGlobalStateInstance()?.setSecretData(tokenKey, token);
-            const message = tokenKey === TokenType.ACCESS ? Messages.ACCESS_TOKEN_SAVED : Messages.BEARER_TOKEN_SAVED;
+            const message = tokenKey === Secrets.ACCESS ? Messages.ACCESS_TOKEN_SAVED : Messages.BEARER_TOKEN_SAVED;
             this.statusBarMessageHelper.showInformationMessage(message);
         } else {
-            const message = tokenKey === TokenType.ACCESS ? Messages.ACCESS_TOKEN_RQD : Messages.BEARER_TOKEN_RQD;
+            const message = tokenKey === Secrets.ACCESS ? Messages.ACCESS_TOKEN_RQD : Messages.BEARER_TOKEN_RQD;
             throw new Error(message);
         }
     }

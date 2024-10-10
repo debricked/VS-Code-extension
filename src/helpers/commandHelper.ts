@@ -1,4 +1,4 @@
-import { DebrickedCommands, Messages, MessageStatus, TokenType } from "../constants/index";
+import { DebrickedCommands, Messages, MessageStatus, Secrets } from "../constants/index";
 import { exec } from "child_process";
 import * as vscode from "vscode";
 import { promisify } from "util";
@@ -31,7 +31,7 @@ export class Command {
 
                     if (accessTokenRequired) {
                         const globalFlags = DebrickedCommands.getCommandSpecificFlags("Debricked", true) || [];
-                        const accessToken = await this.authHelper.getToken(true, TokenType.ACCESS);
+                        const accessToken = await this.authHelper.getToken(true, Secrets.ACCESS);
 
                         if (accessToken) {
                             this.logger.logMessageByStatus(
@@ -56,7 +56,8 @@ export class Command {
                     }
                     span.end(new Date());
                     return stdout.trim();
-                } catch (error) {
+                } catch (error: any) {
+                    this.logger.logMessageByStatus(MessageStatus.ERROR, `command error: ${error.message}`);
                     this.logger.logError("Error in executeAsyncCommand");
                     throw error;
                 }

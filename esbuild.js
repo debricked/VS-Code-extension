@@ -45,8 +45,8 @@ async function main() {
                 project: "visual-studio-code-extensions",
                 url: "https://sentry.debricked.com/",
                 release: {
-                    name: `vs-code-extension@${process.env.LATEST_TAG || "0.0.0"}`,
-                    dist: process.env.LATEST_TAG || "0.0.0",
+                    name: `vs-code-extension@${process.env.LATEST_TAG || "0.0.0-dev"}${process.env.LAT_COMMIT ? `+${process.env.LAT_COMMIT}-review` : ""}`,
+                    dist: `${process.env.LATEST_TAG || "0.0.0-dev"}${process.env.LAT_COMMIT ? `+${process.env.LAT_COMMIT}-review` : ""}`,
                     cleanArtifacts: true,
                 },
             }),

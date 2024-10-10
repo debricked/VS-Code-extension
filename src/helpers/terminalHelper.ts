@@ -1,4 +1,4 @@
-import { DebrickedCommands, Messages, MessageStatus, Organization, TokenType } from "../constants/index";
+import { DebrickedCommands, Messages, MessageStatus, Organization, Secrets } from "../constants/index";
 import { AuthHelper } from "./authHelper";
 import { Logger } from "./loggerHelper";
 
@@ -19,7 +19,7 @@ export class Terminal {
         let command: string = Organization.debrickedCli;
         if (accessTokenRequired) {
             const flags = DebrickedCommands.getCommandSpecificFlags("Debricked") || [];
-            const accessToken = await this.authHelper.getToken(useDefaultAccessToken, TokenType.ACCESS);
+            const accessToken = await this.authHelper.getToken(useDefaultAccessToken, Secrets.ACCESS);
 
             if (accessToken) {
                 this.logger.logMessageByStatus(
