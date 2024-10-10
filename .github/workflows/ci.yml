@@ -29,19 +29,6 @@ jobs:
                   path: .
                   key: ${{ runner.os }}-repo-${{ steps.hash.outputs.hash }}
 
-    build:
-        runs-on: ubuntu-latest
-        needs: setup
-        steps:
-            - name: Restore repository cache
-              uses: actions/cache@v4
-              with:
-                  path: .
-                  key: ${{ needs.setup.outputs.package-lock-hash }}
-                  fail-on-cache-miss: true
-            - name: Compile
-              run: npm run compile
-
     package:
         runs-on: ubuntu-latest
         needs: setup
@@ -78,6 +65,11 @@ jobs:
 
             - name: Package VS Code Extension
               run: vsce package
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+                  SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+                  SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+                  SENTRY_URL: ${{ secrets.SENTRY_URL }}
 
             - name: Upload VSIX artifact
               uses: actions/upload-artifact@v4
@@ -120,7 +112,7 @@ jobs:
 
     cleanup:
         runs-on: ubuntu-latest
-        needs: [setup, build]
+        needs: [setup, package]
         if: always()
         steps:
             - name: Cleanup
