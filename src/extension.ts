@@ -68,8 +68,7 @@ export async function activate(context: vscode.ExtensionContext) {
         },
     );
     // Add file watcher for all manifest files
-    await watchers.registerWatcher(context);
-    providers.registerDependencyPolicyProvider(context); // after adding watcher and scanning we should add the policy provider
+    watchers.registerWatcher(context);
 }
 
 // This method is called when your extension is deactivated

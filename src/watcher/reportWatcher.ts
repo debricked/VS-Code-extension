@@ -9,7 +9,7 @@ export class ReportWatcher {
     public async start(context: vscode.ExtensionContext): Promise<void> {
         const reportFilePath = DebrickedCommands.SCAN.flags?.[2]?.report;
         if (!reportFilePath) {
-            console.log("No report file path found");
+            Logger.logInfo("No report file path found");
             return;
         }
 

@@ -26,45 +26,6 @@ class Providers {
             Logger.logInfo("Command registration has been completed");
         }
     }
-
-    public async registerDependencyPolicyProvider(context: vscode.ExtensionContext) {
-        try {
-            Logger.logInfo("Started registering policy provider");
-            const selectedRepoName = await gitHelper.getUpstream();
-
-            if (selectedRepoName !== MessageStatus.UNKNOWN) {
-                const diagnosticCollection = vscode.languages.createDiagnosticCollection("dependencyPolicyChecker");
-                context.subscriptions.push(diagnosticCollection);
-
-                const provider = new DependencyPolicyProvider(diagnosticCollection);
-                //added to activate the policy violation provider when the manifest file is already open
-                if (vscode.window.activeTextEditor?.document) {
-                    provider.checkPolicyViolation(vscode.window.activeTextEditor?.document);
-                }
-
-                context.subscriptions.push(
-                    vscode.languages.registerCodeActionsProvider({ scheme: "file" }, provider, {
-                        providedCodeActionKinds: [vscode.CodeActionKind.QuickFix],
-                    }),
-                );
-
-                // Trigger the check when a file is opened or saved
-                context.subscriptions.push(
-                    vscode.workspace.onDidOpenTextDocument((doc) => provider.checkPolicyViolation(doc)),
-                    vscode.workspace.onDidSaveTextDocument((doc) => provider.checkPolicyViolation(doc)),
-                    vscode.window.onDidChangeActiveTextEditor((editor) => {
-                        if (editor) {
-                            provider.checkPolicyViolation(editor.document);
-                        }
-                    }),
-                );
-            }
-        } catch (error) {
-            errorHandler.handleError(error);
-        } finally {
-            Logger.logInfo("Command registration has been completed");
-        }
-    }
 }
 const providers = new Providers();
-export { DebrickedCommandsTreeDataProvider, ManifestDependencyHoverProvider, providers };
+export { DebrickedCommandsTreeDataProvider, ManifestDependencyHoverProvider, providers, DependencyPolicyProvider };
