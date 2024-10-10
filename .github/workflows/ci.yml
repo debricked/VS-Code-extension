@@ -78,6 +78,15 @@ jobs:
                   path: "*.vsix"
                   retention-days: 10
 
+            - name: Install Sentry CLI
+              run: npm install -g @sentry/cli
+
+            - name: Create Sentry release
+              uses: getsentry/action-release@v1
+              with:
+                  environment: review
+                  version: vs-code-extension@\"$LATEST_TAG+$LAT_COMMIT-review\"
+
     test:
         runs-on: ubuntu-latest
         needs: setup
