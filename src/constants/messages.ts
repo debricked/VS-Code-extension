@@ -30,4 +30,5 @@ export class Messages {
     static readonly INSTALLATION_ERROR = "Installation script execution failed.";
 
     // Miscellaneous Messages
+    static readonly RESET_SUCCESS = "Successfully reset debricked.";
 }

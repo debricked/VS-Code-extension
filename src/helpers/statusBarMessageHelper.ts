@@ -23,6 +23,10 @@ export class StatusBarMessageHelper {
         return await vscode.window.showInformationMessage(`${Organization.nameCaps}: ` + message, ...items);
     }
 
+    public async showWarningMessageWithItems(message: string, items: string[]): Promise<string | undefined> {
+        return await vscode.window.showWarningMessage(`${Organization.nameCaps}: ` + message, ...items);
+    }
+
     public showWarningMessage(message: string): void {
         vscode.window.showWarningMessage(`${Organization.nameCaps}: ` + message);
     }

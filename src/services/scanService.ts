@@ -11,7 +11,7 @@ import {
     debrickedServiceHelper,
     showQuickPickHelper,
 } from "../helpers";
-import { DebrickedCommands, Icons, MessageStatus, Organization, SecondService, TokenType } from "../constants/index";
+import { DebrickedCommands, Icons, MessageStatus, Organization, SecondService, Secrets } from "../constants/index";
 import { DebrickedCommandNode, Flag, Repository, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import * as fs from "fs";
@@ -186,7 +186,7 @@ export class ScanService {
                 break;
 
             case "-t": {
-                const accessToken = await authHelper.getToken(true, TokenType.ACCESS);
+                const accessToken = await authHelper.getToken(true, Secrets.ACCESS);
                 if (accessToken) {
                     cmdParams.push(accessToken);
                     Logger.logMessageByStatus(MessageStatus.INFO, "Access token added");

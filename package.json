@@ -105,6 +105,12 @@
                 "title": "Retrieve access token",
                 "category": "debricked",
                 "icon": "$(account)"
+            },
+            {
+                "command": "debricked.debricked.reset",
+                "title": "Reset Debricked",
+                "category": "debricked",
+                "icon": "$(trash)"
             }
         ],
         "menus": {

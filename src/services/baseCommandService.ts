@@ -1,5 +1,5 @@
 import { DebrickedCommandNode } from "../types";
-import { DebrickedCommands, Messages, MessageStatus, Organization, TokenType } from "../constants/index";
+import { DebrickedCommands, Messages, MessageStatus, Organization, Secrets } from "../constants/index";
 import {
     statusBarMessageHelper,
     terminal,
@@ -108,8 +108,8 @@ export class BaseCommandService {
 
     public async installCommand() {
         try {
-            Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
             SentryHelper.setTransactionName("Install CLI");
+            Logger.logMessageByStatus(MessageStatus.INFO, "Register InstallCommand");
 
             const currentVersion = await this.getCurrentExtensionVersion();
             Logger.logMessageByStatus(
@@ -140,8 +140,8 @@ export class BaseCommandService {
 
     public async login(updateCredentials = true) {
         try {
-            Logger.logInfo("Register login");
             SentryHelper.setTransactionName("Login");
+            Logger.logInfo("Register login");
 
             const debrickedData: any = await globalStore
                 .getGlobalStateInstance()
@@ -177,7 +177,7 @@ export class BaseCommandService {
                 throw new Error(bearerToken.message);
             } else {
                 const newBearerToken = `Bearer ${bearerToken.token}`;
-                await authHelper.setToken(TokenType.BEARER, newBearerToken);
+                await authHelper.setToken(Secrets.BEARER, newBearerToken);
 
                 Logger.logInfo(`Login successful. Authentication Bearer token generated for secure access.`);
             }
@@ -193,8 +193,8 @@ export class BaseCommandService {
 
     public async updateCommand() {
         try {
-            Logger.logMessageByStatus(MessageStatus.INFO, "Register UpdateCommand");
             SentryHelper.setTransactionName("Update Token");
+            Logger.logMessageByStatus(MessageStatus.INFO, "Register UpdateCommand");
             let subCommand: DebrickedCommandNode[] | undefined;
             if (DebrickedCommands.BASE_COMMAND.sub_commands) {
                 subCommand = DebrickedCommands.BASE_COMMAND.sub_commands[1].sub_commands;
@@ -206,10 +206,10 @@ export class BaseCommandService {
             }
             switch (selectedSubCommand?.cli_command) {
                 case "accessToken":
-                    authHelper.getToken(false, TokenType.ACCESS);
+                    authHelper.getToken(false, Secrets.ACCESS);
                     break;
                 case "bearerToken":
-                    authHelper.getToken(false, TokenType.BEARER);
+                    authHelper.getToken(false, Secrets.BEARER);
                     break;
             }
         } catch (error: any) {
@@ -221,6 +221,24 @@ export class BaseCommandService {
         }
     }
 
+    public async reset() {
+        try {
+            SentryHelper.setTransactionName("Reset Debricked");
+            Logger.logMessageByStatus(MessageStatus.INFO, "Register ResetCommand");
+
+            const response = await statusBarMessageHelper.showWarningMessageWithItems(
+                "Do you want to reset Debricked?",
+                ["Yes", "No"],
+            );
+            if (response === "Yes") {
+                await globalStore.getGlobalStateInstance()?.resetDebrickedData();
+                statusBarMessageHelper.showInformationMessage(Messages.RESET_SUCCESS);
+                SentryHelper.captureMessage("Reset Debricked");
+            }
+        } catch (error: any) {
+            errorHandler.handleError(error);
+        }
+    }
     public async getCurrentExtensionVersion(): Promise<string> {
         const extension = vscode.extensions.getExtension(`${Organization.name}.${Organization.packageJson.name}`);
         return extension ? extension.packageJSON.version : Organization.packageJson.version;

@@ -1,7 +1,7 @@
 import { AuthHelper } from "../../helpers/authHelper";
 import { Logger, showInputBoxHelper, statusBarMessageHelper } from "../../helpers";
 import { sinon, expect } from "../setup";
-import { Messages, TokenType } from "../../constants";
+import { Messages, Secrets } from "../../constants";
 
 describe("Authorization Helper", () => {
     let authHelper: AuthHelper;
@@ -37,12 +37,12 @@ describe("Authorization Helper", () => {
         sandbox.restore();
     });
 
-    const tokenTypes = [
-        { type: TokenType.ACCESS, message: Messages.ACCESS_TOKEN_SAVED, promptMessage: Messages.ENTER_ACCESS_TOKEN },
-        { type: TokenType.BEARER, message: Messages.BEARER_TOKEN_SAVED, promptMessage: Messages.ENTER_BEARER_TOKEN },
+    const secrets = [
+        { type: Secrets.ACCESS, message: Messages.ACCESS_TOKEN_SAVED, promptMessage: Messages.ENTER_ACCESS_TOKEN },
+        { type: Secrets.BEARER, message: Messages.BEARER_TOKEN_SAVED, promptMessage: Messages.ENTER_BEARER_TOKEN },
     ];
 
-    tokenTypes.forEach(({ type, message, promptMessage }) => {
+    secrets.forEach(({ type, message, promptMessage }) => {
         describe(`${type} token`, () => {
             it(`should use default ${type} token`, async () => {
                 const token = await authHelper.getToken(true, type);
@@ -62,7 +62,7 @@ describe("Authorization Helper", () => {
                 expect(promptForInputStub.calledOnce).to.be.true;
                 expect(promptForInputStub.firstCall.args[0]).to.include({
                     prompt: promptMessage,
-                    title: type === TokenType.ACCESS ? Messages.ACCESS_TOKEN : Messages.BEARER_TOKEN,
+                    title: type === Secrets.ACCESS ? Messages.ACCESS_TOKEN : Messages.BEARER_TOKEN,
                     placeHolder: promptMessage,
                 });
                 expect(token).to.equal(NEW_TOKEN);
@@ -86,9 +86,9 @@ describe("Authorization Helper", () => {
 
     describe("setToken", () => {
         it("should set the token and show a success message", async () => {
-            await authHelper.setToken(TokenType.ACCESS, NEW_TOKEN);
+            await authHelper.setToken(Secrets.ACCESS, NEW_TOKEN);
 
-            expect(globalStateInstance.setSecretData.calledOnceWith(TokenType.ACCESS, NEW_TOKEN)).to.be.true;
+            expect(globalStateInstance.setSecretData.calledOnceWith(Secrets.ACCESS, NEW_TOKEN)).to.be.true;
             expect(statusBarMessageHelperStub.calledOnceWith(Messages.ACCESS_TOKEN_SAVED)).to.be.true;
         });
     });

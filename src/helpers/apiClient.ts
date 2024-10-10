@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosR
 import { AuthHelper } from "./authHelper";
 import { ErrorHandler } from "./errorHandler";
 import { Logger } from "./loggerHelper";
-import { TokenType } from "../constants";
+import { Secrets } from "../constants";
 import * as Sentry from "@sentry/node";
 
 export class ApiClient {
@@ -17,7 +17,7 @@ export class ApiClient {
 
         this.axiosInstance.interceptors.request.use(
             async (config: AxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
-                const token = await authHelper.getToken(true, TokenType.BEARER);
+                const token = await authHelper.getToken(true, Secrets.BEARER);
                 if (token) {
                     config.headers = {
                         ...config.headers,
