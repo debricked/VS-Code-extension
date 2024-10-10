@@ -90,7 +90,7 @@ jobs:
                   SENTRY_URL: ${{ secrets.SENTRY_URL }}
               with:
                   environment: review
-                  version: vs-code-extension@\"$LATEST_TAG+$LAT_COMMIT-review\"
+                  version: "vs-code-extension@$LATEST_TAG+$LAT_COMMIT-review"
 
     test:
         runs-on: ubuntu-latest
