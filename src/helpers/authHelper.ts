@@ -53,7 +53,7 @@ export class AuthHelper {
         if (token) {
             await this.globalStore.getGlobalStateInstance()?.setSecretData(tokenKey, token);
             const message = tokenKey === TokenType.ACCESS ? Messages.ACCESS_TOKEN_SAVED : Messages.BEARER_TOKEN_SAVED;
-            this.statusBarMessageHelper.showInformationMessage(message);
+            this.statusBarMessageHelper.showInformationMessage(`Login successful. ${message}`);
         } else {
             const message = tokenKey === TokenType.ACCESS ? Messages.ACCESS_TOKEN_RQD : Messages.BEARER_TOKEN_RQD;
             throw new Error(message);

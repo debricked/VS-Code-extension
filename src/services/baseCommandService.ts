@@ -179,7 +179,7 @@ export class BaseCommandService {
                 const newBearerToken = `Bearer ${bearerToken.token}`;
                 await authHelper.setToken(TokenType.BEARER, newBearerToken);
 
-                Logger.logInfo(`Token generated successfully`);
+                Logger.logInfo(`Login successful. Authentication Bearer token generated for secure access.`);
             }
         } catch (error: any) {
             statusBarMessageHelper.showErrorMessage(error);
