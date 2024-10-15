@@ -1,48 +1,48 @@
 name: Notify on PR Merge
 
 on:
-  pull_request:
-    types:
-      - closed
+    pull_request:
+        types:
+            - closed
 
 jobs:
-  notify:
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
+    notify:
+        if: github.event.pull_request.merged == true
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Send Slack Notification
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{
-            "text": "A PR has been merged in the repository *${{ github.repository }}*.\n*PR Title:* ${{ github.event.pull_request.title }}\n*Merged By:* ${{ github.event.pull_request.merged_by.login }}\n*PR URL:* ${{ github.event.pull_request.html_url }}"
-          }' $SLACK_WEBHOOK_URL
+        steps:
+            - name: Send Slack Notification
+              env:
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+              run: |
+                  curl -X POST -H 'Content-type: application/json' \
+                  --data '{
+                    "text": "A PR has been merged in the repository *${{ github.repository }}*.\n*PR Title:* ${{ github.event.pull_request.title }}\n*Merged By:* ${{ github.event.pull_request.merged_by.login }}\n*PR URL:* ${{ github.event.pull_request.html_url }}"
+                  }' $SLACK_WEBHOOK_URL
 
-      - name: Send Microsoft Teams Notification
-        env:
-          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
-        run: |
-          curl -H 'Content-Type: application/json' -d '{
-            "@type": "MessageCard",
-            "@context": "https://schema.org/extensions",
-            "summary": "PR Merged in ${{ github.repository }}",
-            "themeColor": "0076D7",
-            "title": "Pull Request Merged",
-            "sections": [{
-              "activityTitle": "A PR has been merged in the repository *${{ github.repository }}*",
-              "activitySubtitle": "PR Title: ${{ github.event.pull_request.title }}",
-              "activityImage": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-              "facts": [{
-                  "name": "Merged By",
-                  "value": "${{ github.event.pull_request.merged_by.login }}"
-                },
-                {
-                  "name": "PR URL",
-                  "value": "[Link](${{ github.event.pull_request.html_url }})"
-                }
-              ],
-              "markdown": true
-            }]
-          }' $TEAMS_WEBHOOK_URL
+            - name: Send Microsoft Teams Notification
+              env:
+                  TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+              run: |
+                  curl -H 'Content-Type: application/json' -d '{
+                    "@type": "MessageCard",
+                    "@context": "https://schema.org/extensions",
+                    "summary": "PR Merged in ${{ github.repository }}",
+                    "themeColor": "FFA500",
+                    "title": "Pull Request Merged",
+                    "sections": [{
+                      "activityTitle": "A PR has been merged in the repository *${{ github.repository }}*",
+                      "activitySubtitle": "PR Title: ${{ github.event.pull_request.title }}",
+                      "activityImage": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+                      "facts": [{
+                          "name": "Merged By",
+                          "value": "${{ github.event.pull_request.merged_by.login }}"
+                        },
+                        {
+                          "name": "PR URL",
+                          "value": "[Link](${{ github.event.pull_request.html_url }})"
+                        }
+                      ],
+                      "markdown": true
+                    }]
+                  }' $TEAMS_WEBHOOK_URL

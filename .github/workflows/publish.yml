@@ -120,6 +120,48 @@ jobs:
                   environment: production
                   version: vs-code-extension@${{ env.LATEST_TAG }}
 
+    notify:
+        runs-on: ubuntu-latest
+        needs: [build-package, sentry-release]
+        steps:
+            - name: Send Slack Notification
+              if: success()
+              env:
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+              run: |
+                  curl -X POST -H 'Content-type: application/json' \
+                  --data '{
+                    "text": "The VS Code extension has been successfully published to the Marketplace.\n*Version:* ${{ env.LATEST_TAG }}\n*Repository:* ${{ github.repository }}."
+                  }' $SLACK_WEBHOOK_URL
+
+            - name: Send Microsoft Teams Notification
+              if: success()
+              env:
+                  TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+              run: |
+                  curl -H 'Content-Type: application/json' -d '{
+                    "@type": "MessageCard",
+                    "@context": "https://schema.org/extensions",
+                    "summary": "VS Code Extension Published",
+                    "themeColor": "0076D7",
+                    "title": "VS Code Extension Published",
+                    "sections": [{
+                      "activityTitle": "VS Code extension published",
+                      "activitySubtitle": "Version: ${{ env.LATEST_TAG }}",
+                      "activityImage": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+                      "facts": [{
+                          "name": "Repository",
+                          "value": "${{ github.repository }}"
+                        },
+                        {
+                          "name": "Version",
+                          "value": "${{ env.LATEST_TAG }}"
+                        }
+                      ],
+                      "markdown": true
+                    }]
+                  }' $TEAMS_WEBHOOK_URL
+
     cleanup:
         runs-on: ubuntu-latest
         needs: [setup, build-package, sentry-release]
