@@ -13,7 +13,10 @@ export class ApiClient {
         private errorHandler: ErrorHandler,
         private logger: typeof Logger,
     ) {
-        this.axiosInstance = axios.create();
+        this.axiosInstance = axios.create({
+            timeout: 10000,
+            timeoutErrorMessage: "The request timed out. Please check your internet connection or try again later.",
+        });
 
         this.axiosInstance.interceptors.request.use(
             async (config: AxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
@@ -47,16 +50,47 @@ export class ApiClient {
     }
 
     public get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-        return Sentry.startSpan({ name: "api-request", op: "http.client", startTime: new Date() }, async (span) => {
-            return this.axiosInstance.get<T>(url, config).then((response) => {
-                span.end(new Date());
-                return response.data;
-            });
-        });
+        return Sentry.startSpan(
+            {
+                name: "api-request",
+                op: "http.client",
+                startTime: new Date(),
+            },
+            async (span) => {
+                try {
+                    const response = await this.axiosInstance.get<T>(url, config);
+                    span.end(new Date());
+                    return response.data;
+                } catch (error: any) {
+                    span.setStatus(error.code);
+                    span.end(new Date());
+                    Sentry.captureException(error);
+                    throw error;
+                }
+            },
+        );
     }
 
     public post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-        return this.axiosInstance.post<T>(url, data, config).then((response) => response.data);
+        return Sentry.startSpan(
+            {
+                name: "api-request",
+                op: "http.client",
+                startTime: new Date(),
+            },
+            async (span) => {
+                try {
+                    const response = await this.axiosInstance.post<T>(url, data, config);
+                    span.end(new Date());
+                    return response.data;
+                } catch (error: any) {
+                    span.setStatus(error.code);
+                    span.end(new Date());
+                    Sentry.captureException(error);
+                    throw error;
+                }
+            },
+        );
     }
 
     // Add other methods (put, delete, etc.) as needed
