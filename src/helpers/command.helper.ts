@@ -2,8 +2,8 @@ import { DebrickedCommands, Messages, MessageStatus, Secrets } from "../constant
 import { exec } from "child_process";
 import * as vscode from "vscode";
 import { promisify } from "util";
-import { AuthHelper } from "./authHelper";
-import { Logger } from "./loggerHelper";
+import { AuthHelper } from "./auth.helper";
+import { Logger } from "./logger.helper";
 import * as Sentry from "@sentry/node";
 
 export class Command {

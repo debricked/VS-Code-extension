@@ -1,11 +1,11 @@
 import { MessageStatus, Organization, SupportedFilesToScan } from "../constants/index";
 import * as crypto from "crypto";
-import { Logger } from "./loggerHelper";
-import { ShowInputBoxHelper } from "./showInputBoxHelper";
+import { Logger } from "./logger.helper";
+import { ShowInputBoxHelper } from "./showInputBox.helper";
 import { GlobalStore } from "./globalStore";
 import path from "path";
 import * as vscode from "vscode";
-import { StatusBarMessageHelper } from "./statusBarMessageHelper";
+import { StatusBarMessageHelper } from "./statusBarMessage.helper";
 
 export class Common {
     constructor(

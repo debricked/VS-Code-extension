@@ -1,8 +1,8 @@
 import { sinon, expect } from "../setup";
 import { ApiClient } from "../../helpers/apiClient";
-import { AuthHelper } from "../../helpers/authHelper";
+import { AuthHelper } from "../../helpers/auth.helper";
 import { ErrorHandler } from "../../helpers/errorHandler";
-import { Logger } from "../../helpers/loggerHelper";
+import { Logger } from "../../helpers/logger.helper";
 import axios from "axios";
 
 describe("ApiClient", () => {

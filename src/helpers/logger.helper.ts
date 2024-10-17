@@ -3,7 +3,7 @@ import * as path from "path";
 import { Organization, MessageStatus } from "../constants/index";
 import * as vscode from "vscode";
 import { GlobalStore } from "./globalStore";
-import { SentryHelper } from "./sentryHelper";
+import { SentryHelper } from "./sentry.helper";
 
 export class Logger {
     private static logFilePath: string;

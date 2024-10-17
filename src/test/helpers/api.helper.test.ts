@@ -1,6 +1,6 @@
-import { ApiHelper } from "../../helpers/apiHelper";
+import { ApiHelper } from "../../helpers/api.helper";
 import { ApiClient } from "../../helpers/apiClient";
-import { Logger } from "../../helpers/loggerHelper";
+import { Logger } from "../../helpers/logger.helper";
 import { SecondService } from "../../constants";
 import { RequestParam } from "../../types";
 import { sinon, expect } from "../setup";

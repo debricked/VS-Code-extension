@@ -1,9 +1,9 @@
 import * as path from "path";
 import { Messages, MessageStatus, Organization } from "../constants/index";
 import * as vscode from "vscode";
-import { StatusBarMessageHelper } from "./statusBarMessageHelper";
-import { Logger } from "./loggerHelper";
-import { Command } from "./commandHelper";
+import { StatusBarMessageHelper } from "./statusBarMessage.helper";
+import { Logger } from "./logger.helper";
+import { Command } from "./command.helper";
 
 export class InstallHelper {
     private scriptDir: string;

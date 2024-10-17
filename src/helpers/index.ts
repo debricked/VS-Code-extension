@@ -1,26 +1,26 @@
 import * as vscode from "vscode";
-import { AuthHelper } from "./authHelper";
-import { StatusBarMessageHelper } from "./statusBarMessageHelper";
-import { Terminal } from "./terminalHelper";
-import { ShowQuickPickHelper } from "./showQuickPickHelper";
-import { StatusMessage } from "./messageHelper";
-import { Logger } from "./loggerHelper";
-import { Common } from "./commonHelper";
-import { Command } from "./commandHelper";
-import { FileHelper } from "./fileHelper";
-import { InstallHelper } from "./installHelper";
-import { GitHelper } from "./gitHelper";
-import { ShowInputBoxHelper } from "./showInputBoxHelper";
-import { DebrickedDataHelper } from "./debrickedDataHelper";
+import { AuthHelper } from "./auth.helper";
+import { StatusBarMessageHelper } from "./statusBarMessage.helper";
+import { Terminal } from "./terminal.helper";
+import { ShowQuickPickHelper } from "./showQuickPick.helper";
+import { StatusMessage } from "./message.helper";
+import { Logger } from "./logger.helper";
+import { Common } from "./common.helper";
+import { Command } from "./command.helper";
+import { FileHelper } from "./file.helper";
+import { InstallHelper } from "./install.helper";
+import { GitHelper } from "./git.helper";
+import { ShowInputBoxHelper } from "./showInputBox.helper";
+import { DebrickedDataHelper } from "./debrickedData.helper";
 import { GlobalState } from "./globalState";
-import { ApiHelper } from "./apiHelper";
+import { ApiHelper } from "./api.helper";
 import { ErrorHandler } from "./errorHandler";
 import { ApiClient } from "./apiClient";
 import { GlobalStore } from "./globalStore";
 import { Organization } from "../constants";
 import { Template } from "./template";
-import { SentryHelper } from "./sentryHelper";
-import { DebrickedServiceHelper } from "./debrickedServiceHelper";
+import { SentryHelper } from "./sentry.helper";
+import { DebrickedServiceHelper } from "./debrickedService.helper";
 
 class IndexHelper {
     constructor(

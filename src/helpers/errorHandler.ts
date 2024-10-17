@@ -1,6 +1,6 @@
-import { Logger } from "./loggerHelper";
-import { StatusBarMessageHelper } from "./statusBarMessageHelper";
-import { SentryHelper } from "./sentryHelper";
+import { Logger } from "./logger.helper";
+import { StatusBarMessageHelper } from "./statusBarMessage.helper";
+import { SentryHelper } from "./sentry.helper";
 
 export class ErrorHandler {
     constructor(

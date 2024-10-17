@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 import { authHelper } from "../../helpers";
-import { Logger } from "../../helpers/loggerHelper";
+import { Logger } from "../../helpers/logger.helper";
 import { DebrickedCommands, Messages, MessageStatus } from "../../constants";
 import { expect, sinon } from "../setup";
-import { Terminal } from "../../helpers/terminalHelper";
+import { Terminal } from "../../helpers/terminal.helper";
 
 describe("Terminal Helper", () => {
     let createTerminalStub: sinon.SinonStub;

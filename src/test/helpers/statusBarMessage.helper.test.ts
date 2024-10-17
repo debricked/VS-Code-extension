@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { StatusBarMessageHelper } from "../../helpers/statusBarMessageHelper";
+import { StatusBarMessageHelper } from "../../helpers/statusBarMessage.helper";
 import { Organization } from "../../constants";
 import { expect, sinon } from "../setup";
 

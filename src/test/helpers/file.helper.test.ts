@@ -1,7 +1,7 @@
 import { sinon, expect } from "../setup";
-import { FileHelper } from "../../helpers/fileHelper";
-import { DebrickedDataHelper } from "../../helpers/debrickedDataHelper";
-import { Logger } from "../../helpers/loggerHelper";
+import { FileHelper } from "../../helpers/file.helper";
+import { DebrickedDataHelper } from "../../helpers/debrickedData.helper";
+import { Logger } from "../../helpers/logger.helper";
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";

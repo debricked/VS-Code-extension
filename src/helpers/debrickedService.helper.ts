@@ -1,8 +1,8 @@
-import { ApiHelper } from "./apiHelper";
+import { ApiHelper } from "./api.helper";
 import { DependencyResponse, DependencyVulnerabilityWrapper, Repository, RequestParam } from "../types/index";
-import { Logger } from "./loggerHelper";
+import { Logger } from "./logger.helper";
 import { SecondService } from "../constants";
-import { SentryHelper } from "./sentryHelper";
+import { SentryHelper } from "./sentry.helper";
 
 export class DebrickedServiceHelper {
     private readonly apiHelper: ApiHelper;

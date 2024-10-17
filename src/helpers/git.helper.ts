@@ -1,11 +1,11 @@
 import * as path from "path";
 import { Messages, MessageStatus } from "../constants/index";
-import { Command } from "./commandHelper";
+import { Command } from "./command.helper";
 import { GlobalStore } from "./globalStore";
-import { Logger } from "./loggerHelper";
-import { ShowInputBoxHelper } from "./showInputBoxHelper";
-import { StatusBarMessageHelper } from "./statusBarMessageHelper";
-import { SentryHelper } from "./sentryHelper";
+import { Logger } from "./logger.helper";
+import { ShowInputBoxHelper } from "./showInputBox.helper";
+import { StatusBarMessageHelper } from "./statusBarMessage.helper";
+import { SentryHelper } from "./sentry.helper";
 
 export class GitHelper {
     constructor(

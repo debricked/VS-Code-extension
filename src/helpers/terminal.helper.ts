@@ -1,6 +1,6 @@
 import { DebrickedCommands, Messages, MessageStatus, Organization, Secrets } from "../constants/index";
-import { AuthHelper } from "./authHelper";
-import { Logger } from "./loggerHelper";
+import { AuthHelper } from "./auth.helper";
+import { Logger } from "./logger.helper";
 
 import * as vscode from "vscode";
 
