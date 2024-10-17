@@ -1,6 +1,6 @@
 import { expect, sinon } from "../setup";
-import { Logger } from "../../helpers/loggerHelper";
-import { SentryHelper } from "../../helpers/sentryHelper";
+import { Logger } from "../../helpers/logger.helper";
+import { SentryHelper } from "../../helpers/sentry.helper";
 import { MessageStatus } from "../../constants/index";
 
 describe("Logger", () => {

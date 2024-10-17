@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { sinon, expect } from "../setup";
-import { ShowQuickPickHelper } from "../../helpers/showQuickPickHelper";
+import { ShowQuickPickHelper } from "../../helpers/showQuickPick.helper";
 
 describe("ShowQuickPickHelper", () => {
     let showQuickPickHelper: ShowQuickPickHelper;

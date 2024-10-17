@@ -1,7 +1,7 @@
 import { ErrorHandler } from "../../helpers/errorHandler";
-import { Logger } from "../../helpers/loggerHelper";
-import { StatusBarMessageHelper } from "../../helpers/statusBarMessageHelper";
-import { SentryHelper } from "../../helpers/sentryHelper";
+import { Logger } from "../../helpers/logger.helper";
+import { StatusBarMessageHelper } from "../../helpers/statusBarMessage.helper";
+import { SentryHelper } from "../../helpers/sentry.helper";
 import { expect, sinon } from "../setup";
 
 describe("ErrorHandler", () => {

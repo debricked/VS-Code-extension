@@ -19,6 +19,7 @@ export class ReportWatcher {
             const isRunning = globalStore.getScanningProgress();
 
             if (!isRunning) {
+                globalStore.setScanningProgress(true);
                 await this.handleReportChange();
             }
         });
@@ -38,6 +39,8 @@ export class ReportWatcher {
             await dependencyService.getVulnerableData();
         } catch (error) {
             errorHandler.handleError(error);
+        } finally {
+            globalStore.setScanningProgress(false);
         }
     }
 

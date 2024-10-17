@@ -1,8 +1,8 @@
 import { expect, sinon } from "../setup";
-import { InstallHelper } from "../../helpers/installHelper";
+import { InstallHelper } from "../../helpers/install.helper";
 import { Logger } from "../../helpers";
-import { StatusBarMessageHelper } from "../../helpers/statusBarMessageHelper";
-import { Command } from "../../helpers/commandHelper";
+import { StatusBarMessageHelper } from "../../helpers/statusBarMessage.helper";
+import { Command } from "../../helpers/command.helper";
 import { Messages, MessageStatus, Organization } from "../../constants";
 
 describe("InstallHelper", () => {

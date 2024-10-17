@@ -1,10 +1,10 @@
 import { Logger, SentryHelper } from "../../helpers";
 import { expect, sinon } from "../setup";
-import { Command } from "../../helpers/commandHelper";
-import { GitHelper } from "../../helpers/gitHelper";
-import { ShowInputBoxHelper } from "../../helpers/showInputBoxHelper";
+import { Command } from "../../helpers/command.helper";
+import { GitHelper } from "../../helpers/git.helper";
+import { ShowInputBoxHelper } from "../../helpers/showInputBox.helper";
 import { GlobalStore } from "../../helpers/globalStore";
-import { StatusBarMessageHelper } from "../../helpers/statusBarMessageHelper";
+import { StatusBarMessageHelper } from "../../helpers/statusBarMessage.helper";
 import { Messages, MessageStatus } from "../../constants";
 
 describe("GitHelper", () => {

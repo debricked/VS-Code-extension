@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import { AuthHelper } from "./authHelper";
+import { AuthHelper } from "./auth.helper";
 import { ErrorHandler } from "./errorHandler";
-import { Logger } from "./loggerHelper";
+import { Logger } from "./logger.helper";
 import { Secrets } from "../constants";
 import * as Sentry from "@sentry/node";
 

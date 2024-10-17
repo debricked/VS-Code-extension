@@ -31,4 +31,5 @@ export class Messages {
 
     // Miscellaneous Messages
     static readonly RESET_SUCCESS = "Successfully reset debricked.";
+    static readonly SCANNING_INPROGRESS = "Scan is still in process. Please wait...";
 }

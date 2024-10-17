@@ -1,5 +1,5 @@
 import { expect } from "../setup";
-import { DebrickedDataHelper } from "../../helpers/debrickedDataHelper";
+import { DebrickedDataHelper } from "../../helpers/debrickedData.helper";
 import * as fs from "fs";
 
 describe("DebrickedDataHelper", () => {

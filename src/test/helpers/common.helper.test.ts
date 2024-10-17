@@ -1,11 +1,11 @@
 import * as vscode from "vscode";
-import { Common } from "../../helpers/commonHelper";
-import { Logger } from "../../helpers/loggerHelper";
-import { ShowInputBoxHelper } from "../../helpers/showInputBoxHelper";
+import { Common } from "../../helpers/common.helper";
+import { Logger } from "../../helpers/logger.helper";
+import { ShowInputBoxHelper } from "../../helpers/showInputBox.helper";
 import { GlobalStore } from "../../helpers/globalStore";
 import { MessageStatus, Organization } from "../../constants";
 import { expect, sinon } from "../setup";
-import { StatusBarMessageHelper } from "../../helpers/statusBarMessageHelper";
+import { StatusBarMessageHelper } from "../../helpers/statusBarMessage.helper";
 
 describe("Common Helper", () => {
     let common: Common;

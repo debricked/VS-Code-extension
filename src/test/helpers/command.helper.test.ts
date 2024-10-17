@@ -1,7 +1,7 @@
 import { expect, sinon } from "../setup";
-import { Command } from "../../helpers/commandHelper";
-import { AuthHelper } from "../../helpers/authHelper";
-import { Logger } from "../../helpers/loggerHelper";
+import { Command } from "../../helpers/command.helper";
+import { AuthHelper } from "../../helpers/auth.helper";
+import { Logger } from "../../helpers/logger.helper";
 import * as vscode from "vscode";
 
 describe("Command", () => {

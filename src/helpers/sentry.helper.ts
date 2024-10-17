@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/node";
 import { Environment, MessageStatus, Organization, SecondService } from "../constants";
 import { GlobalStore } from "./globalStore";
-import { StatusBarMessageHelper } from "./statusBarMessageHelper";
+import { StatusBarMessageHelper } from "./statusBarMessage.helper";
 
 export class SentryHelper {
     private static instance: SentryHelper;

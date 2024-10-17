@@ -1,8 +1,8 @@
 import { sinon, expect } from "../setup";
-import { DebrickedServiceHelper } from "../../helpers/debrickedServiceHelper";
-import { ApiHelper } from "../../helpers/apiHelper";
-import { Logger } from "../../helpers/loggerHelper";
-import { SentryHelper } from "../../helpers/sentryHelper";
+import { DebrickedServiceHelper } from "../../helpers/debrickedService.helper";
+import { ApiHelper } from "../../helpers/api.helper";
+import { Logger } from "../../helpers/logger.helper";
+import { SentryHelper } from "../../helpers/sentry.helper";
 import * as Sentry from "@sentry/node";
 
 describe("DebrickedServiceHelper", () => {

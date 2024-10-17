@@ -1,6 +1,6 @@
 import { expect, sinon } from "../setup";
 import * as vscode from "vscode";
-import { ShowInputBoxHelper } from "../../helpers/showInputBoxHelper";
+import { ShowInputBoxHelper } from "../../helpers/showInputBox.helper";
 import { InputBoxOptions } from "../../types";
 
 describe("ShowInputBoxHelper", () => {

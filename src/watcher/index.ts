@@ -1,8 +1,8 @@
-import { WorkSpaceWatcher } from "./workspaceWatcher";
+import { WorkSpaceWatcher } from "./workspace.watcher";
 import * as vscode from "vscode";
 import { MessageStatus } from "../constants/index";
 import { Logger, errorHandler, globalStore } from "../helpers";
-import { ReportWatcher } from "./reportWatcher";
+import { ReportWatcher } from "./report.watcher";
 
 class Watchers {
     public async registerWatcher(context: vscode.ExtensionContext) {

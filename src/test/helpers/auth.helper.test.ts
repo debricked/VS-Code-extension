@@ -1,4 +1,4 @@
-import { AuthHelper } from "../../helpers/authHelper";
+import { AuthHelper } from "../../helpers/auth.helper";
 import { Logger, showInputBoxHelper, statusBarMessageHelper } from "../../helpers";
 import { sinon, expect } from "../setup";
 import { Messages, Secrets } from "../../constants";

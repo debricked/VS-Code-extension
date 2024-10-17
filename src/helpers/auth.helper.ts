@@ -1,7 +1,7 @@
 import { Messages, Secrets } from "../constants/index";
-import { ShowInputBoxHelper } from "./showInputBoxHelper";
-import { StatusBarMessageHelper } from "./statusBarMessageHelper";
-import { Logger } from "./loggerHelper";
+import { ShowInputBoxHelper } from "./showInputBox.helper";
+import { StatusBarMessageHelper } from "./statusBarMessage.helper";
+import { Logger } from "./logger.helper";
 import { GlobalStore } from "./globalStore";
 
 export class AuthHelper {

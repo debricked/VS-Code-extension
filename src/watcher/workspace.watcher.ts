@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { SupportedFilesToScan } from "../constants";
+import { Messages, SupportedFilesToScan } from "../constants";
 import { scanService } from "services";
 import { errorHandler, globalStore, Logger, statusBarMessageHelper } from "../helpers";
 import * as path from "path";
@@ -17,6 +17,7 @@ export class WorkSpaceWatcher {
         this.setupPackageJsonWatcher();
         this.setupEditorListener();
         await this.onPackageJsonChanged();
+        await this.registerDiagnosticCollection(this.context);
     }
 
     private setupPackageJsonWatcher(): void {
@@ -51,13 +52,12 @@ export class WorkSpaceWatcher {
     public async onPackageJsonChanged(): Promise<void> {
         const isRunning = globalStore.getScanningProgress();
         if (isRunning) {
-            statusBarMessageHelper.showWarningMessage("Scan is still in process. Please wait...");
+            statusBarMessageHelper.showWarningMessage(Messages.SCANNING_INPROGRESS);
             return;
         }
 
         try {
             await scanService.scan();
-            this.updatePackageJsonContent(this.context);
         } catch (error) {
             errorHandler.handleError(error);
         } finally {
@@ -65,7 +65,7 @@ export class WorkSpaceWatcher {
         }
     }
 
-    private async updatePackageJsonContent(context: vscode.ExtensionContext): Promise<void> {
+    private async registerDiagnosticCollection(context: vscode.ExtensionContext): Promise<void> {
         const diagnosticCollection = vscode.languages.createDiagnosticCollection("dependencyPolicyChecker");
         context.subscriptions.push(diagnosticCollection);
 
