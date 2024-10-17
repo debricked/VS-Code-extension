@@ -1,8 +1,8 @@
-import { BaseCommandService } from "./baseCommandService";
-import { ScanService } from "./scanService";
-import { DependencyService } from "./dependencyService";
-import { AuthService } from "./authService";
-import { PolicyRuleService } from "./policyRuleService";
+import { BaseCommandService } from "./baseCommand.service";
+import { ScanService } from "./scan.service";
+import { DependencyService } from "./dependency.service";
+import { AuthService } from "./auth.service";
+import { PolicyRuleService } from "./policyRule.service";
 
 const authService = new AuthService();
 const dependencyService = new DependencyService();

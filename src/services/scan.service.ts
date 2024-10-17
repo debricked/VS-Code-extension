@@ -23,8 +23,8 @@ import {
 import { DebrickedCommandNode, Flag, Repository, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { PolicyRuleService } from "./policyRuleService";
-import { DependencyService } from "./dependencyService";
+import { PolicyRuleService } from "./policyRule.service";
+import { DependencyService } from "./dependency.service";
 
 export class ScanService {
     private readonly policyRuleService: PolicyRuleService;
