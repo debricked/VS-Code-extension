@@ -1,9 +1,9 @@
-import { DebrickedCommandsTreeDataProvider } from "./debrickedCommandsTreeDataProvider";
-import { ManifestDependencyHoverProvider } from "./manifestDependencyHoverProvider";
+import { DebrickedCommandsTreeDataProvider } from "./debrickedCommandsTreeData.provider";
+import { ManifestDependencyHoverProvider } from "./manifestDependencyHover.provider";
 import * as vscode from "vscode";
 import { MessageStatus } from "../constants/index";
 import { Logger, errorHandler, gitHelper } from "../helpers";
-import { DependencyPolicyProvider } from "./dependencyPolicyProvider";
+import { DependencyPolicyProvider } from "./dependencyPolicy.provider";
 
 class Providers {
     public async registerHover(context: vscode.ExtensionContext) {
