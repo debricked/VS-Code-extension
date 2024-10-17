@@ -19,6 +19,7 @@ export class ReportWatcher {
             const isRunning = globalStore.getScanningProgress();
 
             if (!isRunning) {
+                globalStore.setScanningProgress(true);
                 await this.handleReportChange();
             }
         });
@@ -34,10 +35,12 @@ export class ReportWatcher {
             await policyRuleService.setScannedData();
             const repoId = await globalStore.getRepoId();
             const commitId = await globalStore.getCommitId();
-            await dependencyService.getDependencyData(repoId, commitId);
-            await dependencyService.getVulnerableData();
+            dependencyService.getDependencyData(repoId, commitId);
+            dependencyService.getVulnerableData();
         } catch (error) {
             errorHandler.handleError(error);
+        } finally {
+            globalStore.setScanningProgress(false);
         }
     }
 
