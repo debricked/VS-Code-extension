@@ -17,6 +17,7 @@ export class WorkSpaceWatcher {
         this.setupPackageJsonWatcher();
         this.setupEditorListener();
         await this.onPackageJsonChanged();
+        await this.registerDiagnosticCollection(this.context);
     }
 
     private setupPackageJsonWatcher(): void {
@@ -57,7 +58,6 @@ export class WorkSpaceWatcher {
 
         try {
             await scanService.scan();
-            this.updatePackageJsonContent(this.context);
         } catch (error) {
             errorHandler.handleError(error);
         } finally {
@@ -65,7 +65,7 @@ export class WorkSpaceWatcher {
         }
     }
 
-    private async updatePackageJsonContent(context: vscode.ExtensionContext): Promise<void> {
+    private async registerDiagnosticCollection(context: vscode.ExtensionContext): Promise<void> {
         const diagnosticCollection = vscode.languages.createDiagnosticCollection("dependencyPolicyChecker");
         context.subscriptions.push(diagnosticCollection);
 
