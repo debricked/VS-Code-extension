@@ -35,8 +35,8 @@ export class ReportWatcher {
             await policyRuleService.setScannedData();
             const repoId = await globalStore.getRepoId();
             const commitId = await globalStore.getCommitId();
-            dependencyService.getDependencyData(repoId, commitId);
-            dependencyService.getVulnerableData();
+            await dependencyService.getDependencyData(repoId, commitId);
+            await dependencyService.getVulnerableData();
         } catch (error) {
             errorHandler.handleError(error);
         } finally {
