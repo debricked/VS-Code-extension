@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { SupportedFilesToScan } from "../constants";
+import { Messages, SupportedFilesToScan } from "../constants";
 import { scanService } from "services";
 import { errorHandler, globalStore, Logger, statusBarMessageHelper } from "../helpers";
 import * as path from "path";
@@ -52,7 +52,7 @@ export class WorkSpaceWatcher {
     public async onPackageJsonChanged(): Promise<void> {
         const isRunning = globalStore.getScanningProgress();
         if (isRunning) {
-            statusBarMessageHelper.showWarningMessage("Scan is still in process. Please wait...");
+            statusBarMessageHelper.showWarningMessage(Messages.SCANNING_INPROGRESS);
             return;
         }
 

@@ -11,7 +11,15 @@ import {
     debrickedServiceHelper,
     showQuickPickHelper,
 } from "../helpers";
-import { DebrickedCommands, Icons, MessageStatus, Organization, SecondService, Secrets } from "../constants/index";
+import {
+    DebrickedCommands,
+    Icons,
+    Messages,
+    MessageStatus,
+    Organization,
+    SecondService,
+    Secrets,
+} from "../constants/index";
 import { DebrickedCommandNode, Flag, Repository, RepositoryInfo } from "../types";
 import * as vscode from "vscode";
 import * as fs from "fs";
@@ -32,7 +40,7 @@ export class ScanService {
         const isRunning = globalStore.getScanningProgress();
 
         if (isRunning) {
-            statusBarMessageHelper.showWarningMessage("Scan is still in process. Please wait...");
+            statusBarMessageHelper.showWarningMessage(Messages.SCANNING_INPROGRESS);
             return;
         } else {
             globalStore.setScanningProgress(true);
