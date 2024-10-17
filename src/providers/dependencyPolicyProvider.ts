@@ -1,7 +1,7 @@
 import { Package } from "types";
 import { commonHelper, errorHandler, globalStore } from "../helpers";
 import * as vscode from "vscode";
-import { PolicyTriggerEvents, SecondService, SupportedFilesToScan } from "../constants";
+import { Organization, PolicyTriggerEvents, SecondService, SupportedFilesToScan } from "../constants";
 
 export class DependencyPolicyProvider implements vscode.CodeActionProvider {
     constructor(private diagnosticCollection: vscode.DiagnosticCollection) {}
@@ -57,6 +57,7 @@ export class DependencyPolicyProvider implements vscode.CodeActionProvider {
                                         value: packageData.cve ?? "Unknown reason",
                                         target: vscode.Uri.parse(packageData.cveLink ?? SecondService.debrickedBaseUrl),
                                     };
+                                    diagnostic.source = Organization.name;
                                     diagnostics.push(diagnostic);
                                 }
                             }
