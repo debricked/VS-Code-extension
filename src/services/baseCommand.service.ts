@@ -182,8 +182,8 @@ export class BaseCommandService {
                 Logger.logInfo(`Login successful. Authentication Bearer token generated for secure access.`);
             }
         } catch (error: any) {
-            statusBarMessageHelper.showErrorMessage(error);
-            SentryHelper.captureException(new Error(error));
+            statusBarMessageHelper.showErrorMessage("Login Command Failed");
+            SentryHelper.captureException(new Error("Login Command Failed"));
         } finally {
             statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),
