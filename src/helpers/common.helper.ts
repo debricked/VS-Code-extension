@@ -124,4 +124,9 @@ export class Common {
 
         return true;
     }
+
+    // Delay function to wait for 5 seconds
+    public wait(ms: any) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
 }

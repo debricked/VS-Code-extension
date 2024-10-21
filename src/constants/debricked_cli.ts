@@ -50,12 +50,6 @@ export class DebrickedCommands {
                 description: "Debricked logs",
             },
             {
-                label: "Login",
-                command: "debricked.debricked.login",
-                cli_command: "login",
-                description: "Debricked login",
-            },
-            {
                 label: "Sentry Logs",
                 command: "debricked.debricked.sentry",
                 cli_command: "sentry",
@@ -293,6 +287,7 @@ export class DebrickedCommands {
                 label: "Token",
                 command: "debricked.auth.token",
                 cli_command: "token",
+                isVisibleInTree: false,
                 description: "Retrieve access token",
                 flags: [
                     {

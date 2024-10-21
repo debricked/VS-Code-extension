@@ -10,12 +10,10 @@ import {
     authHelper,
     errorHandler,
     globalStore,
-    showInputBoxHelper,
     SentryHelper,
 } from "../helpers";
 import * as vscode from "vscode";
-import { exec } from "child_process";
-import { promisify } from "util";
+import { AuthService } from "./auth.service";
 
 export class BaseCommandService {
     constructor() {
@@ -23,11 +21,11 @@ export class BaseCommandService {
         this.getCurrentExtensionVersion = this.getCurrentExtensionVersion.bind(this);
         this.help = this.help.bind(this);
         this.installCommand = this.installCommand.bind(this);
-        this.login = this.login.bind(this);
         this.updateCommand = this.updateCommand.bind(this);
     }
     public async baseCommand() {
         try {
+            const authService = new AuthService();
             Logger.logMessageByStatus(MessageStatus.INFO, "Register BaseCommand");
             const subCommand: DebrickedCommandNode[] | undefined = DebrickedCommands.BASE_COMMAND.sub_commands;
 
@@ -58,7 +56,7 @@ export class BaseCommandService {
                     break;
 
                 case "login":
-                    this.login();
+                    authService.login(true);
                     break;
 
                 default:
@@ -131,59 +129,6 @@ export class BaseCommandService {
             );
         } catch (error: any) {
             errorHandler.handleError(error);
-        } finally {
-            statusBarMessageHelper.setStatusBarMessage(
-                StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),
-            );
-        }
-    }
-
-    public async login(updateCredentials = true) {
-        try {
-            SentryHelper.setTransactionName("Login");
-            Logger.logInfo("Register login");
-
-            const debrickedData: any = await globalStore
-                .getGlobalStateInstance()
-                ?.getGlobalData(Organization.debrickedDataKey, {});
-
-            if (updateCredentials) {
-                debrickedData["debricked_username"] = await showInputBoxHelper.promptForInput(
-                    {
-                        prompt: "Enter debricked user name",
-                        placeHolder: "Please enter debricked User Name",
-                    },
-                    undefined,
-                );
-                debrickedData["debricked_password"] = await showInputBoxHelper.promptForInput(
-                    {
-                        prompt: "Enter debricked password",
-                        placeHolder: "Please enter debricked password",
-                        password: true,
-                    },
-                    undefined,
-                );
-
-                globalStore.getGlobalStateInstance()?.setGlobalData(Organization.debrickedDataKey, debrickedData);
-            }
-            const execAsync = promisify(exec);
-            const { stdout } = await execAsync(
-                `curl -X POST https://debricked.com/api/login_check -d _username=${debrickedData["debricked_username"]} -d _password=${debrickedData["debricked_password"]}`,
-                {},
-            );
-            const bearerToken = JSON.parse(stdout.trim());
-
-            if (bearerToken && bearerToken.code === 401) {
-                throw new Error(bearerToken.message);
-            } else {
-                const newBearerToken = `Bearer ${bearerToken.token}`;
-                await authHelper.setToken(Secrets.BEARER, newBearerToken);
-
-                Logger.logInfo(`Login successful. Authentication Bearer token generated for secure access.`);
-            }
-        } catch (error: any) {
-            statusBarMessageHelper.showErrorMessage("Login Command Failed");
-            SentryHelper.captureException(new Error("Login Command Failed"));
         } finally {
             statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),

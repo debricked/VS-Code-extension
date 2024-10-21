@@ -22,9 +22,8 @@ export class DebrickedCommand {
                 this.registerCommand(context, baseSubCommands[1].command, baseCommandService.updateCommand);
                 this.registerCommand(context, baseSubCommands[2].command, baseCommandService.help);
                 this.registerCommand(context, baseSubCommands[3].command, Logger.openLogFile);
-                this.registerCommand(context, baseSubCommands[4].command, baseCommandService.login);
-                this.registerCommand(context, baseSubCommands[5].command, SentryHelper.reConfigureSentry);
-                this.registerCommand(context, baseSubCommands[6].command, baseCommandService.reset);
+                this.registerCommand(context, baseSubCommands[4].command, SentryHelper.reConfigureSentry);
+                this.registerCommand(context, baseSubCommands[5].command, baseCommandService.reset);
             }
 
             //Register auth sub-commands
@@ -32,7 +31,7 @@ export class DebrickedCommand {
                 SentryHelper.setTransactionName("Auth Service");
                 this.registerCommand(context, authSubCommands[0].command, authService.login);
                 this.registerCommand(context, authSubCommands[1].command, authService.logout);
-                this.registerCommand(context, authSubCommands[2].command, authService.token);
+                this.registerCommand(context, authSubCommands[2].command, authService.fetchToken);
             }
 
             // Register scan command

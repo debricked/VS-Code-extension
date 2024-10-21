@@ -3,7 +3,7 @@ import { errorHandler, Logger, globalStore, indexHelper, SentryHelper } from "./
 import { debrickedCommand } from "./commands";
 import { DebrickedCommandsTreeDataProvider, providers } from "./providers";
 import { Environment, MessageStatus, Organization } from "./constants/index";
-import { baseCommandService } from "./services";
+import { authService, baseCommandService } from "./services";
 import { ReportWatcher, watchers, WorkSpaceWatcher } from "watcher";
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -53,11 +53,7 @@ export async function activate(context: vscode.ExtensionContext) {
                     await baseCommandService.installCommand();
                 }
                 if (Organization.environment !== Environment.TEST) {
-                    if (debrickedData.isFirstActivation === undefined || debrickedData.isFirstActivation) {
-                        await baseCommandService.login(true);
-                    } else {
-                        await baseCommandService.login(false);
-                    }
+                    await authService.login(true);
                 }
                 progress.report({ message: "Extension is ready to use", increment: (progressCount += 20) });
             } catch (error: any) {
