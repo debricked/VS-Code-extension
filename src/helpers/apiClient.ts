@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosR
 import { AuthHelper } from "./auth.helper";
 import { ErrorHandler } from "./errorHandler";
 import { Logger } from "./logger.helper";
-import { Secrets } from "../constants";
+import { MessageStatus, Secrets } from "../constants";
 import * as Sentry from "@sentry/node";
 
 export class ApiClient {
@@ -64,7 +64,7 @@ export class ApiClient {
                 } catch (error: any) {
                     span.setStatus(error.code);
                     span.end(new Date());
-                    Sentry.captureException(error);
+                    Sentry.captureException(error.message || MessageStatus.UNKNOWN);
                     throw error;
                 }
             },
@@ -86,7 +86,7 @@ export class ApiClient {
                 } catch (error: any) {
                     span.setStatus(error.code);
                     span.end(new Date());
-                    Sentry.captureException(error);
+                    Sentry.captureException(error.message || MessageStatus.UNKNOWN);
                     throw error;
                 }
             },

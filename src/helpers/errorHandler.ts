@@ -10,9 +10,8 @@ export class ErrorHandler {
     ) {}
     public handleError(error: any, customErrorMessage?: string) {
         const errorMessage = this.extractErrorMessage(error);
-        const errorStack = error instanceof Error ? error.stack : "";
 
-        this.logError(errorMessage, errorStack);
+        this.logError(errorMessage);
         this.showUserErrorMessage(customErrorMessage ?? errorMessage);
         this.sentryHelper.captureException(new Error(`Error Found :`, error));
     }
@@ -27,11 +26,8 @@ export class ErrorHandler {
         }
     }
 
-    private logError(errorMessage: string, errorStack?: Error | string) {
+    private logError(errorMessage: string) {
         this.logger.logError(`Error: ${errorMessage}`);
-        if (errorStack) {
-            this.logger.logException(errorStack);
-        }
     }
 
     private showUserErrorMessage(errorMessage: string) {

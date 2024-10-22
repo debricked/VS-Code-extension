@@ -27,7 +27,7 @@ describe("SentryHelper", () => {
 
         SentryHelper.captureException(error);
 
-        expect(captureExceptionStub.calledOnceWith(error)).to.be.true;
+        expect(captureExceptionStub.calledOnceWith(error.message)).to.be.true;
     });
 
     it("should capture a custom message and send it to Sentry", () => {
