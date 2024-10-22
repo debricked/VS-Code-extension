@@ -2,7 +2,6 @@ import { sinon, expect } from "../setup";
 import { DebrickedServiceHelper } from "../../helpers/debrickedService.helper";
 import { ApiHelper } from "../../helpers/api.helper";
 import { Logger } from "../../helpers/logger.helper";
-import { SentryHelper } from "../../helpers/sentry.helper";
 import * as Sentry from "@sentry/node";
 
 describe("DebrickedServiceHelper", () => {
@@ -44,9 +43,9 @@ describe("DebrickedServiceHelper", () => {
             const captureExceptionStub = sandbox.stub(Sentry, "captureException");
             const error = new Error("Test error");
 
-            SentryHelper.captureException(error);
+            Sentry.captureException(error.message);
 
-            expect(captureExceptionStub.calledOnceWith(error)).to.be.true;
+            expect(captureExceptionStub.calledOnceWith(error.message)).to.be.true;
         });
     });
 
@@ -73,9 +72,9 @@ describe("DebrickedServiceHelper", () => {
             const captureExceptionStub = sandbox.stub(Sentry, "captureException");
             const error = new Error("Test error");
 
-            SentryHelper.captureException(error);
+            Sentry.captureException(error.message);
 
-            expect(captureExceptionStub.calledOnceWith(error)).to.be.true;
+            expect(captureExceptionStub.calledOnceWith(error.message)).to.be.true;
         });
     });
 
@@ -100,9 +99,9 @@ describe("DebrickedServiceHelper", () => {
             const captureExceptionStub = sandbox.stub(Sentry, "captureException");
             const error = new Error("Test error");
 
-            SentryHelper.captureException(error);
+            Sentry.captureException(error.message);
 
-            expect(captureExceptionStub.calledOnceWith(error)).to.be.true;
+            expect(captureExceptionStub.calledOnceWith(error.message)).to.be.true;
         });
     });
 });

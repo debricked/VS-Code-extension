@@ -55,8 +55,4 @@ export class Logger {
     public static async logDebug(message: any) {
         await this.logMessageByStatus(MessageStatus.DEBUG, JSON.stringify(message));
     }
-
-    public static async logException(error: Error | string) {
-        await this.logMessageByStatus(MessageStatus.EXCEPTION, error);
-    }
 }

@@ -1,8 +1,8 @@
 import { ApiHelper } from "./api.helper";
 import { DependencyResponse, DependencyVulnerabilityWrapper, Repository, RequestParam } from "../types/index";
 import { Logger } from "./logger.helper";
-import { SecondService } from "../constants";
-import { SentryHelper } from "./sentry.helper";
+import { MessageStatus, SecondService } from "../constants";
+import * as Sentry from "@sentry/node";
 
 export class DebrickedServiceHelper {
     private readonly apiHelper: ApiHelper;
@@ -27,7 +27,7 @@ export class DebrickedServiceHelper {
             const response = await this.apiHelper.get(requestParam);
             return response.repositories || [];
         } catch (error: any) {
-            SentryHelper.captureException(error);
+            Sentry.captureException(error.message || MessageStatus.UNKNOWN);
             throw error;
         }
     }
@@ -42,7 +42,7 @@ export class DebrickedServiceHelper {
         try {
             return await this.apiHelper.get(requestParam);
         } catch (error: any) {
-            SentryHelper.captureException(error);
+            Sentry.captureException(error.message || MessageStatus.UNKNOWN);
             throw error;
         }
     }
@@ -57,7 +57,7 @@ export class DebrickedServiceHelper {
         try {
             return await this.apiHelper.get(requestParam);
         } catch (error: any) {
-            SentryHelper.captureException(error);
+            Sentry.captureException(error.message || MessageStatus.UNKNOWN);
             throw error;
         }
     }
