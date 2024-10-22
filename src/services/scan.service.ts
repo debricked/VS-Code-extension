@@ -164,7 +164,7 @@ export class ScanService {
             case "-j":
                 if (selectedFlags.report) {
                     cmdParams.push(selectedFlags.report);
-                    Logger.logMessageByStatus(MessageStatus.INFO, `Report added: ${selectedFlags.report}`);
+                    Logger.logMessageByStatus(MessageStatus.INFO, `Report added`);
                 }
                 break;
 

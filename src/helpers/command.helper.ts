@@ -36,14 +36,14 @@ export class Command {
                         if (accessToken) {
                             this.logger.logMessageByStatus(
                                 MessageStatus.INFO,
-                                `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}: "${command} "`,
+                                `${Messages.CMD_EXEC_WITH_ACCESS_TOKEN}`,
                             );
                             command = `${command} ${globalFlags[0].flag} ${accessToken}`;
                         }
                     } else {
                         this.logger.logMessageByStatus(
                             MessageStatus.INFO,
-                            `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}: "${command}"`,
+                            `${Messages.CMD_EXEC_WITHOUT_ACCESS_TOKEN}"`,
                         );
                     }
 

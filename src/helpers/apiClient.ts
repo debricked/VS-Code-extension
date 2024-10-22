@@ -32,8 +32,9 @@ export class ApiClient {
                 return config as InternalAxiosRequestConfig;
             },
             (error) => {
-                this.errorHandler.handleError(error);
-                return Promise.reject(error);
+                const errorObj = new Error(`Error in interceptors request: ${error.message}`);
+                this.errorHandler.handleError(errorObj);
+                return Promise.reject(errorObj);
             },
         );
 
@@ -43,8 +44,9 @@ export class ApiClient {
                 return response;
             },
             (error) => {
-                this.errorHandler.handleError(error);
-                return Promise.reject(error);
+                const errorObj = new Error(`Error in interceptors response: ${error.message}`);
+                this.errorHandler.handleError(errorObj);
+                return Promise.reject(errorObj);
             },
         );
     }
@@ -62,10 +64,11 @@ export class ApiClient {
                     span.end(new Date());
                     return response.data;
                 } catch (error: any) {
+                    const errorObj = new Error(`Error in get request: ${error.message}`);
                     span.setStatus(error.code);
                     span.end(new Date());
-                    Sentry.captureException(error);
-                    throw error;
+                    Sentry.captureException(errorObj);
+                    throw errorObj;
                 }
             },
         );
@@ -84,10 +87,11 @@ export class ApiClient {
                     span.end(new Date());
                     return response.data;
                 } catch (error: any) {
+                    const errorObj = new Error(`Error in post request: ${error.message}`);
                     span.setStatus(error.code);
                     span.end(new Date());
-                    Sentry.captureException(error);
-                    throw error;
+                    Sentry.captureException(errorObj);
+                    throw errorObj;
                 }
             },
         );

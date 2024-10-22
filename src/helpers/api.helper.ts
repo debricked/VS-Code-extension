@@ -42,7 +42,7 @@ export class ApiHelper {
             return response;
         } catch (error: any) {
             this.logger.logError("Error in ApiHelper->get");
-            throw error;
+            throw new Error(`Error in get request ${error.message}`);
         }
     }
 }
