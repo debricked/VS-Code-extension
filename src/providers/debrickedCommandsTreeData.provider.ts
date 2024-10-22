@@ -39,7 +39,10 @@ export class DebrickedCommandsTreeDataProvider implements vscode.TreeDataProvide
 
     getChildren(element?: DebrickedCommandNode): Thenable<DebrickedCommandNode[]> {
         if (element) {
-            return Promise.resolve(element.sub_commands || []);
+            const subCommands: DebrickedCommandNode[] | undefined = element.sub_commands?.filter(
+                (sub_command: DebrickedCommandNode) => sub_command.isVisibleInTree !== false,
+            );
+            return Promise.resolve(subCommands || []);
         } else {
             return Promise.resolve(DebrickedCommands.getAllCommands() || []);
         }

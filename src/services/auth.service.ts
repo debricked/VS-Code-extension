@@ -48,8 +48,8 @@ export class AuthService {
 
             await commandHelper.executeAsyncCommand(`${Organization.debrickedCli} ${cmdParams.join(" ")}`, false);
 
-            statusBarMessageHelper.showInformationMessage("Successfully logged out");
-            Logger.logMessageByStatus(MessageStatus.INFO, "Successfully logged out");
+            statusBarMessageHelper.showWarningMessage("Successfully logged out");
+            Logger.logMessageByStatus(MessageStatus.WARN, "Successfully logged out");
         } catch (error: any) {
             errorHandler.handleError(error, "Logout Failed");
         }
