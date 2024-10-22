@@ -15,7 +15,6 @@ describe("ErrorHandler", () => {
         sandbox = sinon.createSandbox();
         loggerStub = {
             logError: sandbox.stub(),
-            logException: sandbox.stub(),
         } as any;
         statusBarMessageHelperStub = {
             showErrorMessage: sandbox.stub(),
@@ -38,7 +37,6 @@ describe("ErrorHandler", () => {
             errorHandler.handleError(error);
 
             expect(loggerStub.logError.calledOnceWith(`Error: ${error.message}`)).to.be.true;
-            expect(loggerStub.logException.calledOnceWith(error.stack)).to.be.true;
             expect(statusBarMessageHelperStub.showErrorMessage.calledOnceWith(`${error.message}`)).to.be.true;
         });
 
@@ -48,7 +46,6 @@ describe("ErrorHandler", () => {
             errorHandler.handleError(error);
 
             expect(loggerStub.logError.calledOnceWith(`Error: ${error}`)).to.be.true;
-            expect(loggerStub.logException.called).to.be.false;
             expect(statusBarMessageHelperStub.showErrorMessage.calledOnceWith(`${error}`)).to.be.true;
         });
 
@@ -58,7 +55,6 @@ describe("ErrorHandler", () => {
             errorHandler.handleError(error);
 
             expect(loggerStub.logError.calledOnceWith("Error: An unknown error occurred")).to.be.true;
-            expect(loggerStub.logException.called).to.be.false;
             expect(statusBarMessageHelperStub.showErrorMessage.calledOnceWith("An unknown error occurred")).to.be.true;
         });
     });
@@ -76,7 +72,6 @@ describe("ErrorHandler", () => {
             uncaughtExceptionHandler(error);
             // expect(loggerStub.logError.calledOnceWith(`Uncaught Exception: ${error}`)).to.be.true;
 
-            expect(loggerStub.logException.calledOnceWith(error.stack)).to.be.true;
             expect(statusBarMessageHelperStub.showErrorMessage.calledOnceWith(`${error.message}`)).to.be.true;
         });
 

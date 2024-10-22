@@ -79,13 +79,4 @@ describe("Logger", () => {
             expect(logMessageByStatusStub.calledWith(MessageStatus.DEBUG, JSON.stringify(message))).to.be.true;
         });
     });
-
-    describe("logException", () => {
-        it("should log exception message", async () => {
-            const error = new Error("exception message");
-            const logMessageByStatusStub = sandbox.stub(Logger, "logMessageByStatus");
-            await Logger.logException(error);
-            expect(logMessageByStatusStub.calledWith(MessageStatus.EXCEPTION, error)).to.be.true;
-        });
-    });
 });

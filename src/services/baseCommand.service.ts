@@ -16,6 +16,7 @@ import {
 import * as vscode from "vscode";
 import { exec } from "child_process";
 import { promisify } from "util";
+import * as Sentry from "@sentry/node";
 
 export class BaseCommandService {
     constructor() {
@@ -183,7 +184,7 @@ export class BaseCommandService {
             }
         } catch (error: any) {
             statusBarMessageHelper.showErrorMessage("Login Command Failed");
-            SentryHelper.captureException(new Error("Login Command Failed"));
+            Sentry.captureException(error.message || MessageStatus.UNKNOWN);
         } finally {
             statusBarMessageHelper.setStatusBarMessage(
                 StatusMessage.getStatusMessage(MessageStatus.FINISHED, DebrickedCommands.BASE_COMMAND.command),
