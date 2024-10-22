@@ -20,7 +20,7 @@ export class ApiClient {
 
         this.axiosInstance.interceptors.request.use(
             async (config: AxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
-                const token = await authHelper.getToken(true, Secrets.BEARER);
+                const token = `Bearer ${await authHelper.getToken(false, Secrets.BEARER)}`;
                 if (token) {
                     config.headers = {
                         ...config.headers,

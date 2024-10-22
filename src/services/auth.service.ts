@@ -1,6 +1,6 @@
 import { AuthToken, DebrickedCommandNode } from "../types";
-import { DebrickedCommands, MessageStatus, Organization, Secrets } from "../constants";
-import { authHelper, commandHelper, commonHelper, errorHandler, Logger, statusBarMessageHelper } from "../helpers";
+import { DebrickedCommands, MessageStatus, Organization } from "../constants";
+import { commandHelper, errorHandler, Logger, statusBarMessageHelper } from "../helpers";
 
 export class AuthService {
     constructor(private command: DebrickedCommandNode = DebrickedCommands.AUTH) {
@@ -27,12 +27,6 @@ export class AuthService {
                 if (output.includes("Successfully authenticated")) {
                     statusBarMessageHelper.showInformationMessage("Authentication successful");
                     Logger.logMessageByStatus(MessageStatus.INFO, "Authentication successful");
-
-                    await commonHelper.wait(5000);
-
-                    const token: AuthToken = this.extractToken(await this.fetchToken());
-                    const newBearerToken = `Bearer ${token.access_token}`;
-                    await authHelper.setToken(Secrets.BEARER, newBearerToken);
                 } else {
                     statusBarMessageHelper.showErrorMessage("Authentication failed");
                     Logger.logMessageByStatus(MessageStatus.INFO, "Authentication failed");

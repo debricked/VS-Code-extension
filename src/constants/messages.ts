@@ -1,14 +1,12 @@
 export class Messages {
+    static readonly AUTH_RQD = "Authentication is required.";
+
     // Access Token Messages
     static readonly ACCESS_TOKEN = "Debricked access token";
     static readonly ENTER_ACCESS_TOKEN = "Please enter your Debricked access token.";
-    static readonly ACCESS_TOKEN_RQD = "Access token is required.";
     static readonly ACCESS_TOKEN_SAVED = "Access token has been successfully saved.";
 
     // Bearer Token Messages
-    static readonly BEARER_TOKEN = "Debricked bearer token";
-    static readonly ENTER_BEARER_TOKEN = "Please enter your Debricked bearer token.";
-    static readonly BEARER_TOKEN_RQD = "Bearer token is required.";
     static readonly BEARER_TOKEN_SAVED = "Bearer token has been successfully saved.";
 
     // Workspace Messages
