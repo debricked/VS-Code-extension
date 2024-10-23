@@ -29,3 +29,13 @@ export enum Secrets {
 export enum SupportedFilesToScan {
     PACKAGE_JSON = "package.json",
 }
+
+export enum GlobalData {
+    SENTRY_ENABLED = "sentry_enabled",
+    AUTHORIZE_LOGIN = "authorize_login",
+}
+
+export enum UserResponse {
+    YES = "Yes",
+    NO = "No",
+}

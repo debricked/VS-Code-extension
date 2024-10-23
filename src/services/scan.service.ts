@@ -13,6 +13,7 @@ import {
 } from "../helpers";
 import {
     DebrickedCommands,
+    GlobalData,
     Icons,
     Messages,
     MessageStatus,
@@ -48,6 +49,13 @@ export class ScanService {
 
         try {
             if (!(await commonHelper.isCurrentRepoSupported())) {
+                return;
+            }
+
+            if (!globalStore.getGlobalStateInstance()?.getGlobalData(GlobalData.AUTHORIZE_LOGIN)) {
+                statusBarMessageHelper.showWarningMessage(
+                    "Authorization required to proceed. Please log in to continue.",
+                );
                 return;
             }
 

@@ -1,6 +1,6 @@
 import { AuthToken, DebrickedCommandNode } from "../types";
-import { DebrickedCommands, MessageStatus, Organization } from "../constants";
-import { commandHelper, errorHandler, Logger, statusBarMessageHelper } from "../helpers";
+import { DebrickedCommands, MessageStatus, Organization, GlobalData, UserResponse } from "../constants";
+import { commandHelper, errorHandler, globalStore, Logger, statusBarMessageHelper } from "../helpers";
 
 export class AuthService {
     constructor(private command: DebrickedCommandNode = DebrickedCommands.AUTH) {
@@ -14,6 +14,22 @@ export class AuthService {
             if (updateCredentials) {
                 Logger.logMessageByStatus(MessageStatus.INFO, "Authentication: Login");
 
+                const userResponse = await statusBarMessageHelper.showInformationMessageWithItems(
+                    "Debricked is requesting authentication to proceed with the scan. Would you like to continue?",
+                    [UserResponse.YES, UserResponse.NO],
+                );
+
+                globalStore
+                    .getGlobalStateInstance()
+                    ?.setGlobalData(GlobalData.AUTHORIZE_LOGIN, userResponse === UserResponse.YES ? true : false);
+                if (userResponse !== UserResponse.YES) {
+                    // User chose "No", exit the function
+                    statusBarMessageHelper.showWarningMessage("Authentication cancelled");
+                    Logger.logMessageByStatus(MessageStatus.WARN, "Authentication cancelled by user");
+                    return;
+                }
+
+                // Continue with authentication if "Yes" is selected
                 const cmdParams: string[] = [];
                 if (this.command.sub_commands) {
                     cmdParams.push(this.command.cli_command, this.command.sub_commands[0].cli_command);

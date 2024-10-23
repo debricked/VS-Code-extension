@@ -1,5 +1,5 @@
 import { DebrickedCommandNode } from "../types";
-import { DebrickedCommands, Messages, MessageStatus, Organization, Secrets } from "../constants/index";
+import { DebrickedCommands, Messages, MessageStatus, Organization, Secrets, UserResponse } from "../constants/index";
 import {
     statusBarMessageHelper,
     terminal,
@@ -173,9 +173,9 @@ export class BaseCommandService {
 
             const response = await statusBarMessageHelper.showWarningMessageWithItems(
                 "Do you want to reset Debricked?",
-                ["Yes", "No"],
+                [UserResponse.YES, UserResponse.NO],
             );
-            if (response === "Yes") {
+            if (response === UserResponse.YES) {
                 await globalStore.getGlobalStateInstance()?.resetDebrickedData();
                 statusBarMessageHelper.showInformationMessage(Messages.RESET_SUCCESS);
                 SentryHelper.captureMessage("Reset Debricked");
